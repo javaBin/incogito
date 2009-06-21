@@ -1,0 +1,24 @@
+<cluster>
+  <name>incogito</name>
+  <server>
+    <id>0</id>
+    <host>localhost</host>
+    <http-port>8060</http-port>
+    <socket-port>6660</socket-port>
+    <partitions>0</partitions>
+  </server>
+  <server>
+    <id>1</id>
+    <host>localhost</host>
+    <http-port>8061</http-port>
+    <socket-port>6661</socket-port>
+    <partitions>1</partitions>
+  </server>
+  <server>
+    <id>2</id>
+    <host>localhost</host>
+    <http-port>8062</http-port>
+    <socket-port>6662</socket-port>
+    <partitions>2</partitions>
+  </server>
+</cluster>
