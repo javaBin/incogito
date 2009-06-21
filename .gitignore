@@ -3,3 +3,4 @@
 *.iml
 target
 voldemort-*.tar.gz
+data
