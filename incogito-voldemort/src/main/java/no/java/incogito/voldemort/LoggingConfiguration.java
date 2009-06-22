@@ -8,11 +8,11 @@ import java.io.File;
  * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
-public class Log4jConfiguration {
+public class LoggingConfiguration {
 
-    private static Log4jConfiguration instance;
+    private static LoggingConfiguration instance;
 
-    public static Log4jConfiguration getInstance(File home) {
+    public static LoggingConfiguration getInstance(File home) {
 
         if (instance != null) {
             return instance;
@@ -25,7 +25,7 @@ public class Log4jConfiguration {
 
         PropertyConfigurator.configure(log4jProperties.getPath());
 
-        return instance = new Log4jConfiguration();
+        return instance = new LoggingConfiguration();
     }
 
     public IncogitoServer createIncogitoServer(File home) {

@@ -5,7 +5,8 @@ import no.java.incogito.domain.Schedule;
 import no.java.incogito.domain.UserId;
 import no.java.incogito.domain.User;
 import no.java.incogito.domain.SessionId;
-import no.java.incogito.voldemort.Log4jConfiguration;
+import static no.java.incogito.domain.User.createTransientUser;
+import no.java.incogito.voldemort.LoggingConfiguration;
 import no.java.incogito.voldemort.IncogitoServer;
 import voldemort.client.MockStoreClientFactory;
 import voldemort.client.StoreClientFactory;
@@ -35,9 +36,9 @@ public class IncogitoIntegrationTest extends TestCase {
 
     public void setUp() {
         File home = new File(System.getProperty("basedir"), "src/test/resources/cluster-it/node-it");
-        Log4jConfiguration log4jConfiguration = Log4jConfiguration.getInstance(home);
+        LoggingConfiguration loggingConfiguration = LoggingConfiguration.getInstance(home);
 
-        server = log4jConfiguration.createIncogitoServer(home);
+        server = loggingConfiguration.createIncogitoServer(home);
 
         server.start();
 
@@ -56,7 +57,7 @@ public class IncogitoIntegrationTest extends TestCase {
         Option<User> userOption = application.getUser(userId);
 
         if(userOption.isNone()){
-            User user = User.createTransientUser(userId);
+            User user = createTransientUser(userId);
             user = user.markAttendance(sessionA);
             user = user.markInterest(sessionB);
 

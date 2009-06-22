@@ -1,7 +1,4 @@
-package no.java.incogito.server;
-
-import no.java.incogito.voldemort.IncogitoServer;
-import no.java.incogito.voldemort.LoggingConfiguration;
+package no.java.incogito.voldemort;
 
 import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -10,20 +7,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
-public class Main {
-
+public class TestServer {
     public static void main(String[] args) {
+        File basedir = new File(System.getProperty("basedir")).getAbsoluteFile();
+        System.out.println("basedir = " + basedir);
 
-        System.out.println("Main.main");
-        File home = new File(args[0]).getAbsoluteFile();
+        String instance = System.getProperty("instance");
+        System.out.println("instance = " + instance);
 
-        if (!home.isDirectory()) {
-            System.err.println("Not a valid configuration directory: " + home.getAbsolutePath());
-            System.exit(-1);
-        }
-
-        LoggingConfiguration loggingConfiguration = LoggingConfiguration.getInstance(home);
-        IncogitoServer server = loggingConfiguration.createIncogitoServer(home);
+        File instanceHome = new File(basedir, "src/test/resources/" + instance);
+        LoggingConfiguration loggingConfiguration = LoggingConfiguration.getInstance(instanceHome);
+        IncogitoServer server = loggingConfiguration.createIncogitoServer(instanceHome);
 
         server.start();
 

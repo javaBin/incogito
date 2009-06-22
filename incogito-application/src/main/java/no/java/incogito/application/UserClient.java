@@ -3,17 +3,17 @@ package no.java.incogito.application;
 import fj.Effect;
 import fj.F;
 import fj.data.List;
-import fj.data.Option;
 import static fj.data.List.nil;
+import fj.data.Option;
 import static fj.data.Option.fromNull;
 import no.java.incogito.domain.Attendance;
 import no.java.incogito.domain.SessionAssociation;
+import no.java.incogito.domain.SessionId;
+import no.java.incogito.domain.SessionInterrest;
 import no.java.incogito.domain.SessionRating;
 import no.java.incogito.domain.User;
 import static no.java.incogito.domain.User.createPersistentUser;
 import no.java.incogito.domain.UserId;
-import no.java.incogito.domain.SessionId;
-import no.java.incogito.domain.SessionInterrest;
 import no.java.incogito.voldemort.VoldemortF;
 import static no.java.incogito.voldemort.VoldemortF.toNull;
 import voldemort.client.StoreClient;
@@ -109,12 +109,11 @@ public class UserClient {
         public SessionAssociation f(Map map) {
             SessionId sessionId = new SessionId(map.get("session").toString());
 
-            if((Boolean)map.get("attending")){
+            if ((Boolean) map.get("attending")) {
                 return Attendance.createAttendance(sessionId,
-                    Option.<String>fromNull((String)map.get("rating")).map(sessionRatingFromString),
-                    Option.<String>fromNull((String)map.get("ratingComment")));
-            }
-            else {
+                    Option.<String>fromNull((String) map.get("rating")).map(sessionRatingFromString),
+                    Option.<String>fromNull((String) map.get("ratingComment")));
+            } else {
                 return SessionInterrest.createInterest(sessionId);
             }
         }

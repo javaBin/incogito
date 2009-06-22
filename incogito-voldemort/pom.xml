@@ -19,4 +19,27 @@
       <version>0.51</version>
     </dependency>
   </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.1.1</version>
+        <configuration>
+          <mainClass>no.java.incogito.voldemort.TestServer</mainClass>
+          <classpathScope>test</classpathScope>
+          <systemProperties>
+            <property>
+              <key>basedir</key>
+              <value>${basedir}</value>
+            </property>
+            <property>
+              <key>instance</key>
+              <value>${instance}</value>
+            </property>
+          </systemProperties>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

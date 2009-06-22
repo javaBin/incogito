@@ -8,7 +8,10 @@
     <dependency>
       <groupId>com.google.collections</groupId>
       <artifactId>google-collections</artifactId>
-      <version>1.0-rc2</version>
+      <version>0.9</version>
+      <!--
+      <version>20090211</version>
+      -->
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
@@ -58,4 +61,10 @@
       <version>3.3.62</version>
     </dependency>
   </dependencies>
+  <repositories>
+    <repository>
+      <id>google</id>
+      <url>http://google-maven-repository.googlecode.com/svn/repository</url>
+    </repository>
+  </repositories>
 </project>
