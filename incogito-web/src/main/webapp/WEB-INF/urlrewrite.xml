@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 3.0//EN" "http://tuckey.org/res/dtds/urlrewrite3.0.dtd">
+
+<urlrewrite use-context="false" default-match-type="wildcard">
+
+  <rule>
+    <from>/</from>
+    <to last="true">/index.jspx</to>
+  </rule>
+
+  <rule>
+    <from>/brukerkonto/rediger</from>
+    <to last="true">/brukerkonto/rediger.jspx</to>
+  </rule>
+
+  <rule>
+    <from>/brukerkonto/verifiser</from>
+    <to last="true">/brukerkonto/verifiser.jspx</to>
+  </rule>
+
+  <rule>
+    <from>/brukerkonto/registrer</from>
+    <to last="true">/brukerkonto/registrer.jspx</to>
+  </rule>
+
+  <rule>
+    <from>/nyheter</from>
+    <to last="true">/nyheter/index.jspx</to>
+  </rule>
+
+  <rule>
+    <from>/nyheter/</from>
+    <to last="true">/nyheter/index.jspx</to>
+  </rule>
+
+  <rule match-type="regex">
+      <from>/arkiv/nyheter/(\d{4})/(\d{1,2})</from>
+      <set name="year">$1</set>
+      <set name="month">$2</set>
+      <to last="true">/arkiv/nyheter.jspx</to>
+  </rule>
+
+  <rule match-type="regex">
+    <from>/nyheter/(.*)</from>
+    <set name="articleId">$1</set>
+    <to last="true">/nyheter/nyhet.jspx</to>
+  </rule>
+
+  <rule>
+    <from>/</from>
+    <to type="redirect" last="true">%{context-path}/nyheter</to>
+  </rule>
+
+  <rule>
+      <from>/partnere</from>
+      <to last="true">/partnere/index.jspx</to>
+  </rule>
+
+  <rule>
+      <from>/partnere/</from>
+      <to last="true">/partnere/index.jspx</to>
+  </rule>
+
+  <rule>
+      <from>/javabin</from>
+      <to last="true">/javabin/index.jspx</to>
+  </rule>
+
+  <rule>
+      <from>/javabin/</from>
+      <to last="true">/javabin/index.jspx</to>
+  </rule>
+
+  <rule>
+    <from>/arkiv</from>
+    <to last="true">/arkiv/index.jspx</to>
+  </rule>
+
+  <rule>
+    <from>/arkiv/</from>
+    <to last="true">/arkiv/index.jspx</to>
+  </rule>
+
+  <rule match-type="regex">
+    <from>/arkiv/moter/(.*)</from>
+    <set name="year">$1</set>
+    <to last="true">/arkiv/moter.jspx</to>
+  </rule>
+
+  <rule>
+    <from>/moter</from>
+    <to last="true">/nyheter/index.jspx</to>
+  </rule>
+
+  <rule>
+    <from>/moter/</from>
+    <to last="true">/nyheter/index.jspx</to>
+  </rule>
+
+  <rule match-type="regex">
+    <from>/moter/(.*)</from>
+    <set name="articleId">$1</set>
+    <to last="true">/moter/mote.jspx</to>
+  </rule>
+
+  <rule>
+    <from>/helter</from>
+    <to last="true">/helter/index.jspx</to>
+  </rule>
+
+  <rule>
+    <from>/helter/</from>
+    <to last="true">/helter/index.jspx</to>
+  </rule>
+
+  <rule match-type="regex">
+    <from>/helter/(.*)</from>
+    <set name="articleId">$1</set>
+    <to last="true">/helter/helt.jspx</to>
+  </rule>
+
+  <!-- For now, redirect all requests for images to the old site -->
+  <rule match-type="regex">
+    <from>^/image.do$</from>
+    <to last="true" type="redirect">http://www.java.no/web/image.do?id=%{parameter:id}</to>
+  </rule>
+
+  <!-- This effectively denies access to all jspx files if they should be exposed -->
+  <rule match-type="wildcard">
+    <from>/*.jspx</from>
+    <to last="true">/index.jspx</to>
+  </rule>
+
+</urlrewrite>

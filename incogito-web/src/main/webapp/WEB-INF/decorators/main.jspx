@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:decorator="http://www.opensymphony.com/sitemesh/decorator"
+      xmlns:page="http://www.opensymphony.com/sitemesh/page"
+      xmlns:jsp="http://java.sun.com/JSP/Page">
+<head>
+    <jsp:directive.page pageEncoding="utf-8" contentType="text/html;charset=utf-8"/>
+    <title><decorator:title default="javaBin"/></title>
+    <decorator:head/>
+</head>
+<body>
+<h1>javaBin</h1>
+<decorator:body/>
+</body>
+</html>
