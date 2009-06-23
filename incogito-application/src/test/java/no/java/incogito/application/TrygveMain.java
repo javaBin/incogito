@@ -15,7 +15,7 @@ import java.util.Map;
  * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
-public class TrygveTest {
+public class TrygveMain {
     public static void main(String[] args) {
 
         System.out.println("UserClient.SCHEMA");

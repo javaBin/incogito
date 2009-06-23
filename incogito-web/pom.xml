@@ -27,23 +27,29 @@
         <artifactId>maven-jetty-plugin</artifactId>
         <version>6.1.14</version>
         <configuration>
+          <!--
           <systemProperties>
             <property>
-              <key>basedir</key>
+              <name>basedir</name>
               <value>${basedir}</value>
             </property>
             <property>
-              <key>instance</key>
+              <name>instance</name>
               <value>${instance}</value>
             </property>
           </systemProperties>
+          -->
           <connectors>
             <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
               <port>${jetty.port}</port>
+              <maxIdleTime>60000</maxIdleTime>
             </connector>
           </connectors>
         </configuration>
       </plugin>
     </plugins>
   </build>
+  <properties>
+    <jetty.port>8096</jetty.port>
+  </properties>
 </project>

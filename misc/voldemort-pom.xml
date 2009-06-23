@@ -9,9 +9,6 @@
       <groupId>com.google.collections</groupId>
       <artifactId>google-collections</artifactId>
       <version>0.9</version>
-      <!--
-      <version>20090211</version>
-      -->
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
@@ -48,13 +45,11 @@
       <artifactId>commons-lang</artifactId>
       <version>2.1</version>
     </dependency>
-<!--
     <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <version>MISSING</version>
+      <groupId>org.apache.velocity</groupId>
+      <artifactId>org.apache.velocity</artifactId>
+      <version>1.5</version>
     </dependency>
--->
     <dependency>
       <groupId>voldemort</groupId>
       <artifactId>je</artifactId>
