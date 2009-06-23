@@ -6,33 +6,27 @@
     <artifactId>incogito</artifactId>
     <version>2009.1-SNAPSHOT</version>
   </parent>
-  <artifactId>incogito-voldemort</artifactId>
+  <artifactId>incogito-web</artifactId>
+  <packaging>war</packaging>
   <dependencies>
+    <dependency>
+      <groupId>no.java.incogito</groupId>
+      <artifactId>incogito-application</artifactId>
+      <version>${version}</version>
+    </dependency>
     <dependency>
       <groupId>org.functionaljava</groupId>
       <artifactId>fj</artifactId>
       <version>2.19</version>
     </dependency>
-    <dependency>
-      <groupId>voldemort</groupId>
-      <artifactId>voldemort</artifactId>
-      <version>0.51</version>
-    </dependency>
   </dependencies>
   <build>
     <plugins>
-      <!--
-
-      To run: mvn exec:java -e -Dinstance=node-a
-      
-      -->
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.1.1</version>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>maven-jetty-plugin</artifactId>
+        <version>6.1.14</version>
         <configuration>
-          <mainClass>no.java.incogito.voldemort.VoldemortServer</mainClass>
-          <classpathScope>test</classpathScope>
           <systemProperties>
             <property>
               <key>basedir</key>
@@ -43,6 +37,11 @@
               <value>${instance}</value>
             </property>
           </systemProperties>
+          <connectors>
+            <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+              <port>${jetty.port}</port>
+            </connector>
+          </connectors>
         </configuration>
       </plugin>
     </plugins>

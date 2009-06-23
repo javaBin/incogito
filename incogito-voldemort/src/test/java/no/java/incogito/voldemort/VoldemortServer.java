@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
-public class TestServer {
+public class VoldemortServer {
     public static void main(String[] args) {
         File basedir = new File(System.getProperty("basedir")).getAbsoluteFile();
         System.out.println("basedir = " + basedir);

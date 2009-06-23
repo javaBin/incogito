@@ -19,6 +19,16 @@
   </dependencies>
   <repositories>
     <repository>
+      <id>javabin-release</id>
+      <url>http://smia.java.no/maven/repo/release</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
       <id>fj-repository</id>
       <url>http://functionaljava.googlecode.com/svn/maven</url>
       <releases>
@@ -34,6 +44,7 @@
     <module>incogito-domain</module>
     <module>incogito-server</module>
     <module>incogito-voldemort</module>
+    <module>incogito-web</module>
   </modules>
 </project>
   
