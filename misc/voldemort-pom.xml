@@ -47,7 +47,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.velocity</groupId>
-      <artifactId>org.apache.velocity</artifactId>
+      <artifactId>velocity</artifactId>
       <version>1.5</version>
     </dependency>
     <dependency>

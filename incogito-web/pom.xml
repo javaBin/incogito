@@ -22,6 +22,11 @@
   </dependencies>
   <build>
     <plugins>
+      <!--
+       |
+       | VOLDEMORT_HOME=../incogito-voldemort/src/test/resources/node-a/ mvn jetty:run 
+       |
+      -->
       <plugin>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>maven-jetty-plugin</artifactId>
