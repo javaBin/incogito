@@ -4,3 +4,6 @@
 target
 voldemort-*.tar.gz
 data
+.classpath
+.settings
+.project
