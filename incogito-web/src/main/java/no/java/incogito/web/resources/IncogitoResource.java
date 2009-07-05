@@ -7,7 +7,10 @@ import no.java.incogito.PatternMatcher;
 import no.java.incogito.application.IncogitoApplication;
 import no.java.incogito.application.OperationResult;
 import no.java.incogito.domain.Event;
+import no.java.incogito.dto.EventListXml;
+import static no.java.incogito.dto.EventListXml.eventListXml;
 import no.java.incogito.dto.EventXml;
+import static no.java.incogito.web.resources.Functions.eventListToXml;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +19,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -37,11 +39,11 @@ public class IncogitoResource {
     @Path("events")
     @GET
     public Response getEvents() {
-        OperationResult<ArrayList<EventXml>> result = incogito.getEvents().
-                ok().map(compose(Java.<EventXml>List_ArrayList(), Functions.eventListToXml));
+        OperationResult<EventListXml> result = incogito.getEvents().
+                ok().map(compose(eventListXml, compose(Java.<EventXml>List_ArrayList(), eventListToXml)));
 
-        return PatternMatcher.<OperationResult<ArrayList<EventXml>>, Response>match().
-                add(OperationResult.OkOperationResult.class, this.<OperationResult<ArrayList<EventXml>>>ok()).
+        return PatternMatcher.<OperationResult<EventListXml>, Response>match().
+                add(OperationResult.OkOperationResult.class, this.<OperationResult<EventListXml>>ok()).
                 match(result);
     }
 

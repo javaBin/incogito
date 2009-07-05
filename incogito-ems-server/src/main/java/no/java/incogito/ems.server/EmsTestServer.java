@@ -28,7 +28,7 @@ public class EmsTestServer {
         List<Event> list = emsServices.getEventDao().getEvents();
         System.out.println("Events: (" + list.size() + "):");
         for (Event event : list) {
-            System.out.println("event = " + event.getName());
+            System.out.println(" * " + event.getName() + " has " + emsServices.getSessionDao().getSessionIdsByEventId(event.getId()).size() + " sessions");
         }
 
         final AtomicBoolean shutdown = new AtomicBoolean();

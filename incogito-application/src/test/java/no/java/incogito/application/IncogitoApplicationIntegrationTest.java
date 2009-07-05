@@ -22,6 +22,7 @@ import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.User;
 import static no.java.incogito.domain.User.createTransientUser;
 import no.java.incogito.domain.UserId;
+import no.java.incogito.ems.server.DataGenerator;
 import org.apache.log4j.Logger;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

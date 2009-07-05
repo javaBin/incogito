@@ -21,11 +21,6 @@
       <version>${version}</version>
     </dependency>
     <dependency>
-      <groupId>org.functionaljava</groupId>
-      <artifactId>fj</artifactId>
-      <version>2.19</version>
-    </dependency>
-    <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-aop</artifactId>
       <version>${version.spring}</version>

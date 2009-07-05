@@ -32,7 +32,7 @@
       EMS Server
     </description>
     <property name="emsHome" ref="emsHome"/>
-    <property name="httpPort" value="3000"/>
+    <property name="httpPort" value="3300"/>
     <property name="startDatabase" value="true"/>
   </bean>
 
@@ -40,7 +40,7 @@
     <description>
       EMS Client
     </description>
-    <property name="baseurl" value="http://localhost:3000/ems"/>
+    <property name="baseurl" value="http://localhost:3300/ems"/>
   </bean>
 
   <!-- Paths -->

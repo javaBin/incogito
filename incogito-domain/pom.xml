@@ -10,11 +10,6 @@
   <name>Incogito 2009 :: Domain</name>
   <dependencies>
     <dependency>
-      <groupId>org.functionaljava</groupId>
-      <artifactId>fj</artifactId>
-      <version>2.19</version>
-    </dependency>
-    <dependency>
       <groupId>org.codehaus.mojo.unix</groupId>
       <artifactId>unix-common</artifactId>
       <version>1.0-alpha-4</version>
