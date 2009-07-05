@@ -26,7 +26,7 @@ public class TrygveMain {
         StoreClient<String, Map> client = clientFactory.getStoreClient("user", new TimeBasedInconsistencyResolver<Map>());
 
         UserClient userClient = new UserClient(client);
-        IncogitoApplication application = new VoldemortIncogitoApplication(userClient);
+        IncogitoApplication application = new DefaultIncogitoApplication(userClient, null);
 
         List<UserId> userIds = List.range(1, 1000).map(toString).map(UserId.fromString);
 

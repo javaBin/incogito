@@ -7,6 +7,7 @@
     <version>2009.1-SNAPSHOT</version>
   </parent>
   <artifactId>incogito-server</artifactId>
+  <name>Incogito 2009 :: Server</name>
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>

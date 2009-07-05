@@ -3,6 +3,8 @@
 set -e
 set -x
 
+v=0.51
+
 if [ ! -d target ]
 then
   mkdir target
@@ -10,19 +12,25 @@ fi
 
 cd target
 
-if [ ! -r voldemort-0.51.tar.gz ]
+if [ ! -r voldemort-$v.tar.gz ]
 then
-  wget -O voldemort-0.51.tar.gz http://cloud.github.com/downloads/voldemort/voldemort/voldemort-0.51.tar.gz
+  wget -O voldemort-$v.tar.gz http://cloud.github.com/downloads/voldemort/voldemort/voldemort-$v.tar.gz
 fi
 
-tar zxf voldemort-0.51.tar.gz
+gtar zxf voldemort-$v.tar.gz
 
 common="-Dpackaging=jar"
 
+jar cf voldemort-$v-sources.jar -C voldemort-$v/src/java .
+
 mvn install:install-file $common \
-  -DgroupId=voldemort -DartifactId=voldemort -Dversion=0.51 \
-  -DpomFile=../`dirname $0`/voldemort-pom.xml -Dfile=voldemort-0.51/dist/voldemort-0.51.jar
+  -DgroupId=voldemort -DartifactId=voldemort -Dversion=$v \
+  -DpomFile=../`dirname $0`/voldemort-pom.xml -Dfile=voldemort-$v/dist/voldemort-$v.jar
+
+mvn install:install-file $common \
+  -DgroupId=voldemort -DartifactId=voldemort -Dversion=$v \
+  -Dclassifier=sources -Dfile=voldemort-$v-sources.jar
 
 mvn install:install-file $common \
   -DgroupId=voldemort -DartifactId=je -Dversion=3.3.62 \
-  -DgeneratePom=true -Dfile=voldemort-0.51/lib/je-3.3.62.jar
+  -DgeneratePom=true -Dfile=voldemort-$v/lib/je-3.3.62.jar

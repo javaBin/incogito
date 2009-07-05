@@ -8,6 +8,7 @@
   </parent>
   <artifactId>incogito-web</artifactId>
   <packaging>war</packaging>
+  <name>Incogito 2009 :: Web</name>
   <dependencies>
     <dependency>
       <groupId>no.java.incogito</groupId>

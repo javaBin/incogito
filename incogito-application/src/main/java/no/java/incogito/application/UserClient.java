@@ -2,24 +2,29 @@ package no.java.incogito.application;
 
 import fj.Effect;
 import fj.F;
+import static fj.P.p;
+import fj.P4;
+import fj.data.Java;
 import fj.data.List;
 import static fj.data.List.nil;
 import fj.data.Option;
 import static fj.data.Option.fromNull;
-import no.java.incogito.domain.Attendance;
-import no.java.incogito.domain.SessionAssociation;
+import no.java.incogito.domain.AttendanceMarker;
+import no.java.incogito.domain.AttendingMarker;
+import no.java.incogito.domain.InterestMarker;
 import no.java.incogito.domain.SessionId;
-import no.java.incogito.domain.SessionInterrest;
 import no.java.incogito.domain.SessionRating;
 import no.java.incogito.domain.User;
 import static no.java.incogito.domain.User.createPersistentUser;
 import no.java.incogito.domain.UserId;
+import static no.java.incogito.domain.AttendanceMarker.createInterest;
+import static no.java.incogito.domain.AttendanceMarker.createAttendance;
 import no.java.incogito.voldemort.VoldemortF;
-import static no.java.incogito.voldemort.VoldemortF.toNull;
+import org.springframework.stereotype.Component;
 import voldemort.client.StoreClient;
+import voldemort.client.UpdateAction;
 import voldemort.versioning.Versioned;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,10 +36,10 @@ public class UserClient {
 
     public static final String SCHEMA = "{" +
         "\"id\":\"string\", " +
-        "\"sessionAssociations\":[{" +
+        "\"attendanceMarkers\":[{" +
         "   \"session\":\"string\", " +
         "   \"attending\":\"boolean\", " +
-        "   \"rating\":\"int32\", " +
+        "   \"rating\":\"string\", " +
         "   \"ratingComment\":\"string\"}]" +
         "}";
 
@@ -50,71 +55,85 @@ public class UserClient {
         return option.map(VoldemortF.<Map>verionedGetValue()).map(fromMap);
     }
 
-    public void setUser(User user) {
+    public void setUser(final User user) {
+        final UpdateAction<String, Map> updateAction = new UpdateAction<String, Map>() {
+            public void update(StoreClient<String, Map> client) {
+                client.put(user.id.value, toMap.f(user));
+            }
+        };
+
         if (user.original.isNone()) {
-            client.put(user.id.value, toMap.f(user));
+            Map value = toMap.f(user);
+            System.out.println("value = " + value);
+            client.put(user.id.value, value);
         } else {
-            throw new RuntimeException("Updates is not implemented");
+            if (!client.applyUpdate(updateAction)) {
+                throw new RuntimeException("Could not apply update.");
+            }
         }
     }
 
     private static final F<Map, User> fromMap = new F<Map, User>() {
         public User f(Map map) {
-            List<SessionAssociation> sessionAssociations = nil();
+            List<AttendanceMarker> attendanceMarkers = nil();
 
-            for (Object o : (java.util.List) map.get("sessionAssociations")) {
-                Map sessionAssociation = (Map) o;
-
-                sessionAssociations = sessionAssociations.cons(sessionAssociationFromMap.f(sessionAssociation));
+            //noinspection unchecked
+            for (Map markers : (java.util.List<Map>) map.get("attendanceMarkers")) {
+                attendanceMarkers = attendanceMarkers.cons(attendanceMarkersFromMap.f(markers));
             }
 
-            return createPersistentUser(UserId.fromString.f(map.get("id").toString()), sessionAssociations.reverse());
+            return createPersistentUser(UserId.fromString.f(map.get("id").toString()), attendanceMarkers);
         }
     };
 
     private static final F<User, Map> toMap = new F<User, Map>() {
         public Map f(final User user) {
-            final List<Map> sessionAssociations = user.sessionAssociations.map(sessionAssociationToMap);
+            final List<Map> attendanceMarkers = user.attendanceMarkers.map(attendanceMarkersToMap);
 
             return new HashMap<String, Object>() {{
                 put("id", user.id.value);
-                put("sessionAssociations", new ArrayList<Map>(sessionAssociations.toCollection()));
+                put("attendanceMarkers", Java.<Map>List_ArrayList().f(attendanceMarkers));
             }};
         }
     };
 
-    private static F<SessionAssociation, Map> sessionAssociationToMap = new F<SessionAssociation, Map>() {
-        public Map f(final SessionAssociation sessionAssociation) {
+    private static F<AttendanceMarker, Map> attendanceMarkersToMap = new F<AttendanceMarker, Map>() {
+        public Map f(final AttendanceMarker attendanceMarker) {
+            P4<SessionId, Boolean, Option<SessionRating>, Option<String>> p;
 
-            if (sessionAssociation instanceof Attendance) {
-                final Attendance attendance = (Attendance) sessionAssociation;
-                Map<String, Object> map = new HashMap<String, Object>();
-                map.put("session", attendance.sessionId.value);
-                map.put("attending", Boolean.TRUE);
-                map.put("rating", toNull(attendance.rating.map(sessionRatingToString)));
-                map.put("ratingComment", toNull(attendance.ratingComment));
-                return map;
+            if (attendanceMarker instanceof AttendingMarker) {
+                AttendingMarker attendingMarker = (AttendingMarker) attendanceMarker;
+                p = p(attendingMarker.sessionId,
+                        Boolean.TRUE,
+                        attendingMarker.rating,
+                        attendingMarker.ratingComment
+                );
             } else {
-                Map<String, Object> map = new HashMap<String, Object>();
-                map.put("session", sessionAssociation.sessionId.value);
-                map.put("attending", Boolean.FALSE);
-                map.put("rating", null);
-                map.put("ratingComment", null);
-                return map;
+                p = p(attendanceMarker.sessionId,
+                        Boolean.TRUE,
+                        Option.<SessionRating>none(),
+                        Option.<String>none());
             }
+
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("session", p._1().value);
+            map.put("attending", p._2());
+            map.put("rating", p._3().map(sessionRatingToString).orSome((String)null));
+            map.put("ratingComment", p._4().orSome((String)null));
+            return map;
         }
     };
 
-    private static F<Map, SessionAssociation> sessionAssociationFromMap = new F<Map, SessionAssociation>() {
-        public SessionAssociation f(Map map) {
+    private static F<Map, AttendanceMarker> attendanceMarkersFromMap = new F<Map, AttendanceMarker>() {
+        public AttendanceMarker f(Map map) {
             SessionId sessionId = new SessionId(map.get("session").toString());
 
             if ((Boolean) map.get("attending")) {
-                return Attendance.createAttendance(sessionId,
+                return createAttendance(sessionId,
                     Option.<String>fromNull((String) map.get("rating")).map(sessionRatingFromString),
                     Option.<String>fromNull((String) map.get("ratingComment")));
             } else {
-                return SessionInterrest.createInterest(sessionId);
+                return createInterest(sessionId);
             }
         }
     };

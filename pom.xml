@@ -10,6 +10,7 @@
   <artifactId>incogito</artifactId>
   <version>2009.1-SNAPSHOT</version>
   <packaging>pom</packaging>
+  <name>Incogito 2009</name>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -98,5 +99,6 @@
   <properties>
     <version.jersey>1.0.3</version.jersey>
     <version.spring>2.5.6</version.spring>
+    <version.ems>1.1.5</version.ems>
   </properties>
 </project>

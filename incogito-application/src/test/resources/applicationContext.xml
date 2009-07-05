@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+  <bean id="userClient" class="no.java.incogito.application.UserClient">
+    <constructor-arg ref="userStoreClient"/>
+  </bean>
+
+  <!-- Voldemort -->
+
+  <bean id="voldemortServer" class="no.java.incogito.application.VoldemortServerFactoryBean">
+    <description>Voldemort Server</description>
+  </bean>
+
+  <bean id="storeClientFactory" class="no.java.incogito.application.SocketStoreClientFactoryFactoryBean" depends-on="voldemortServer">
+    <property name="url" value="tcp://localhost:6660"/>
+  </bean>
+
+  <bean id="userStoreClient" class="no.java.incogito.application.SocketStoreClientFactoryBean">
+    <property name="socketStoreClientFactory" ref="storeClientFactory"/>
+    <property name="name" value="user"/>
+  </bean>
+
+  <!-- EMS -->
+
+  <bean id="emsServices" class="no.java.incogito.application.EmsServicesFactoryBean">
+    <description>
+      EMS Server
+    </description>
+    <property name="emsHome" ref="emsHome"/>
+    <property name="httpPort" value="3000"/>
+    <property name="startDatabase" value="true"/>
+  </bean>
+
+  <bean id="emsService" class="no.java.incogito.application.RestEmsServiceFactoryBean">
+    <description>
+      EMS Client
+    </description>
+    <property name="baseurl" value="http://localhost:3000/ems"/>
+  </bean>
+
+  <!-- Paths -->
+
+  <bean id="emsHome" class="no.java.incogito.application.TestPathFactoryBean">
+    <property name="testClass" value="no.java.incogito.application.IncogitoApplication"/>
+    <property name="path" value="target/ems-home"/>
+  </bean>
+
+</beans>
