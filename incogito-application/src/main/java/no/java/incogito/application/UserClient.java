@@ -10,17 +10,15 @@ import static fj.data.List.nil;
 import fj.data.Option;
 import static fj.data.Option.fromNull;
 import no.java.incogito.domain.AttendanceMarker;
+import static no.java.incogito.domain.AttendanceMarker.createAttendance;
+import static no.java.incogito.domain.AttendanceMarker.createInterest;
 import no.java.incogito.domain.AttendingMarker;
-import no.java.incogito.domain.InterestMarker;
 import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.SessionRating;
 import no.java.incogito.domain.User;
 import static no.java.incogito.domain.User.createPersistentUser;
 import no.java.incogito.domain.UserId;
-import static no.java.incogito.domain.AttendanceMarker.createInterest;
-import static no.java.incogito.domain.AttendanceMarker.createAttendance;
 import no.java.incogito.voldemort.VoldemortF;
-import org.springframework.stereotype.Component;
 import voldemort.client.StoreClient;
 import voldemort.client.UpdateAction;
 import voldemort.versioning.Versioned;
@@ -71,6 +69,10 @@ public class UserClient {
                 throw new RuntimeException("Could not apply update.");
             }
         }
+    }
+
+    public boolean removeUser(final UserId id) {
+        return client.delete(id.value);
     }
 
     private static final F<Map, User> fromMap = new F<Map, User>() {

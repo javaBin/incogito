@@ -15,7 +15,13 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.5</version>
+      <version>4.4</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   <dependencyManagement>
@@ -88,13 +94,27 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
+    <repository>
+      <id>java.net</id>
+      <url>http://download.java.net/maven/2</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
   </repositories>
   <modules>
     <module>incogito-application</module>
     <module>incogito-domain</module>
+    <module>incogito-dto</module>
+    <module>incogito-ems-client</module>
+    <module>incogito-ems-server</module>
     <module>incogito-server</module>
     <module>incogito-voldemort</module>
     <module>incogito-web</module>
+    <module>incogito-util</module>
   </modules>
   <properties>
     <version.jersey>1.0.3</version.jersey>

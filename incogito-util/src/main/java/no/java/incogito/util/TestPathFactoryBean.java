@@ -1,6 +1,5 @@
-package no.java.incogito.application;
+package no.java.incogito.util;
 
-import org.junit.Ignore;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Required;
 
@@ -11,7 +10,6 @@ import java.net.URL;
  * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
-@Ignore
 public class TestPathFactoryBean implements FactoryBean {
 
     private Class testClass;
@@ -48,7 +46,7 @@ public class TestPathFactoryBean implements FactoryBean {
     }
 
     public Class getObjectType() {
-        return String.class;
+        return File.class;
     }
 
     public boolean isSingleton() {

@@ -2,7 +2,6 @@ package no.java.incogito.application;
 
 import fj.F;
 import fj.data.List;
-import fj.data.Option;
 import no.java.incogito.domain.User;
 import no.java.incogito.domain.UserId;
 import voldemort.client.SocketStoreClientFactory;
@@ -26,7 +25,7 @@ public class TrygveMain {
         StoreClient<String, Map> client = clientFactory.getStoreClient("user", new TimeBasedInconsistencyResolver<Map>());
 
         UserClient userClient = new UserClient(client);
-        IncogitoApplication application = new DefaultIncogitoApplication(userClient, null);
+        IncogitoApplication incogito = new DefaultIncogitoApplication(userClient, null);
 
         List<UserId> userIds = List.range(1, 1000).map(toString).map(UserId.fromString);
 
@@ -35,14 +34,13 @@ public class TrygveMain {
 //
 //            User user = User.createTransientUser(userId);
 //
-//            application.setUser(user);
+//            incogito.setUser(user);
 //        }
 
         for (UserId userId : userIds) {
-            Option<User> option = application.getUser(userId);
-            System.out.println("option.isNone() = " + option.isNone());
+            OperationResult<User> userOperationResult = incogito.getUser(userId);
+            System.out.println("userOperationResult = " + userOperationResult);
         }
-
 
         System.out.println("Done");
         clientFactory.close();

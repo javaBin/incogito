@@ -1,4 +1,4 @@
-package no.java.incogito.application;
+package no.java.incogito.ems.client;
 
 import no.java.ems.client.RestEmsService;
 import no.java.ems.service.EmsService;

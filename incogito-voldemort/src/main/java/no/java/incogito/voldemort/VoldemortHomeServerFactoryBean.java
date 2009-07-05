@@ -1,0 +1,56 @@
+package no.java.incogito.voldemort;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.annotation.Required;
+import voldemort.server.VoldemortConfig;
+import voldemort.server.VoldemortServer;
+
+import java.io.File;
+
+/**
+ * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
+ * @version $Id$
+ */
+public class VoldemortHomeServerFactoryBean implements FactoryBean, DisposableBean {
+
+    private Log log = LogFactory.getLog(VoldemortHomeServerFactoryBean.class);
+
+    private File voldemortHome;
+
+    private VoldemortServer voldemortServer;
+
+    @Required
+    public void setVoldemortHome(File voldemortHome) {
+        this.voldemortHome = voldemortHome;
+    }
+
+    public Object getObject() throws Exception {
+        log.info("Starting Voldemort. Home directory: " + voldemortHome.getAbsolutePath());
+
+//        File clusterXml = new File(getClass().getResource("/cluster-it/node-it/config/cluster.xml").toURI().getPath());
+//        String voldemortHome = clusterXml.getParentFile().getParentFile().getAbsolutePath();
+
+        VoldemortConfig config = VoldemortConfig.loadFromVoldemortHome(voldemortHome.getAbsolutePath());
+        voldemortServer = new VoldemortServer(config);
+        voldemortServer.start();
+
+        return voldemortServer;
+    }
+
+    public Class getObjectType() {
+        return VoldemortServer.class;
+    }
+
+    public boolean isSingleton() {
+        return true;
+    }
+
+    public void destroy() throws Exception {
+        if (voldemortServer != null) {
+            voldemortServer.stop();
+        }
+    }
+}

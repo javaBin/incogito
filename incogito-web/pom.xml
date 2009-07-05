@@ -16,9 +16,19 @@
       <version>${version}</version>
     </dependency>
     <dependency>
+      <groupId>no.java.incogito</groupId>
+      <artifactId>incogito-dto</artifactId>
+      <version>${version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.functionaljava</groupId>
       <artifactId>fj</artifactId>
       <version>2.19</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
+      <version>${version.spring}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -44,6 +54,12 @@
       <groupId>com.sun.jersey.contribs</groupId>
       <artifactId>jersey-spring</artifactId>
       <version>${version.jersey}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -70,18 +86,16 @@
         <artifactId>maven-jetty-plugin</artifactId>
         <version>6.1.14</version>
         <configuration>
-          <!--
           <systemProperties>
-            <property>
-              <name>basedir</name>
-              <value>${basedir}</value>
-            </property>
-            <property>
-              <name>instance</name>
-              <value>${instance}</value>
-            </property>
+            <systemProperty>
+              <key>ems.url</key>
+              <value>${ems.url}</value>
+            </systemProperty>
+             <systemProperty>
+              <key>voldemort.nodeId</key>
+              <value>${voldemort.nodeId}</value>
+            </systemProperty>
           </systemProperties>
-          -->
           <useTestClasspath>true</useTestClasspath>
           <connectors>
             <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
@@ -95,5 +109,7 @@
   </build>
   <properties>
     <jetty.port>8096</jetty.port>
+    <ems.url>http://localhost:3000/ems</ems.url>
+    <voldemort.nodeId>a</voldemort.nodeId>
   </properties>
 </project>

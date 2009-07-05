@@ -8,48 +8,41 @@ import voldemort.utils.ConfigurationException;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import java.io.File;
 
 /**
- * Copy of the VoldemortServletContextListener from 0.51, without the bug.
- *
  * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class VoldemortServletContextListener implements ServletContextListener {
 
-    public static final String VOLDEMORT_TEMPLATE_DIR = "voldemort/server/http/gui/templates";
-    public static final String SERVER_KEY = "vldmt_server";
-    public static final String SERVER_CONFIG_KEY = "vldmt_config";
-    public static final String VELOCITY_ENGINE_KEY = "vldmt_velocity_engine";
+    private VoldemortServer server;
 
     private static final Logger logger = Logger.getLogger(VoldemortServletContextListener.class.getName());
 
     public void contextInitialized(ServletContextEvent event) {
+
+        String home = findVoldemortHome().getAbsolutePath();
+
         try {
-            logger.info("Creating application...");
-            VoldemortServer server = new VoldemortServer(VoldemortConfig.loadFromEnvironmentVariable());
-            event.getServletContext().setAttribute(SERVER_KEY, server);
-            event.getServletContext().setAttribute(SERVER_CONFIG_KEY, server.getVoldemortConfig());
-            event.getServletContext().setAttribute(VELOCITY_ENGINE_KEY, new VelocityEngine(VOLDEMORT_TEMPLATE_DIR));
+            logger.info("Starting Voldemort...");
+            server = new VoldemortServer(VoldemortConfig.loadFromVoldemortHome(home));
             server.start();
-            logger.info("Application created.");
-        } catch (ConfigurationException e) {
-            logger.info("Error loading voldemort server:", e);
-            throw e;
+            logger.info("Voldemort started!");
         } catch (Exception e) {
             logger.error("Error loading voldemort server:", e);
             throw new ConfigurationException(e);
         }
     }
 
+    private File findVoldemortHome() {
+        return null;
+    }
+
     public void contextDestroyed(ServletContextEvent event) {
-        logger.info("Calling application shutdown...");
-        VoldemortServer server = (VoldemortServer) event.getServletContext().getAttribute(SERVER_KEY);
+        logger.info("Stopping Voldemort...");
         if (server != null)
             server.stop();
-        logger.info("Destroying application...");
-        event.getServletContext().removeAttribute(SERVER_KEY);
-        event.getServletContext().removeAttribute(SERVER_CONFIG_KEY);
-        event.getServletContext().removeAttribute(VELOCITY_ENGINE_KEY);
+        logger.info("Voldemort stopped!");
     }
 }

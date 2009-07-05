@@ -3,6 +3,7 @@ package no.java.incogito.application;
 import fj.F;
 import fj.P;
 import fj.P2;
+import fj.Unit;
 import fj.control.parallel.Strategy;
 import fj.data.List;
 import fj.data.Option;
@@ -15,18 +16,18 @@ import no.java.incogito.domain.AttendanceMarker;
 import static no.java.incogito.domain.AttendanceMarker.createAttendance;
 import static no.java.incogito.domain.AttendanceMarker.createInterest;
 import no.java.incogito.domain.Event;
-import no.java.incogito.domain.Session;
-import no.java.incogito.domain.UserId;
-import no.java.incogito.domain.User;
 import no.java.incogito.domain.Schedule;
+import no.java.incogito.domain.Session;
 import no.java.incogito.domain.SessionId;
+import no.java.incogito.domain.User;
 import static no.java.incogito.domain.User.createTransientUser;
+import no.java.incogito.domain.UserId;
 import org.apache.log4j.Logger;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -85,25 +86,24 @@ public class IncogitoApplicationIntegrationTest {
 
     @Test
     public void testBasic() {
-        SessionId sessionA = new SessionId("session-a");
-        SessionId sessionB = new SessionId("session-b");
+        final SessionId sessionA = new SessionId("session-a");
+        final SessionId sessionB = new SessionId("session-b");
 
-        UserId userId = new UserId("trygvis");
+        final UserId userId = new UserId("trygvis");
 
-        Option<User> userOption = incogito.getUser(userId);
+        OperationResult<User> userOperationResult = incogito.getUser(userId);
 
-        if(userOption.isNone()){
+        if(userOperationResult.isNotFound()){
             User user = createTransientUser(userId).
                     markAttendance(sessionA).
                     markInterest(sessionB);
             incogito.createUser(user);
         }
 
-        userOption = incogito.getUser(userId);
+        User user = incogito.getUser(userId).value();
 
-        assertTrue(userOption.isSome());
-        assertEquals(userId, userOption.some().id);
-        assertEquals(2, userOption.some().attendanceMarkers.length());
+        assertEquals(userId, user.id);
+        assertEquals(2, user.attendanceMarkers.length());
 
         OperationResult<Schedule> scheduleOperationResult = incogito.getSchedule(userId);
         assertEquals(OperationResult.Status.OK, scheduleOperationResult.status);
@@ -116,21 +116,21 @@ public class IncogitoApplicationIntegrationTest {
 
         int nUsers = 10;
 
-        List<Event> events = List.iterableList(incogito.getEvents());
+        List<Event> events = List.iterableList(incogito.getEvents().value());
         int eventCount = events.length();
         System.out.println("eventCount = " + eventCount);
 
         // Pre-load all sessions
         TreeMap<Event.EventId, List<Session>> sessionMap = TreeMap.empty(Event.EventId.ord);
         for (Event event : events) {
-
-            List<Session> sessionList = strategy.parList(incogito.getSessions(event.id))._1();
+            List<Session> sessionList = strategy.parList(incogito.getSessions(event.id).value())._1();
             sessionMap = sessionMap.set(event.id, sessionList);
         }
 
         // Create all users. This will normally happen when logging in
         for (UserId userId : Stream.range(0, nUsers).map(Show.intShow.showS_()).map(UserId.fromString)) {
-            incogito.removeUser(userId);
+            OperationResult<Unit> removeResult = incogito.removeUser(userId);
+            assertTrue(removeResult.isOk() || removeResult.isNotFound());
             assertEquals(OperationResult.Status.OK, incogito.createUser(User.createTransientUser(userId)).status);
         }
 

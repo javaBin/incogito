@@ -8,41 +8,10 @@
     <servlet-class>com.sun.jersey.spi.spring.container.servlet.SpringServlet</servlet-class>
     <init-param>
       <param-name>com.sun.jersey.config.property.packages</param-name>
-      <param-value>no.java.portal.infrastructure</param-value>
+      <param-value>no.java.incogito.web.resources</param-value>
     </init-param>
+    <load-on-startup>1</load-on-startup>
   </servlet>
-  
-  <!-- These no work - trygve
-  <servlet>
-    <servlet-name>store-servlet</servlet-name>
-    <servlet-class>voldemort.server.http.StoreServlet</servlet-class>
-  </servlet>
-
-  <servlet>
-    <servlet-name>admin-servlet</servlet-name>
-    <servlet-class>voldemort.server.http.gui.AdminServlet</servlet-class>
-  </servlet>
-
-  <servlet>
-    <servlet-name>query-servlet</servlet-name>
-    <servlet-class>voldemort.server.http.gui.QueryServlet</servlet-class>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>admin-servlet</servlet-name>
-    <url-pattern>/voldemort/admin</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>query-servlet</servlet-name>
-    <url-pattern>/voldemort/query</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>store-servlet</servlet-name>
-    <url-pattern>/voldemort/*</url-pattern>
-  </servlet-mapping>
-  -->
 
   <servlet-mapping>
     <servlet-name>jersey</servlet-name>
@@ -80,10 +49,6 @@
     <param-name>log4jExposeWebAppRoot</param-name>
     <param-value>false</param-value>
   </context-param>
-
-  <listener>
-    <listener-class>no.java.incogito.web.voldemort.VoldemortServletContextListener</listener-class>
-  </listener>
 
   <listener>
     <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>

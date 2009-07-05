@@ -1,4 +1,4 @@
-package no.java.incogito.application;
+package no.java.incogito.ems.server;
 
 import no.java.ems.server.EmsServices;
 import org.springframework.beans.factory.DisposableBean;
