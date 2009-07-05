@@ -45,4 +45,18 @@
       <version>1.2.12</version>
     </dependency>
   </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.1.1</version>
+        <configuration>
+          <mainClass>no.java.incogito.ems.server.EmsTestServer</mainClass>
+          <commandlineArgs>${basedir}</commandlineArgs>
+          <classpathScope>test</classpathScope>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
