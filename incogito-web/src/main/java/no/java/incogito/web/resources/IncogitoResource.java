@@ -39,6 +39,8 @@ public class IncogitoResource {
     @Path("events")
     @GET
     public Response getEvents() {
+        System.out.println("incogito = " + incogito);
+
         OperationResult<EventListXml> result = incogito.getEvents().
                 ok().map(compose(eventListXml, compose(Java.<EventXml>List_ArrayList(), eventListToXml)));
 

@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
   <context:component-scan base-package="no.java.incogito.web.resources"/>
+  <context:component-scan base-package="no.java.incogito.web.jmx"/>
 
   <bean id="userClient" class="no.java.incogito.application.UserClient">
     <constructor-arg ref="userStoreClient"/>
@@ -26,5 +29,54 @@
     <property name="socketStoreClientFactory" ref="storeClientFactory"/>
     <property name="name" value="user"/>
   </bean>
+
+  <!-- Performance -->
+
+  <bean id="incogitoApplicationPerformanceRecorder" class="no.java.incogito.web.jmx.ApplicationPerformanceRecorderFactoryBean">
+    <constructor-arg value="no.java.incogito.application.IncogitoApplication"/>
+  </bean>
+
+  <!-- JMX -->
+
+  <bean id="exporter" class="org.springframework.jmx.export.MBeanExporter">
+    <property name="assembler" ref="assembler"/>
+    <property name="namingStrategy" ref="namingStrategy"/>
+    <property name="autodetect" value="true"/>
+    <property name="beans">
+      <map>
+        <entry key="incogito.performance:name=Incogito">
+          <bean class="no.java.incogito.web.jmx.mbean.ApplicationPerformanceMBean">
+            <constructor-arg ref="incogitoApplicationPerformanceRecorder"/>
+          </bean>
+        </entry>
+      </map>
+    </property>
+  </bean>
+
+  <bean id="assembler" class="org.springframework.jmx.export.assembler.MetadataMBeanInfoAssembler">
+    <property name="attributeSource" ref="jmxAttributeSource"/>
+  </bean>
+
+  <bean id="namingStrategy" class="org.springframework.jmx.export.naming.MetadataNamingStrategy">
+    <property name="attributeSource" ref="jmxAttributeSource"/>
+  </bean>
+
+  <bean id="jmxAttributeSource" class="org.springframework.jmx.export.annotation.AnnotationJmxAttributeSource"/>
+
+  <!-- AOP -->
+
+  <bean id="timingAspect" class="no.java.incogito.web.jmx.TimingAspect">
+    <constructor-arg ref="incogitoApplicationPerformanceRecorder"/>
+  </bean>
+
+  <aop:config>
+    <aop:aspect id="timingAspectInstance" ref="timingAspect">
+      <aop:pointcut id="incogitoApplication" expression="execution(* no.java.incogito.application.IncogitoApplication.*(..))"/>
+
+      <aop:before pointcut-ref="incogitoApplication" method="before"/>
+      <aop:after-returning pointcut-ref="incogitoApplication" method="afterReturning"/>
+      <aop:after-throwing pointcut-ref="incogitoApplication" method="afterThrowing"/>
+    </aop:aspect>
+  </aop:config>
 
 </beans>
