@@ -1,13 +1,14 @@
 package no.java.incogito.ems.server;
 
+import no.java.ems.domain.Event;
+import no.java.ems.domain.Session;
+import no.java.ems.server.EmsServices;
+import org.codehaus.plexus.util.StringUtils;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.File;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.List;
-
-import no.java.ems.server.EmsServices;
-import no.java.ems.domain.Event;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -15,7 +16,7 @@ import no.java.ems.domain.Event;
  */
 public class EmsTestServer {
     public static void main(String[] args) throws Exception {
-        File basedir = new File(args[0]);
+        File basedir = getBasedir(args);
 
         File emsHome = new File(basedir, "target/ems-home");
 
@@ -29,6 +30,17 @@ public class EmsTestServer {
         System.out.println("Events: (" + list.size() + "):");
         for (Event event : list) {
             System.out.println(" * " + event.getName() + " has " + emsServices.getSessionDao().getSessionIdsByEventId(event.getId()).size() + " sessions");
+        }
+
+        for (Event event : list) {
+            if(!"JavaZone 2009".equals(event.getName())) {
+                continue;
+            }
+
+            System.out.println("Id: " + event.getId());
+            for (Session session : emsServices.getSessionDao().getSessions(event.getId())) {
+                System.out.println("session = " + session.getTitle() + ", tags:" + StringUtils.join(session.getTags().toArray(), ", "));
+            }
         }
 
         final AtomicBoolean shutdown = new AtomicBoolean();
@@ -46,5 +58,16 @@ public class EmsTestServer {
         }
 
         System.out.println("Shutting down");
+    }
+
+    public static File getBasedir(String[] args) {
+        File basedir;
+        if(args.length > 0) {
+            basedir = new File(args[0]);
+        }
+        else {
+            basedir = new File("").getAbsoluteFile();
+        }
+        return basedir;
     }
 }

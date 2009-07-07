@@ -88,8 +88,8 @@ public class ApplicationPerformanceMBean implements DynamicMBean {
     // -----------------------------------------------------------------------
 
     private String toString(Reading reading) {
-        return "Last: " + reading.lastElapsedTime + ", " +
-                "count: " + reading.invocationCount + ", " +
-                "exception: " + reading.exceptionCount;
+        return "lastExecutionTime=" + reading.lastElapsedTime + ":" +
+                "invocations=" + reading.invocationCount + ":" +
+                "exceptions=" + reading.exceptionCount;
     }
 }

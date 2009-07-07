@@ -1,10 +1,9 @@
 package no.java.incogito.ems.server;
 
 import no.java.ems.server.EmsServices;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.File;
-
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -12,13 +11,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class DataLoader {
     public static void main(String[] args) {
-        File basedir;
-        if(args.length > 0) {
-            basedir = new File(args[0]);
-        }
-        else {
-            basedir = new File("").getAbsoluteFile();
-        }
+        File basedir = EmsTestServer.getBasedir(args);
 
         File emsHome = new File(basedir, "target/ems-home");
 

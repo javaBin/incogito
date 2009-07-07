@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Munin plugin magic:
+#%# family=contrib
+#%# capabilities=autoconf
+
+# Wrapper script to work around bug in the generated script.
+# The script does not resolve the path properly when a symlink is used.
+# See http://jira.codehaus.org/browse/MAPPASM-84.
+
+exec /opt/jb/incogito/bin/incogito-munin-plugin "$@"

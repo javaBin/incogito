@@ -84,7 +84,9 @@
     <plugins>
       <!--
        |
-       | VOLDEMORT_HOME=src/test/resources/node-a/ mvn jetty:run
+       | MAVEN_OPTS="-Dcom.sun.management.jmxremote.port=1099 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false"
+       |
+       | mvn jetty:run
        |
       -->
       <plugin>

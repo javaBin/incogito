@@ -20,8 +20,8 @@ public class ApplicationPerformanceRecorder {
     }
 
     public static class MutableReading {
-        private long invocationCount = -1;
-        private long exceptionCount = -1;
+        private long invocationCount = 0;
+        private long exceptionCount = 0;
         private long lastElapsedTime = -1;
 
         public Reading createReading() {

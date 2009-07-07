@@ -112,10 +112,12 @@
   </repositories>
   <modules>
     <module>incogito-application</module>
+    <module>incogito-cli</module>
     <module>incogito-domain</module>
     <module>incogito-dto</module>
     <module>incogito-ems-client</module>
     <module>incogito-ems-server</module>
+    <module>incogito-native-pkg</module>
     <module>incogito-server</module>
     <module>incogito-voldemort</module>
     <module>incogito-web</module>
