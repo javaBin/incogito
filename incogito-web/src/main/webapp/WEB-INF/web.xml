@@ -3,12 +3,17 @@
 <web-app id="starter" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
+<!--
   <servlet>
     <servlet-name>jersey</servlet-name>
     <servlet-class>com.sun.jersey.spi.spring.container.servlet.SpringServlet</servlet-class>
     <init-param>
       <param-name>com.sun.jersey.config.property.packages</param-name>
       <param-value>no.java.incogito.web.resources</param-value>
+    </init-param>
+    <init-param>
+      <param-name>com.sun.jersey.spi.container.ContainerResponseFilters</param-name>
+      <param-value>no.java.incogito.web.resources.IncogitoRequestFilter</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
@@ -17,13 +22,27 @@
     <servlet-name>jersey</servlet-name>
     <url-pattern>/rest/*</url-pattern>
   </servlet-mapping>
+-->
+
+  <filter>
+    <filter-name>Jersey</filter-name>
+    <filter-class>com.sun.jersey.spi.spring.container.servlet.SpringServlet</filter-class>
+    <init-param>
+      <param-name>com.sun.jersey.config.property.packages</param-name>
+      <param-value>no.java.incogito.web.resources</param-value>
+    </init-param>
+    <init-param>
+      <param-name>com.sun.jersey.spi.container.ContainerResponseFilters</param-name>
+      <param-value>no.java.incogito.web.resources.IncogitoRequestFilter</param-value>
+    </init-param>
+  </filter>
 
   <filter>
     <filter-name>url-rewrite</filter-name>
     <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
     <init-param>
       <param-name>confReloadCheckInterval</param-name>
-      <param-value>-1</param-value>
+      <param-value>0</param-value>
     </init-param>
   </filter>
 
@@ -31,6 +50,12 @@
     <filter-name>sitemesh</filter-name>
     <filter-class>com.opensymphony.module.sitemesh.filter.PageFilter</filter-class>
   </filter>
+
+  <filter-mapping>
+    <filter-name>Jersey</filter-name>
+    <url-pattern>/rest/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+  </filter-mapping>
 
   <filter-mapping>
     <filter-name>url-rewrite</filter-name>
@@ -56,6 +81,10 @@
 
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+
+  <listener>
+    <listener-class>no.java.incogito.web.servlet.WebGuiRequestListener</listener-class>
   </listener>
 
 </web-app>

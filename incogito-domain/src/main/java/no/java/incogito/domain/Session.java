@@ -8,10 +8,20 @@ import fj.data.List;
  */
 public class Session {
     public final SessionId id;
+    public final String title;
     public final List<Comment> comments;
 
-    public Session(SessionId id, List<Comment> comments) {
+    public Session(SessionId id, String title, List<Comment> comments) {
         this.id = id;
+        this.title = title;
         this.comments = comments;
+    }
+
+// -----------------------------------------------------------------------
+    //
+    // -----------------------------------------------------------------------
+
+    public static SessionId id(String value) {
+        return new SessionId(value);
     }
 }

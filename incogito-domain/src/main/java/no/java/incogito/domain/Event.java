@@ -1,6 +1,7 @@
 package no.java.incogito.domain;
 
 import fj.pre.Ord;
+import fj.F;
 
 import java.util.UUID;
 
@@ -12,6 +13,18 @@ public class Event {
     public final EventId id;
 
     public final String name;
+
+    public static final F<Event, String> getName = new F<Event, String>() {
+        public String f(Event event) {
+            return event.name;
+        }
+    };
+
+    public static final F<Event, EventId> getId = new F<Event, EventId>() {
+        public EventId f(Event event) {
+            return event.id;
+        }
+    };
 
     public Event(EventId id, String name) {
         this.id = id;

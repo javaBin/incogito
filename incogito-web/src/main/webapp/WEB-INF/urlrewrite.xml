@@ -4,31 +4,53 @@
 
 <urlrewrite use-context="false" default-match-type="wildcard">
 
+  <rule match-type="regex">
+    <note>This denies direct access to all jspx files</note>
+    <from>(.*.js.jspx)</from>
+    <set type="content-type">application/json</set>
+    <to type="forward" last="true">$1</to>
+  </rule>
+
+  <rule match-type="regex">
+    <note>This denies direct access to all jspx files</note>
+    <from>.*.jspx</from>
+    <to type="redirect" last="true">%{context-path}</to>
+  </rule>
+
   <rule>
     <from>/</from>
     <to last="true">/index.jspx</to>
   </rule>
 
   <rule>
-    <from>/brukerkonto/rediger</from>
-    <to last="true">/brukerkonto/rediger.jspx</to>
+    <from>/dynamic</from>
+    <to last="true">/dynamic.jspx</to>
   </rule>
 
   <rule>
-    <from>/brukerkonto/verifiser</from>
-    <to last="true">/brukerkonto/verifiser.jspx</to>
+    <from>/events</from>
+    <to last="true">/events/index.jspx</to>
   </rule>
 
   <rule>
-    <from>/brukerkonto/registrer</from>
-    <to last="true">/brukerkonto/registrer.jspx</to>
+    <from>/events/</from>
+    <to last="true">/events/index.jspx</to>
   </rule>
 
-  <rule>
-    <from>/nyheter</from>
-    <to last="true">/nyheter/index.jspx</to>
+  <rule match-type="regex">
+    <from>/events/(.*)/sessions/(.*)</from>
+    <set name="eventName">$1</set>
+    <set name="sessionName">$2</set>
+    <to last="true">/events/session.jspx</to>
   </rule>
 
+  <rule match-type="regex">
+    <from>/events/(.*)</from>
+    <set name="eventName">$1</set>
+    <to last="true">/events/event.jspx</to>
+  </rule>
+
+<!--
   <rule>
     <from>/nyheter/</from>
     <to last="true">/nyheter/index.jspx</to>
@@ -119,17 +141,6 @@
     <set name="articleId">$1</set>
     <to last="true">/helter/helt.jspx</to>
   </rule>
-
-  <!-- For now, redirect all requests for images to the old site -->
-  <rule match-type="regex">
-    <from>^/image.do$</from>
-    <to last="true" type="redirect">http://www.java.no/web/image.do?id=%{parameter:id}</to>
-  </rule>
-
-  <!-- This effectively denies access to all jspx files if they should be exposed -->
-  <rule match-type="wildcard">
-    <from>/*.jspx</from>
-    <to last="true">/index.jspx</to>
-  </rule>
+-->
 
 </urlrewrite>

@@ -18,9 +18,11 @@ import no.java.incogito.domain.UserId;
 public interface IncogitoApplication {
     OperationResult<List<Event>> getEvents();
 
-    OperationResult<Event> getEvent(Event.EventId eventId);
+    OperationResult<Event> getEventByName(String eventName);
 
-    OperationResult<List<P1<Session>>> getSessions(Event.EventId eventId);
+    OperationResult<List<Session>> getSessions(String eventName);
+
+    OperationResult<Session> getSession(String eventName, String sessionTitle);
 
     OperationResult<User> createUser(User user);
 

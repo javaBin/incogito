@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<jsp:directive.page pageEncoding="utf-8" contentType="text/html;charset=utf-8"/>
+<head>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      var eventSelector = $("#eventSelector")
+
+      getEvents(function(events) {
+        eventSelector.empty()
+        var createOption = function(x) {
+          eventSelector.append($("&lt;option>").text(x))
+        };
+        map(compose(createOption, pluck("name")), events)
+
+        eventSelector.bind("change", null, eventChanged);
+      })
+    })
+
+    function eventChanged() {
+      var eventFrame = $("#eventFrame").empty().append("Loading event...");
+      var eventName = $("#eventSelector option:selected").text()
+
+      getSessionsByEventName(eventName, function(sessions) {
+        eventFrame.empty()
+
+        var select = $("&lt;select>").
+                attr("id", "sessionSelector").
+                bind("change", sessionChanged);
+        var option = function(x) { return $("&lt;option>").text(x) };
+
+        options = map(compose(option, pluck("title")), sessions)
+        map(function(option){select.append(option)}, options)
+
+        eventFrame.append("Select session: ").append(select)
+      })
+
+      eventFrame.show()
+      return false
+    }
+
+    function sessionChanged() {
+      var sessionFrame = $("#sessionFrame")
+      var eventName = $("#eventSelector option:selected").text()
+      var sessionName = $("#sessionSelector option:selected").text()
+
+      sessionFrame.
+              empty().
+              append("Loading session " + sessionName + "...").
+              show()
+
+      getSession(eventName, sessionName, function(session) {
+        console.log(session)
+
+        sessionFrame.
+                empty().
+                append($("&lt;div id='sessionTitle'>").text(session.title))
+      })
+      return false
+    }
+  </script>
+</head>
+<body>
+<p>
+<label> Select an event:
+  <select id="eventSelector">
+    <option>Loading events...</option>
+  </select>
+</label>
+</p>
+
+<p id="eventFrame" style="display: none">
+
+</p>
+<p id="sessionFrame" style="display: none">
+
+</p>
+</body>
+</html>

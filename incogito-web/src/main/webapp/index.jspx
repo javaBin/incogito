@@ -3,7 +3,12 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:c="http://java.sun.com/jsp/jstl/core">
 <jsp:directive.page pageEncoding="utf-8" contentType="text/html;charset=utf-8"/>
+<jsp:useBean id="incogito" type="no.java.incogito.web.servlet.IncogitoBean" scope="application" />
 <body>
 <h2>Incogito!</h2>
+<ul>
+  <li><a href="${incogito.baseurl}/events/">All events</a></li>
+  <li><a href="${incogito.baseurl}/dynamic">Dynamic version</a></li>
+</ul>
 </body>
 </html>

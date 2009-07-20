@@ -1,16 +1,27 @@
 package no.java.incogito.web.resources;
 
 import fj.F;
+import fj.F2;
+import fj.Function;
 import static fj.Function.compose;
 import fj.data.Java;
+import fj.data.List;
+import fj.data.Option;
+import static no.java.incogito.Functions.equals;
 import no.java.incogito.PatternMatcher;
 import no.java.incogito.application.IncogitoApplication;
 import no.java.incogito.application.OperationResult;
+import no.java.incogito.application.OperationResult.NotFoundOperationResult;
+import no.java.incogito.application.OperationResult.OkOperationResult;
 import no.java.incogito.domain.Event;
-import no.java.incogito.dto.EventListXml;
+import no.java.incogito.domain.Session;
 import static no.java.incogito.dto.EventListXml.eventListXml;
 import no.java.incogito.dto.EventXml;
+import no.java.incogito.dto.SessionListXml;
+import no.java.incogito.dto.SessionXml;
 import static no.java.incogito.web.resources.Functions.eventListToXml;
+import static no.java.incogito.web.resources.Functions.eventToXml;
+import static no.java.incogito.web.resources.Functions.sessionToXml;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,13 +30,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 /**
+ * REST-ful wrapper around IncogitoApplication.
+ *
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 @Component
-@Path("/")
+@Path("/rest")
 @Produces({"application/xml", "application/json"})
 public class IncogitoResource {
 
@@ -36,24 +50,45 @@ public class IncogitoResource {
         this.incogito = incogito;
     }
 
-    @Path("events")
+    @Path("/events")
     @GET
     public Response getEvents() {
-        OperationResult<EventListXml> result = incogito.getEvents().
-                ok().map(compose(eventListXml, compose(Java.<EventXml>List_ArrayList(), eventListToXml)));
-
-        return PatternMatcher.<OperationResult<EventListXml>, Response>match().
-                add(OperationResult.OkOperationResult.class, this.<OperationResult<EventListXml>>ok()).
-                match(result);
+        System.out.println("IncogitoResource.getEvents");
+        return toJsr311(incogito.getEvents().
+                ok().map(compose(eventListXml, compose(Java.<EventXml>List_ArrayList(), eventListToXml))));
     }
 
-    @Path("events/{eventId}")
+    @Path("/events/{eventName}")
     @GET
-    public Response getEvent(@PathParam("eventId") String eventId) {
-        return PatternMatcher.<OperationResult<EventXml>, Response>match().
-                add(OperationResult.OkOperationResult.class, this.<OperationResult<EventXml>>ok()).
-                match(incogito.getEvent(Event.id(eventId)).ok().map(Functions.eventToXml));
+    public Response getEvent(@PathParam("eventName") final String eventName) {
+        System.out.println("IncogitoResource.getEvent");
+        return toJsr311(incogito.getEventByName(eventName).ok().map(eventToXml));
     }
+
+    @Path("/events/{eventName}/sessions")
+    @GET
+    public Response getSessionsForEvent(@PathParam("eventName") final String eventName) {
+        System.out.println("IncogitoResource.getSessionsForEvent");
+        F<List<Session>, List<SessionXml>> sessionToXml = List.<Session, SessionXml>map_().f(Functions.sessionToXml);
+
+        return toJsr311(incogito.getSessions(eventName).
+                ok().map(compose(SessionListXml.sessionListXml, sessionToXml)));
+    }
+
+    @Path("/events/{eventName}/sessions/{sessionTitle}")
+    @GET
+    public Response getSessionForEvent(@PathParam("eventName") final String eventName,
+                                       @PathParam("sessionTitle") final String sessionTitle) {
+        System.out.println("IncogitoResource.getSessionForEvent");
+        System.out.println("eventName = " + eventName);
+        System.out.println("sessionTitle = " + sessionTitle);
+        return toJsr311(incogito.getSession(eventName, sessionTitle).
+                ok().map(sessionToXml));
+    }
+
+    // -----------------------------------------------------------------------
+    //
+    // -----------------------------------------------------------------------
 
     private <T> F<T, Response> ok() {
         return new F<T, Response>() {
@@ -61,5 +96,20 @@ public class IncogitoResource {
                 return Response.ok(operationResult).build();
             }
         };
+    }
+
+    Response notFound = Response.status(Status.NOT_FOUND).build();
+
+    private F<String, F<List<Event>, Option<Event>>> findEvent = Function.curry(new F2<String, List<Event>, Option<Event>>() {
+        public Option<Event> f(String eventName, List<Event> eventList) {
+            return eventList.find(compose(equals.f(eventName), Event.getName));
+        }
+    });
+
+    private <T> Response toJsr311(OperationResult<T> result) {
+        return PatternMatcher.<OperationResult<T>, Response>match().
+                add(OkOperationResult.class, this.<OperationResult<T>>ok()).
+                add(NotFoundOperationResult.class, Function.<OperationResult<T>, Response>constant(notFound)).
+                match(result);
     }
 }

@@ -161,8 +161,21 @@ public abstract class OperationResult<T> {
     public class OkProjection {
         public <B> OperationResult<B> map(F<T, B> f) {
             if (isOk()) {
-                if(hasValue()) {
+                if (hasValue()) {
                     return new OkOperationResult<B>(some(f.f(value())));
+                }
+
+                return new OkOperationResult<B>(Option.<B>none());
+            } else {
+                //noinspection unchecked
+                return (OperationResult<B>) OperationResult.this;
+            }
+        }
+
+        public <B> OperationResult<B> bind(F<T, Option<B>> f) {
+            if (isOk()) {
+                if (hasValue()) {
+                    return new OkOperationResult<B>(f.f(value()));
                 }
 
                 return new OkOperationResult<B>(Option.<B>none());

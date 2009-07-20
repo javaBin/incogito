@@ -3,35 +3,14 @@
 <decorators defaultdir="/WEB-INF/decorators">
 
   <excludes>
-    <pattern>/nodecorate/*</pattern>
-    <pattern>/styles/*</pattern>
-    <pattern>/scripts/*</pattern>
-    <pattern>/images/*</pattern>
-    <pattern>/dojo/*</pattern>
-    <pattern>/struts/*</pattern>
+    <pattern>/js/*</pattern>
   </excludes>
 
+  <!--
   <decorator name="nyheter" page="nyheter.jspx">
     <pattern>/nyheter/*</pattern>
   </decorator>
-  <decorator name="brukerkonto" page="moter.jspx">
-    <pattern>/brukerkonto/*</pattern>
-  </decorator>
-  <decorator name="partnere" page="partnere.jspx">
-      <pattern>/partnere/*</pattern>
-  </decorator>
-    <decorator name="moter" page="moter.jspx">
-      <pattern>/moter/*</pattern>
-  </decorator>
-  <decorator name="javabin" page="javabin.jspx">
-      <pattern>/javabin/*</pattern>
-  </decorator>
-  <decorator name="arkiv" page="arkiv.jspx">
-      <pattern>/arkiv/*</pattern>
-  </decorator>
-  <decorator name="helter" page="helter.jspx">
-      <pattern>/helter/*</pattern>
-  </decorator>
+  -->
 
   <decorator name="main" page="main.jspx">
     <pattern>/*</pattern>

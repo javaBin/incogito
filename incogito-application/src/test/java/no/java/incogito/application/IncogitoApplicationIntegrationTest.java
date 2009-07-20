@@ -124,7 +124,8 @@ public class IncogitoApplicationIntegrationTest {
         // Pre-load all sessions
         TreeMap<Event.EventId, List<Session>> sessionMap = TreeMap.empty(Event.EventId.ord);
         for (Event event : events) {
-            List<Session> sessionList = strategy.parList(incogito.getSessions(event.id).value())._1();
+//            List<Session> sessionList = strategy.parList(incogito.getSessions(event.name).value())._1();
+            List<Session> sessionList = incogito.getSessions(event.name).value();
             sessionMap = sessionMap.set(event.id, sessionList);
         }
 

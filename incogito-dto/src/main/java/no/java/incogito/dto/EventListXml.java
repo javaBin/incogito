@@ -3,9 +3,9 @@ package no.java.incogito.dto;
 import fj.F;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlList;
-import java.util.List;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
