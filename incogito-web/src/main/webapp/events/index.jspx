@@ -1,36 +1,17 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"
       xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:c="http://java.sun.com/jsp/jstl/core">
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:incogito="http://taglib.java.no/incogito">
 <jsp:directive.page pageEncoding="utf-8" contentType="text/html;charset=utf-8"/>
 <jsp:useBean id="incogito" type="no.java.incogito.web.servlet.IncogitoBean" scope="application"/>
-<head>
-  <script type="text/javascript">
-    $(document).ready(function() {
-      var eventList = $("#eventList")
-
-      $.ajax({
-        type: "GET",
-        url: "${incogito.baseurl}/rest/events",
-        dataType: "json",
-        success: function(data) {
-          Functional.map(function(event) {
-            eventList.append($("&lt;li>").append(
-                    $("&lt;a href='a:yo'>").
-                            attr("href", "${incogito.baseurl}/events/" + event.name).
-                            text(event.name)
-                    ))
-          },data.events)
-        }
-      })
-    })
-  </script>
-</head>
+<jsp:useBean id="app" type="no.java.incogito.application.IncogitoApplication" scope="application"/>
 <body>
 <h2>Events</h2>
-
-<ul id="eventList">
-<!-- space -->
+<ul>
+  <c:forEach var="event" items="${incogito:eventList(app)}">
+    <li><a href="${incogito.baseurl}/events/${event.name}">${event.name}</a></li>
+  </c:forEach>
 </ul>
 </body>
 </html>

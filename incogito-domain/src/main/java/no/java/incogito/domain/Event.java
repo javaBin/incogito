@@ -55,4 +55,24 @@ public class Event {
             return value.compareTo(((Id) o).value);
         }
     }
+
+    // -----------------------------------------------------------------------
+    // Getters
+    // -----------------------------------------------------------------------
+
+    public EventId getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public static F<Event, String> getGetName() {
+        return getName;
+    }
+
+    public static F<Event, EventId> getGetId() {
+        return getId;
+    }
 }

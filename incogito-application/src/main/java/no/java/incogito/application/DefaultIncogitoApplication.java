@@ -2,17 +2,18 @@ package no.java.incogito.application;
 
 import fj.Effect;
 import fj.F;
+import fj.F2;
 import static fj.Function.compose;
+import static fj.Function.curry;
 import static fj.Function.flip;
 import fj.P1;
 import fj.Unit;
-import fj.Function;
-import fj.F2;
 import fj.data.Either;
 import fj.data.List;
 import static fj.data.List.iterableList;
 import fj.data.Option;
 import static fj.data.Option.join;
+import static fj.data.Option.fromNull;
 import no.java.ems.client.EventsClient;
 import no.java.ems.client.SessionsClient;
 import no.java.ems.service.EmsService;
@@ -24,6 +25,7 @@ import no.java.incogito.domain.Event.EventId;
 import no.java.incogito.domain.Schedule;
 import no.java.incogito.domain.Session;
 import no.java.incogito.domain.SessionId;
+import no.java.incogito.domain.Speaker;
 import no.java.incogito.domain.User;
 import no.java.incogito.domain.UserId;
 import no.java.incogito.ems.client.EmsFunctions;
@@ -34,7 +36,7 @@ import org.springframework.stereotype.Component;
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
-@Component
+@Component("incogitoApplication")
 public class DefaultIncogitoApplication implements IncogitoApplication {
     private final UserClient userClient;
     private final EventsClient eventsClient;
@@ -107,11 +109,9 @@ public class DefaultIncogitoApplication implements IncogitoApplication {
     }
 
     public OperationResult<Unit> removeUser(UserId userId) {
-
         if (userClient.removeUser(userId)) {
             return OperationResult.emptyOk();
-        }
-        else {
+        } else {
             return OperationResult.notFound("User with id '" + userId + "' not found.");
         }
     }
@@ -128,7 +128,7 @@ public class DefaultIncogitoApplication implements IncogitoApplication {
                 return new Schedule();
             }
         }).map(OperationResult.<Schedule>ok_()).
-            orSome(OperationResult.<Schedule>$notFound("User '" + id.value + "' not found."));
+                orSome(OperationResult.<Schedule>$notFound("User '" + id.value + "' not found."));
     }
 
     public OperationResult markAttendance(UserId userId, final SessionId sessionId, AttendanceMarker attendanceMarker) {
@@ -143,7 +143,7 @@ public class DefaultIncogitoApplication implements IncogitoApplication {
         });
 
         return option.map(OperationResult.<User>ok_()).
-            orSome(OperationResult.<User>$notFound("User '" + userId.value + "' not found."));
+                orSome(OperationResult.<User>$notFound("User '" + userId.value + "' not found."));
     }
 
     // -----------------------------------------------------------------------
@@ -156,7 +156,7 @@ public class DefaultIncogitoApplication implements IncogitoApplication {
         }
     };
 
-    public P1<List<String>> $findSessionIdsByEvent(final Event.EventId eventId){
+    public P1<List<String>> $findSessionIdsByEvent(final Event.EventId eventId) {
         return new P1<List<String>>() {
             public List<String> _1() {
                 return findSessionIdsByEvent(eventId);
@@ -176,7 +176,7 @@ public class DefaultIncogitoApplication implements IncogitoApplication {
         };
     }
 
-    public List<String> findSessionIdsByEvent(final Event.EventId eventId){
+    public List<String> findSessionIdsByEvent(final Event.EventId eventId) {
         return iterableList(sessionsClient.findSessionIdsByEvent(eventId.value.toString()));
     }
 
@@ -188,15 +188,13 @@ public class DefaultIncogitoApplication implements IncogitoApplication {
     };
 
     public F<Event.EventId, List<String>> findSessionIdsByEvent = new F<EventId, List<String>>() {
-            public List<String> f(EventId eventId) {
-                return iterableList(sessionsClient.findSessionIdsByEvent(eventId.value.toString()));
-            }
-        };
+        public List<String> f(EventId eventId) {
+            return iterableList(sessionsClient.findSessionIdsByEvent(eventId.value.toString()));
+        }
+    };
 
-    public F<String, F<String, List<String>>> findSessionIdsByTitle = Function.curry( new F2<String, String, List<String>>() {
+    public F<String, F<String, List<String>>> findSessionIdsByTitle = curry(new F2<String, String, List<String>>() {
         public List<String> f(String eventId, String title) {
-            System.out.println("eventId = " + eventId);
-            System.out.println("title = " + title);
             return iterableList(sessionsClient.findSessionsByTitle(eventId, title));
         }
     });
@@ -207,11 +205,21 @@ public class DefaultIncogitoApplication implements IncogitoApplication {
         }
     };
 
+    F<no.java.ems.domain.Speaker, Speaker> speakerFromEms = new F<no.java.ems.domain.Speaker, Speaker>() {
+        public Speaker f(no.java.ems.domain.Speaker speaker) {
+            return new Speaker(speaker.getName(), speaker.getDescription());
+        }
+    };
+
     F<no.java.ems.domain.Session, Session> sessionFromEms = new F<no.java.ems.domain.Session, Session>() {
         public Session f(no.java.ems.domain.Session session) {
-            List<Comment> comments = List.<Comment>nil();
-
-            return new Session(Session.id(session.getId()), session.getTitle(), comments);
+            return new Session(Session.id(session.getId()),
+                    session.getTitle(),
+                    fromNull(session.getTimeslot()),
+                    fromNull(session.getRoom()).map(EmsFunctions.roomName),
+                    iterableList(session.getTags()),
+                    iterableList(session.getSpeakers()).map(speakerFromEms),
+                    List.<Comment>nil());
         }
     };
 }

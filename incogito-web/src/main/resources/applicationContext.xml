@@ -71,11 +71,11 @@
 
   <aop:config>
     <aop:aspect id="timingAspectInstance" ref="timingAspect">
-      <aop:pointcut id="incogitoApplication" expression="execution(* no.java.incogito.application.IncogitoApplication.*(..))"/>
+      <aop:pointcut id="incogitoApplicationPointcut" expression="execution(* no.java.incogito.application.IncogitoApplication.*(..))"/>
 
-      <aop:before pointcut-ref="incogitoApplication" method="before"/>
-      <aop:after-returning pointcut-ref="incogitoApplication" method="afterReturning"/>
-      <aop:after-throwing pointcut-ref="incogitoApplication" method="afterThrowing"/>
+      <aop:before pointcut-ref="incogitoApplicationPointcut" method="before"/>
+      <aop:after-returning pointcut-ref="incogitoApplicationPointcut" method="afterReturning"/>
+      <aop:after-throwing pointcut-ref="incogitoApplicationPointcut" method="afterThrowing"/>
     </aop:aspect>
   </aop:config>
 

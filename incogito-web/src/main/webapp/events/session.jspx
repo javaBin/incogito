@@ -2,50 +2,51 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:c="http://java.sun.com/jsp/jstl/core"
-      xmlns:incogito="http://taglib.java.no/incogito">
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:i="http://taglib.java.no/incogito">
 <jsp:directive.page pageEncoding="utf-8" contentType="text/html;charset=utf-8"/>
 <jsp:useBean id="incogito" type="no.java.incogito.web.servlet.IncogitoBean" scope="application"/>
+<jsp:useBean id="app" type="no.java.incogito.application.IncogitoApplication" scope="application"/>
 <jsp:useBean id="eventName" type="java.lang.String" scope="request"/>
 <jsp:useBean id="sessionName" type="java.lang.String" scope="request"/>
-<head>
-  <script type="text/javascript">
-    var eventName = "${incogito:urlDecode(eventName)}"
-    var sessionName = "${incogito:urlDecode(sessionName)}"
+<c:set var="session" value="${i:session(app, eventName, sessionName)}"/>
+<c:set var="eventName" value="${i:urlDecode(eventName)}"/>
 
-    $(document).ready(function() {
-      sessionList = $("#sessionList");
-      console.log(sessionList)
-      sessionList.append($("&lt;li>").text("Loading details"))
-
-//      $.ajax({
-//        type: "GET",
-//        url: "${incogito.baseurl}/rest/events/" + eventName + "/sessions",
-//        dataType: "json",
-//        success: function(data) {
-//          sessionList.empty()
-//          console.log("Got " + data.sessions.length + " sessions")
-//          Functional.map(function(session) {
-//            sessionList.append($("&lt;li>").append(
-//                    $("&lt;a>").
-//                            attr("href", "${incogito.baseurl}/events/" + eventName + "/sessions/" + session.title).
-//                            text(session.title)
-//                    ))
-//          },data.sessions)
-//        }
-//      })
-    })
-  </script>
-</head>
 <body>
-<h2>${incogito:urlDecode(eventName)} - ${incogito:urlDecode(sessionName)}</h2>
+<ul>
+  <li><a href="${incogito.baseurl}/events">Back to event list</a></li>
+  <li><a href="${incogito.baseurl}/events/${eventName}">Back to ${eventName}</a></li>
+</ul>
+<h2>${eventName} - ${session.title}</h2>
 
-<div id="sessionDetails">
-  <ul>
-    <li>Room: <span id="room"/></li>
-    <li>Time: <span id="room"/></li>
-    <li>Speaker: <span id="room"/></li>
-  </ul>
-</div>
+<ul>
+  <li>Room:
+    <c:choose>
+      <c:when test="${session.room.some}">${i:some(session.room)}</c:when>
+      <c:otherwise>not assigned</c:otherwise>
+    </c:choose>
+  </li>
+  <li>Time:
+    <c:choose>
+      <c:when test="${session.timeslot.some}">${i:some(session.timeslot)}</c:when>
+      <c:otherwise>not assigned</c:otherwise>
+    </c:choose>
+  </li>
+  <li>
+    <c:choose>
+      <c:when test="${fn:length(session.speakers) eq 1}">
+        Speaker:
+      </c:when>
+      <c:otherwise>
+        Speakers:
+      </c:otherwise>
+    </c:choose>
+    <c:forEach var="speaker" varStatus="i" items="${i:speakers(session)}">
+      <c:if test="${not i.last}">${speaker.name}, </c:if>
+      <c:if test="${i.last}">${speaker.name}</c:if>
+    </c:forEach>
+  </li>
+</ul>
 
 </body>
 </html>
