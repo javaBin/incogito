@@ -41,6 +41,30 @@ public class Functions {
         };
     }
 
+    public static <A> F<Option<A>, A> Option_somes() {
+        return new F<Option<A>, A>() {
+            public A f(Option<A> option) {
+                return option.some();
+            }
+        };
+    }
+
+    public static <A> F<Option<Option<A>>, Option<A>> Option_join_() {
+        return new F<Option<Option<A>>, Option<A>>() {
+            public Option<A> f(Option<Option<A>> option) {
+                return Option.join(option);
+            }
+        };
+    }
+
+    public static <A> F<F<A, Boolean>, F<List<A>, List<A>>> List_filter() {
+        return curry( new F2<F<A, Boolean>, List<A>, List<A>>() {
+            public List<A> f(F<A, Boolean> filter, List<A> list) {
+                return list.filter(filter);
+            }
+        });
+    }
+
     public static <A, B, C, D> F<A, D> compose(final F<C, D> h, final F<B, C> g, final F<A, B> f) {
         return new F<A, D>() {
             public D f(A a) {

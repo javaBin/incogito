@@ -4,6 +4,7 @@ import fj.F;
 import fj.F2;
 import fj.Function;
 import static fj.Function.compose;
+import static fj.Function.join;
 import fj.data.Java;
 import fj.data.List;
 import fj.data.Option;
@@ -21,7 +22,8 @@ import no.java.incogito.dto.SessionListXml;
 import no.java.incogito.dto.SessionXml;
 import static no.java.incogito.web.resources.Functions.eventListToXml;
 import static no.java.incogito.web.resources.Functions.eventToXml;
-import static no.java.incogito.web.resources.Functions.sessionToXml;
+import static no.java.incogito.web.resources.Functions.sessionToURL;
+import no.java.incogito.web.servlet.IncogitoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -45,9 +47,12 @@ public class IncogitoResource {
 
     private final IncogitoApplication incogito;
 
+    private final IncogitoConfiguration configuration;
+
     @Autowired
-    public IncogitoResource(IncogitoApplication incogito) {
+    public IncogitoResource(IncogitoApplication incogito, IncogitoConfiguration configuration) {
         this.incogito = incogito;
+        this.configuration = configuration;
     }
 
     @Path("/events")
@@ -69,10 +74,14 @@ public class IncogitoResource {
     @GET
     public Response getSessionsForEvent(@PathParam("eventName") final String eventName) {
         System.out.println("IncogitoResource.getSessionsForEvent");
-        F<List<Session>, List<SessionXml>> sessionToXml = List.<Session, SessionXml>map_().f(Functions.sessionToXml);
+
+        F<Session, SessionXml> sessionToXml = join(Function.compose(Functions.sessionToXml,
+                sessionToURL.f(configuration.getBaseurl())));
+
+        F<List<Session>, List<SessionXml>> sessionToXmlList = List.<Session, SessionXml>map_().f(sessionToXml);
 
         return toJsr311(incogito.getSessions(eventName).
-                ok().map(compose(SessionListXml.sessionListXml, sessionToXml)));
+                ok().map(compose(SessionListXml.sessionListXml, sessionToXmlList)));
     }
 
     @Path("/events/{eventName}/sessions/{sessionTitle}")
@@ -80,8 +89,10 @@ public class IncogitoResource {
     public Response getSessionForEvent(@PathParam("eventName") final String eventName,
                                        @PathParam("sessionTitle") final String sessionTitle) {
         System.out.println("IncogitoResource.getSessionForEvent");
-        System.out.println("eventName = " + eventName);
-        System.out.println("sessionTitle = " + sessionTitle);
+
+        F<Session, SessionXml> sessionToXml = join(Function.compose(Functions.sessionToXml,
+                sessionToURL.f(configuration.getBaseurl())));
+
         return toJsr311(incogito.getSession(eventName, sessionTitle).
                 ok().map(sessionToXml));
     }

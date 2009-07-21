@@ -5,6 +5,7 @@ import fj.data.Java;
 import fj.data.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -12,7 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class SessionListXml {
-    private java.util.List<SessionXml> sessions;
+    private java.util.List<SessionXml> sessions = new ArrayList<SessionXml>();
 
     public SessionListXml() {
     }

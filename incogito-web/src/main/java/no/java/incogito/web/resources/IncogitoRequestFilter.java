@@ -11,8 +11,6 @@ import no.java.incogito.application.OperationResult;
  */
 public class IncogitoRequestFilter implements ContainerResponseFilter {
     public ContainerResponse filter(ContainerRequest request, ContainerResponse response) {
-        System.out.println("response.getEntity() = " + response.getEntity());
-        System.out.println("response.getEntityType() = " + response.getEntityType());
         if(response.getEntityType() == null || !OperationResult.class.isAssignableFrom((Class)response.getEntityType())) {
             return response;
         }

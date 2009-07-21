@@ -4,7 +4,7 @@
       xmlns:page="http://www.opensymphony.com/sitemesh/page"
       xmlns:jsp="http://java.sun.com/JSP/Page">
 <jsp:directive.page pageEncoding="utf-8" contentType="text/html;charset=utf-8"/>
-<jsp:useBean id="incogito" type="no.java.incogito.web.servlet.IncogitoBean" scope="application"/>
+<jsp:useBean id="incogito" type="no.java.incogito.web.servlet.IncogitoConfiguration" scope="application"/>
 <head>
   <title><decorator:title default="javaBin"/></title>
   <script src="${incogito.baseurl}/js/jquery-1.3.2.js" type="text/javascript"><!-- space --></script>

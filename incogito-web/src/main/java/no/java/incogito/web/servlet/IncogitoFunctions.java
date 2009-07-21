@@ -7,6 +7,7 @@ import no.java.incogito.domain.Speaker;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -21,19 +22,17 @@ public class IncogitoFunctions {
         }
     }
 
+    public static String urlEncode(String input) {
+        try {
+            return URLEncoder.encode(input, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static Object some(fj.data.Option option) {
         return option.some();
     }
-
-/*
-    public static int length(fj.data.List list) {
-        return list.length();
-    }
-
-    public static Object index(fj.data.List list, int i) {
-        return list.index(i);
-    }
-*/
 
     public static Event[] getEvents(IncogitoApplication app) {
         return app.getEvents().value().toArray(Event[].class).array();
