@@ -5,10 +5,13 @@
 <jsp:directive.page pageEncoding="utf-8" contentType="text/html;charset=utf-8"/>
 <jsp:useBean id="incogito" type="no.java.incogito.web.servlet.IncogitoConfiguration" scope="application" />
 <body>
-<h2>Howdy!</h2>
-<ul>
-  <li><a href="${incogito.baseurl}/events/">All events</a></li>
-  <li><a href="${incogito.baseurl}/dynamic">Dynamic version</a></li>
-</ul>
+<h2>Login</h2>
+<form action="${incogito.baseurl}/j_spring_security_check">
+  <ul>
+    <li>Username: <input name="j_username"/></li>
+    <li>Password: <input name="j_password" type="password"/></li>
+    <li><input type="submit" name="Log in"/></li>
+  </ul>
+</form>
 </body>
 </html>

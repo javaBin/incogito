@@ -124,8 +124,9 @@
     <module>incogito-util</module>
   </modules>
   <properties>
+    <version.ems>1.1.5</version.ems>
     <version.jersey>1.0.3</version.jersey>
     <version.spring>2.5.6</version.spring>
-    <version.ems>1.1.5</version.ems>
+    <version.spring-security>2.0.4</version.spring-security>
   </properties>
 </project>

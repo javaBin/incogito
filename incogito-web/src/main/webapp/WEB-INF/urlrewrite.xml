@@ -6,13 +6,6 @@
 
   <rule match-type="regex">
     <note>This denies direct access to all jspx files</note>
-    <from>(.*.js.jspx)</from>
-    <set type="content-type">application/json</set>
-    <to type="forward" last="true">$1</to>
-  </rule>
-
-  <rule match-type="regex">
-    <note>This denies direct access to all jspx files</note>
     <from>.*.jspx</from>
     <to type="redirect" last="true">%{context-path}</to>
   </rule>
@@ -25,6 +18,16 @@
   <rule>
     <from>/dynamic</from>
     <to last="true">/dynamic.jspx</to>
+  </rule>
+
+  <rule>
+    <from>/login</from>
+    <to last="true">/login.jspx</to>
+  </rule>
+
+  <rule>
+    <from>/logout</from>
+    <to last="true">/logout.jspx</to>
   </rule>
 
   <rule>
@@ -49,98 +52,5 @@
     <set name="eventName">$1</set>
     <to last="true">/events/event.jspx</to>
   </rule>
-
-<!--
-  <rule>
-    <from>/nyheter/</from>
-    <to last="true">/nyheter/index.jspx</to>
-  </rule>
-
-  <rule match-type="regex">
-      <from>/arkiv/nyheter/(\d{4})/(\d{1,2})</from>
-      <set name="year">$1</set>
-      <set name="month">$2</set>
-      <to last="true">/arkiv/nyheter.jspx</to>
-  </rule>
-
-  <rule match-type="regex">
-    <from>/nyheter/(.*)</from>
-    <set name="articleId">$1</set>
-    <to last="true">/nyheter/nyhet.jspx</to>
-  </rule>
-
-  <rule>
-    <from>/</from>
-    <to type="redirect" last="true">%{context-path}/nyheter</to>
-  </rule>
-
-  <rule>
-      <from>/partnere</from>
-      <to last="true">/partnere/index.jspx</to>
-  </rule>
-
-  <rule>
-      <from>/partnere/</from>
-      <to last="true">/partnere/index.jspx</to>
-  </rule>
-
-  <rule>
-      <from>/javabin</from>
-      <to last="true">/javabin/index.jspx</to>
-  </rule>
-
-  <rule>
-      <from>/javabin/</from>
-      <to last="true">/javabin/index.jspx</to>
-  </rule>
-
-  <rule>
-    <from>/arkiv</from>
-    <to last="true">/arkiv/index.jspx</to>
-  </rule>
-
-  <rule>
-    <from>/arkiv/</from>
-    <to last="true">/arkiv/index.jspx</to>
-  </rule>
-
-  <rule match-type="regex">
-    <from>/arkiv/moter/(.*)</from>
-    <set name="year">$1</set>
-    <to last="true">/arkiv/moter.jspx</to>
-  </rule>
-
-  <rule>
-    <from>/moter</from>
-    <to last="true">/nyheter/index.jspx</to>
-  </rule>
-
-  <rule>
-    <from>/moter/</from>
-    <to last="true">/nyheter/index.jspx</to>
-  </rule>
-
-  <rule match-type="regex">
-    <from>/moter/(.*)</from>
-    <set name="articleId">$1</set>
-    <to last="true">/moter/mote.jspx</to>
-  </rule>
-
-  <rule>
-    <from>/helter</from>
-    <to last="true">/helter/index.jspx</to>
-  </rule>
-
-  <rule>
-    <from>/helter/</from>
-    <to last="true">/helter/index.jspx</to>
-  </rule>
-
-  <rule match-type="regex">
-    <from>/helter/(.*)</from>
-    <set name="articleId">$1</set>
-    <to last="true">/helter/helt.jspx</to>
-  </rule>
--->
 
 </urlrewrite>

@@ -1,0 +1,31 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.4.xsd">
+
+  <security:http auto-config="true">
+    <security:form-login login-page="/login" authentication-failure-url="/login?failure=true"/>
+    <security:anonymous/>
+
+    <!--
+    <security:intercept-url pattern="/secure/extreme/**" access="ROLE_SUPERVISOR"/>
+    <security:intercept-url pattern="/secure/**" access="IS_AUTHENTICATED_REMEMBERED"/>
+    <security:intercept-url pattern="/login.jsp*" filters="none"/>
+    <security:intercept-url pattern="/secure/**" access="ROLE_AUTHENTICATED"/>
+    <security:intercept-url pattern="/**" filters="none"/>
+    -->
+    <security:intercept-url pattern="/js/**" filters="none"/>
+    <security:intercept-url pattern="/**"/>
+  </security:http>
+
+  <security:authentication-manager alias="authenticationManager"/>
+
+  <security:authentication-provider>
+    <security:user-service>
+      <security:user name="knoll" password="knoll" authorities="ROLE_USER"/>
+      <security:user name="tott" password="tott" authorities="ROLE_USER"/>
+    </security:user-service>
+  </security:authentication-provider>
+
+</beans>
