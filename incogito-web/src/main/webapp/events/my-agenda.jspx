@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
       xmlns:i="http://taglib.java.no/incogito"
       xmlns:security="http://www.springframework.org/security/tags">
 <jsp:directive.page pageEncoding="utf-8" contentType="text/html;charset=utf-8"/>
@@ -9,22 +10,27 @@
 <jsp:useBean id="app" type="no.java.incogito.application.IncogitoApplication" scope="application"/>
 <jsp:useBean id="eventName" type="java.lang.String" scope="request"/>
 <c:set var="eventName" value="${i:urlDecode(eventName)}"/>
+<c:set var="schedule" value="${i:getSchedule(app, eventName, pageContext.request.remoteUser)}"/>
 
 <body>
 <ul>
   <li><a href="${incogito.baseurl}/events">Back to event list</a></li>
+  <li><a href="${incogito.baseurl}/events/${eventName}">Back to ${eventName}</a></li>
 </ul>
-<h2>${eventName}</h2>
+<h2>Agenda for ${eventName}</h2>
 
+<h2>Attending sessions (${fn:length(schedule.attendanceMarkers)})</h2>
 <ul>
-  <li><a href="${incogito.baseurl}/events/${eventName}/sessions">Sessions</a></li>
-  <security:authorize ifNotGranted="ROLE_USER">
-    <li><a href="${incogito.baseurl}/events/${eventName}/agenda">Agenda</a></li>
-  </security:authorize>
-  <security:authorize ifAllGranted="ROLE_USER">
-    <li><a href="${incogito.baseurl}/events/${eventName}/my-agenda">My agenda</a></li>
-  </security:authorize>
+<c:forEach var="attendanceMarker" items="${schedule.attendanceMarkers}">
+  <c:set var="session" value="${i:castToSession(i:mapGet(schedule.sessionMap,attendanceMarker.sessionId))}"/>
+  <li>Title: ${session.title}</li>
+</c:forEach>
 </ul>
+
+<h2>All sessions (${fn:length(schedule.sessions)})</h2>
+<c:forEach var="session" items="${schedule.sessions}">
+  <li>${session.title}</li>
+</c:forEach>
 
 </body>
 </html>

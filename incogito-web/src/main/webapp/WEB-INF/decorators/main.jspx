@@ -4,7 +4,6 @@
       xmlns:page="http://www.opensymphony.com/sitemesh/page"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:security="http://www.springframework.org/security/tags">
-<jsp:directive.page import="org.springframework.security.context.SecurityContextHolder"/>
 <jsp:directive.page pageEncoding="utf-8" contentType="text/html;charset=utf-8"/>
 <jsp:useBean id="incogito" type="no.java.incogito.web.servlet.IncogitoConfiguration" scope="application"/>
 <head>
@@ -21,7 +20,7 @@
 <h1><a href="${incogito.baseurl}">Incogito</a></h1>
 
 <security:authorize ifAllGranted="ROLE_USER">
-  You're logged in as: <security:authentication property="principal.username"/>. <a href="${incogito.baseurl}/logout">Log out</a>.
+  Welcome <b><security:authentication property="principal.username"/></b>. <a href="${incogito.baseurl}/logout">Log out</a>.
 </security:authorize>
 
 <security:authorize ifNotGranted="ROLE_USER">

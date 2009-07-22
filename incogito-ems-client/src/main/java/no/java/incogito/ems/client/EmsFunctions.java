@@ -5,6 +5,8 @@ import no.java.ems.domain.Room;
 import fj.F;
 
 /**
+ * First-order functions on the EMS domain objects.
+ *
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */

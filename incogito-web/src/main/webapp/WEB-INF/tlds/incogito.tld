@@ -9,31 +9,49 @@
     <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
     <function-signature>java.lang.String urlDecode(java.lang.String)</function-signature>
   </function>
+
   <function>
     <name>some</name>
     <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
     <function-signature>java.lang.Object some(fj.data.Option)</function-signature>
   </function>
+
   <function>
-    <name>event</name>
+    <name>mapGet</name>
+    <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
+    <function-signature>java.lang.Object mapGet(java.util.Map,java.lang.Object)</function-signature>
+  </function>
+
+  <function>
+    <name>castToSession</name>
+    <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
+    <function-signature>no.java.incogito.dto.SessionXml castToSession(java.lang.Object)</function-signature>
+  </function>
+
+  <function>
+    <name>getEvent</name>
     <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
     <function-signature>no.java.incogito.domain.Event getEventByName(no.java.incogito.application.IncogitoApplication,java.lang.String)</function-signature>
   </function>
   <function>
-    <name>eventList</name>
+    <name>getEventList</name>
     <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
     <function-signature>no.java.incogito.domain.Event[] getEvents(no.java.incogito.application.IncogitoApplication)</function-signature>
   </function>
   <function>
-    <name>session</name>
+    <name>getSession</name>
     <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
-    <function-signature>no.java.incogito.domain.Session getSession(no.java.incogito.application.IncogitoApplication, java.lang.String,java.lang.String)
-    </function-signature>
+    <function-signature>no.java.incogito.dto.SessionXml getSession(no.java.incogito.application.IncogitoApplication,java.lang.String,java.lang.String)</function-signature>
   </function>
   <function>
-    <name>sessionList</name>
+    <name>getSessions</name>
     <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
-    <function-signature>no.java.incogito.domain.Session[] getSessions(no.java.incogito.application.IncogitoApplication,java.lang.String)</function-signature>
+    <function-signature>no.java.incogito.dto.SessionXml[] getSessions(no.java.incogito.application.IncogitoApplication,java.lang.String)</function-signature>
+  </function>
+  <function>
+    <name>getSchedule</name>
+    <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
+    <function-signature>no.java.incogito.dto.ScheduleXml getSchedule(no.java.incogito.application.IncogitoApplication,java.lang.String,java.lang.String)</function-signature>
   </function>
   <function>
     <name>speakers</name>

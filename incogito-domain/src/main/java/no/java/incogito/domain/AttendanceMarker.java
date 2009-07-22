@@ -17,11 +17,11 @@ public abstract class AttendanceMarker {
         return new AttendingMarker(sessionId, Option.<SessionRating>none(), Option.<String>none());
     }
 
-    public static AttendingMarker createInterest(SessionId sessionId) {
-        return new AttendingMarker(sessionId, Option.<SessionRating>none(), Option.<String>none());
-    }
-
     public static AttendingMarker createAttendance(SessionId sessionId, Option<SessionRating> rating, Option<String> ratingComment) {
         return new AttendingMarker(sessionId, rating, ratingComment);
+    }
+
+    public static AttendanceMarker createInterest(SessionId sessionId) {
+        return new InterestMarker(sessionId);
     }
 }

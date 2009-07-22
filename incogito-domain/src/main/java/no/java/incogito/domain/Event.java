@@ -67,12 +67,4 @@ public class Event {
     public String getName() {
         return name;
     }
-
-    public static F<Event, String> getGetName() {
-        return getName;
-    }
-
-    public static F<Event, EventId> getGetId() {
-        return getId;
-    }
 }

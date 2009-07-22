@@ -21,7 +21,7 @@ import no.java.incogito.domain.Session;
 import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.User;
 import static no.java.incogito.domain.User.createTransientUser;
-import no.java.incogito.domain.UserId;
+import no.java.incogito.domain.User.UserId;
 import no.java.incogito.ems.server.DataGenerator;
 import org.apache.log4j.Logger;
 import static org.junit.Assert.assertEquals;
@@ -58,7 +58,6 @@ public class IncogitoApplicationIntegrationTest {
     VoldemortServer voldemortServer;
 
     Stream<Integer> numbers = Stream.unfold(new F<Object, Option<P2<Integer, Object>>>() {
-
         private final Random random = new Random(0);
 
         public Option<P2<Integer, Object>> f(Object o) {
@@ -90,7 +89,7 @@ public class IncogitoApplicationIntegrationTest {
         final SessionId sessionA = new SessionId("session-a");
         final SessionId sessionB = new SessionId("session-b");
 
-        final UserId userId = new UserId("trygvis");
+        final no.java.incogito.domain.User.UserId userId = new no.java.incogito.domain.User.UserId("trygvis");
 
         OperationResult<User> userOperationResult = incogito.getUser(userId);
 
@@ -106,7 +105,9 @@ public class IncogitoApplicationIntegrationTest {
         assertEquals(userId, user.id);
         assertEquals(2, user.attendanceMarkers.length());
 
-        OperationResult<Schedule> scheduleOperationResult = incogito.getSchedule(userId);
+        no.java.ems.domain.Event event = services.getEventDao().getEvents().get(0);
+
+        OperationResult<Schedule> scheduleOperationResult = incogito.getSchedule(event.getName(), userId.value);
         assertEquals(OperationResult.Status.OK, scheduleOperationResult.status);
     }
 
@@ -130,14 +131,14 @@ public class IncogitoApplicationIntegrationTest {
         }
 
         // Create all users. This will normally happen when logging in
-        for (UserId userId : Stream.range(0, nUsers).map(Show.intShow.showS_()).map(UserId.fromString)) {
+        for (UserId userId : Stream.range(0, nUsers).map(Show.intShow.showS_()).map(no.java.incogito.domain.User.UserId.fromString)) {
             OperationResult<Unit> removeResult = incogito.removeUser(userId);
             assertTrue(removeResult.isOk() || removeResult.isNotFound());
             assertEquals(OperationResult.Status.OK, incogito.createUser(User.createTransientUser(userId)).status);
         }
 
         // For each user
-        for (UserId userId : Stream.range(0, nUsers).map(Show.intShow.showS_()).map(UserId.fromString)) {
+        for (no.java.incogito.domain.User.UserId userId : Stream.range(0, nUsers).map(Show.intShow.showS_()).map(no.java.incogito.domain.User.UserId.fromString)) {
 
             // Select an event
             Event event = events.index(numbers.head() % eventCount);

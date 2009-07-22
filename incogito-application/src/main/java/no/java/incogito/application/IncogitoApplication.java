@@ -1,6 +1,5 @@
 package no.java.incogito.application;
 
-import fj.P1;
 import fj.Unit;
 import fj.data.List;
 import no.java.incogito.domain.AttendanceMarker;
@@ -9,7 +8,7 @@ import no.java.incogito.domain.Schedule;
 import no.java.incogito.domain.Session;
 import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.User;
-import no.java.incogito.domain.UserId;
+import no.java.incogito.domain.User.UserId;
 
 /**
  * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
@@ -26,11 +25,11 @@ public interface IncogitoApplication {
 
     OperationResult<User> createUser(User user);
 
-    OperationResult<Unit> removeUser(UserId userId);
+    OperationResult<Unit> removeUser(no.java.incogito.domain.User.UserId userId);
 
-    OperationResult<User> getUser(UserId userId);
+    OperationResult<User> getUser(no.java.incogito.domain.User.UserId userId);
 
-    OperationResult<Schedule> getSchedule(UserId id);
+    OperationResult<Schedule> getSchedule(String eventName, String userId);
 
     OperationResult markAttendance(UserId userId, SessionId session, AttendanceMarker attendanceMarker);
 }

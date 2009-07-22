@@ -9,7 +9,7 @@
 <body>
 <h2>Events</h2>
 <ul>
-  <c:forEach var="event" items="${incogito:eventList(app)}">
+  <c:forEach var="event" items="${incogito:getEventList(app)}">
     <li><a href="${incogito.baseurl}/events/${event.name}">${event.name}</a></li>
   </c:forEach>
 </ul>

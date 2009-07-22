@@ -113,6 +113,7 @@
   <modules>
     <module>incogito-application</module>
     <module>incogito-cli</module>
+    <module>incogito-common</module>
     <module>incogito-domain</module>
     <module>incogito-dto</module>
     <module>incogito-ems-client</module>

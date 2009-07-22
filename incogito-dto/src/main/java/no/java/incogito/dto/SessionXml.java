@@ -11,13 +11,16 @@ import java.net.URI;
 public class SessionXml {
     private String selfUri;
 
+    private String id;
+
     private String title;
 
     public SessionXml() {
     }
 
-    public SessionXml(URI selfUri, String title) {
-        this.selfUri = selfUri.toString();
+    public SessionXml(String selfUri, String id, String title) {
+        this.selfUri = selfUri;
+        this.id = id;
         this.title = title;
     }
 
@@ -25,15 +28,11 @@ public class SessionXml {
         return selfUri;
     }
 
-    public void setSelfUri(String selfUri) {
-        this.selfUri = selfUri;
+    public String getId() {
+        return id;
     }
 
     public String getTitle() {
         return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 }

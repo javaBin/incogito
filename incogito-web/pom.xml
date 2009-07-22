@@ -21,6 +21,11 @@
       <version>${version}</version>
     </dependency>
     <dependency>
+      <groupId>no.java.incogito</groupId>
+      <artifactId>incogito-common</artifactId>
+      <version>${version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.aspectj</groupId>
       <artifactId>aspectjrt</artifactId>
       <version>1.6.2</version>
@@ -129,6 +134,10 @@
               <key>voldemort.nodeId</key>
               <value>${voldemort.nodeId}</value>
             </systemProperty>
+             <systemProperty>
+              <key>voldemort.clusterId</key>
+              <value>${voldemort.clusterId}</value>
+            </systemProperty>
           </systemProperties>
           <useTestClasspath>true</useTestClasspath>
           <connectors>
@@ -150,6 +159,7 @@
   <properties>
     <jetty.port>8096</jetty.port>
     <ems.url>http://localhost:3000/ems</ems.url>
+    <voldemort.clusterId>a</voldemort.clusterId>
     <voldemort.nodeId>a</voldemort.nodeId>
   </properties>
 </project>

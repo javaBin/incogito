@@ -3,7 +3,7 @@ package no.java.incogito.application;
 import fj.F;
 import fj.data.List;
 import no.java.incogito.domain.User;
-import no.java.incogito.domain.UserId;
+import no.java.incogito.domain.User.UserId;
 import voldemort.client.SocketStoreClientFactory;
 import voldemort.client.StoreClient;
 import voldemort.versioning.TimeBasedInconsistencyResolver;

@@ -17,7 +17,6 @@ import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.SessionRating;
 import no.java.incogito.domain.User;
 import static no.java.incogito.domain.User.createPersistentUser;
-import no.java.incogito.domain.UserId;
 import no.java.incogito.voldemort.VoldemortF;
 import voldemort.client.StoreClient;
 import voldemort.client.UpdateAction;
@@ -47,7 +46,7 @@ public class UserClient {
         this.client = client;
     }
 
-    public Option<User> getUser(UserId id) {
+    public Option<User> getUser(no.java.incogito.domain.User.UserId id) {
         Option<Versioned<Map>> option = fromNull(client.get(id.value));
 
         return option.map(VoldemortF.<Map>verionedGetValue()).map(fromMap);
@@ -62,7 +61,6 @@ public class UserClient {
 
         if (user.original.isNone()) {
             Map value = toMap.f(user);
-            System.out.println("value = " + value);
             client.put(user.id.value, value);
         } else {
             if (!client.applyUpdate(updateAction)) {
@@ -71,7 +69,7 @@ public class UserClient {
         }
     }
 
-    public boolean removeUser(final UserId id) {
+    public boolean removeUser(final no.java.incogito.domain.User.UserId id) {
         return client.delete(id.value);
     }
 
@@ -84,7 +82,7 @@ public class UserClient {
                 attendanceMarkers = attendanceMarkers.cons(attendanceMarkersFromMap.f(markers));
             }
 
-            return createPersistentUser(UserId.fromString.f(map.get("id").toString()), attendanceMarkers);
+            return createPersistentUser(no.java.incogito.domain.User.UserId.fromString.f(map.get("id").toString()), attendanceMarkers);
         }
     };
 

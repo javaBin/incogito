@@ -15,6 +15,11 @@
       <version>${version.ems}</version>
     </dependency>
     <dependency>
+      <groupId>no.java.incogito</groupId>
+      <artifactId>incogito-common</artifactId>
+      <version>${version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
     </dependency>

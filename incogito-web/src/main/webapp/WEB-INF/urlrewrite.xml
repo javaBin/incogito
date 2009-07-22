@@ -2,53 +2,76 @@
 
 <!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 3.0//EN" "http://tuckey.org/res/dtds/urlrewrite3.0.dtd">
 
-<urlrewrite use-context="false" default-match-type="wildcard">
+<!--
+ TODO: Most expressions with "(.*)" should be replaced with an expression that allows any character other than "/".
+-->
 
-  <rule match-type="regex">
+<urlrewrite use-context="false">
+
+  <rule>
     <note>This denies direct access to all jspx files</note>
-    <from>.*.jspx</from>
+    <from>^.*.jspx$</from>
     <to type="redirect" last="true">%{context-path}</to>
   </rule>
 
-  <rule>
+  <rule match-type="wildcard">
     <from>/</from>
     <to last="true">/index.jspx</to>
   </rule>
 
   <rule>
-    <from>/dynamic</from>
+    <from>^/dynamic$</from>
     <to last="true">/dynamic.jspx</to>
   </rule>
 
   <rule>
-    <from>/login</from>
+    <from>^/login$</from>
     <to last="true">/login.jspx</to>
   </rule>
 
   <rule>
-    <from>/logout</from>
+    <from>^/logout$</from>
     <to last="true">/logout.jspx</to>
   </rule>
 
   <rule>
-    <from>/events</from>
-    <to last="true">/events/index.jspx</to>
-  </rule>
-
-  <rule>
-    <from>/events/</from>
+    <from>^/events/?$</from>
     <to last="true">/events/index.jspx</to>
   </rule>
 
   <rule match-type="regex">
-    <from>/events/(.*)/sessions/(.*)</from>
+    <from>^/events/(.*)/sessions/?$</from>
+    <set name="eventName">$1</set>
+    <to last="true">/events/sessions/index.jspx</to>
+  </rule>
+
+  <rule match-type="regex">
+    <from>^/events/(.*)/sessions/(.*)$</from>
     <set name="eventName">$1</set>
     <set name="sessionName">$2</set>
-    <to last="true">/events/session.jspx</to>
+    <to last="true">/events/sessions/session.jspx</to>
   </rule>
 
   <rule match-type="regex">
-    <from>/events/(.*)</from>
+    <from>^/events/(.*)/agenda/?$</from>
+    <set name="eventName">$1</set>
+    <to last="true">/events/agenda.jspx</to>
+  </rule>
+
+  <rule match-type="regex">
+    <from>^/events/(.*)/agenda</from>
+    <set name="eventName">$1</set>
+    <to last="true">/events/agenda.jspx</to>
+  </rule>
+
+  <rule match-type="regex">
+    <from>^/events/(.*)/my-agenda</from>
+    <set name="eventName">$1</set>
+    <to last="true">/events/my-agenda.jspx</to>
+  </rule>
+
+  <rule match-type="wildcard">
+    <from>/events/*</from>
     <set name="eventName">$1</set>
     <to last="true">/events/event.jspx</to>
   </rule>

@@ -36,26 +36,6 @@ public class Session {
         return new SessionId(value);
     }
 
-    // -----------------------------------------------------------------------
-    // Getters
-    // -----------------------------------------------------------------------
-
-    public SessionId getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public Option<Interval> getTimeslot() {
-        return timeslot;
-    }
-
-    public Option<String> getRoom() {
-        return room;
-    }
-
     public java.util.List<String> getTags() {
         return Java.<String>List_ArrayList().f(tags);
     }

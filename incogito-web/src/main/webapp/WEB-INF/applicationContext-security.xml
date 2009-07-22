@@ -16,6 +16,7 @@
     <security:intercept-url pattern="/**" filters="none"/>
     -->
     <security:intercept-url pattern="/js/**" filters="none"/>
+    <security:intercept-url pattern="/**/my-*" access="ROLE_USER"/>
     <security:intercept-url pattern="/**"/>
   </security:http>
 
@@ -27,5 +28,9 @@
       <security:user name="tott" password="tott" authorities="ROLE_USER"/>
     </security:user-service>
   </security:authentication-provider>
+
+  <bean id="incogitoFilter" class="no.java.incogito.web.security.IncogitoSecurityFilter">
+    <security:custom-filter position="LAST"/>
+  </bean>
 
 </beans>
