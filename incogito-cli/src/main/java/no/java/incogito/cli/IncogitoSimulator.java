@@ -14,6 +14,7 @@ import static fj.data.List.iterableList;
 import fj.data.TreeMap;
 import fj.pre.Ord;
 import static no.java.incogito.cli.RunningTimer.runningTimer;
+import no.java.incogito.cli.RunningTimer.Lap;
 import no.java.incogito.dto.EventListXml;
 import no.java.incogito.dto.EventXml;
 import no.java.incogito.dto.SessionListXml;
@@ -74,7 +75,7 @@ public class IncogitoSimulator {
 
         F<Integer, SessionXml> selector = this.<SessionXml>randomSelector().f(random).f(events.get("JavaZone 2009").some());
 
-        int size = 1;
+        int size = 1000;
         // Do size requests, create chunks of them for each thread to execute
         RunningTimer timer = runningTimer();
 
@@ -107,7 +108,7 @@ public class IncogitoSimulator {
         List<Result> resultList = listP1._1();
         System.err.println("resultList.length() = " + resultList.length());
         for (Result unit : resultList) {
-            System.err.println(unit.thread + "=" + unit.title);
+            System.err.println(unit.thread + " fetched '" + unit.title + "' in " + unit.lap.interval);
         }
         System.err.println("Done in " + timer.lap().interval);
     }
@@ -115,10 +116,12 @@ public class IncogitoSimulator {
     public static class Result {
         public final String thread;
         public final String title;
+        public final Lap lap;
 
-        public Result(String thread, String title) {
+        public Result(String thread, String title, Lap lap) {
             this.thread = thread;
             this.title = title;
+            this.lap = lap;
         }
     }
 
@@ -132,8 +135,9 @@ public class IncogitoSimulator {
 
     F<SessionXml, Result> user = new F<SessionXml, Result>() {
         public Result f(SessionXml s) {
+            RunningTimer timer = runningTimer();
             SessionXml session = client.resource(s.getSelfUri()).get(SessionXml.class);
-            return new Result(Thread.currentThread().getName(), session.getTitle());
+            return new Result(Thread.currentThread().getName(), session.getTitle(), timer.lap());
         }
     };
 }

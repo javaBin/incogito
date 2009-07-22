@@ -197,6 +197,11 @@ public class DefaultIncogitoApplication implements IncogitoApplication {
                 return none();
             }
 
+            // Hack for now until ';' is encoded in url properly
+            if(session.getTitle().indexOf(';') > 0) {
+                return none();
+            }
+
             return some(new Session(Session.id(session.getId()),
                     session.getTitle(),
                     fromNull(session.getTimeslot()),

@@ -3,15 +3,15 @@ package no.java.incogito.web.resources;
 import fj.F;
 import fj.F2;
 import static fj.Function.curry;
+import fj.P1;
 import fj.data.List;
 import no.java.incogito.domain.Event;
 import no.java.incogito.domain.Session;
 import no.java.incogito.dto.EventXml;
 import no.java.incogito.dto.SessionXml;
-import no.java.incogito.web.servlet.IncogitoFunctions;
 
+import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -32,13 +32,9 @@ public class Functions {
         }
     });
 
-    public static final F<String, F<Session, URI>> sessionToURL = curry(new F2<String, Session, URI>() {
-        public URI f(String baseurl, Session session) {
-            try {
-                return new URI(baseurl + "/" + IncogitoFunctions.urlEncode(session.getTitle()));
-            } catch (URISyntaxException e) {
-                throw new RuntimeException(e);
-            }
+    public static final F<P1<UriBuilder>, F<Session, URI>> sessionToURL = curry(new F2<P1<UriBuilder>, Session, URI>() {
+        public URI f(P1<UriBuilder> baseurl, Session session) {
+            return baseurl._1().segment(session.getTitle()).build();
         }
     });
 }
