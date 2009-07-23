@@ -12,6 +12,17 @@
 <c:set var="eventName" value="${i:urlDecode(eventName)}"/>
 <c:set var="schedule" value="${i:getSchedule(app, eventName, pageContext.request.remoteUser)}"/>
 
+<head>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $(".interested").bind("click", function(x){
+        var title = $(this).parent().find(".title").text();
+        console.log("title: " + title)
+      })
+    })
+  </script>
+</head>
+
 <body>
 <ul>
   <li><a href="${incogito.baseurl}/events">Back to event list</a></li>
@@ -29,7 +40,9 @@
 
 <h2>All sessions (${fn:length(schedule.sessions)})</h2>
 <c:forEach var="session" items="${schedule.sessions}">
-  <li>${session.title}</li>
+  <li>
+    <span class="interested">Interested</span> - <span class="attending">Attending</span> - <span class="title"><b>${session.title}</b></span>
+  </li>
 </c:forEach>
 
 </body>

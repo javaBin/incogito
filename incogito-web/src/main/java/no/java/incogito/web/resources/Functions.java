@@ -47,8 +47,8 @@ public class Functions {
 
     public static final F<P1<UriBuilder>, F<Schedule, ScheduleXml>> scheduleToXml = curry(new F2<P1<UriBuilder>, Schedule, ScheduleXml>() {
         public ScheduleXml f(P1<UriBuilder> uriBuilder, Schedule schedule) {
-            return new ScheduleXml(schedule.sessions.map(sessionToXml.f(uriBuilder)).toCollection(),
-                    schedule.attendanceMarkers.map(attendanceMarkerToXml).toCollection());
+            return new ScheduleXml(schedule.sessions.map(sessionToXml.f(uriBuilder)),
+                    schedule.attendanceMarkers.map(attendanceMarkerToXml));
         }
     });
 }

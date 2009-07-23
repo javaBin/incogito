@@ -14,6 +14,11 @@
     <to type="redirect" last="true">%{context-path}</to>
   </rule>
 
+  <rule>
+    <from>(/rest/.*)</from>
+    <to type="forward" last="true">$1</to>
+  </rule>
+
   <rule match-type="wildcard">
     <from>/</from>
     <to last="true">/index.jspx</to>

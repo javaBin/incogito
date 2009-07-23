@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
-@XmlRootElement
+@XmlRootElement(name = "attendanceMarker")
 public class AttendanceMarkerXml {
     public enum State {
         ATTENDING,

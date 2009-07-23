@@ -136,8 +136,8 @@ public class IncogitoSimulator {
     F<SessionXml, Result> user = new F<SessionXml, Result>() {
         public Result f(SessionXml s) {
             RunningTimer timer = runningTimer();
-            SessionXml session = client.resource(s.getSelfUri()).get(SessionXml.class);
-            return new Result(Thread.currentThread().getName(), session.getTitle(), timer.lap());
+            SessionXml session = client.resource(s.selfUri).get(SessionXml.class);
+            return new Result(Thread.currentThread().getName(), session.title, timer.lap());
         }
     };
 }

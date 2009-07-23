@@ -1,6 +1,8 @@
 package no.java.incogito.dto;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAccessType;
 import java.net.URI;
 
 /**
@@ -9,11 +11,11 @@ import java.net.URI;
  */
 @XmlRootElement
 public class SessionXml {
-    private String selfUri;
+    public String selfUri;
 
-    private String id;
+    public String id;
 
-    private String title;
+    public String title;
 
     public SessionXml() {
     }
@@ -22,17 +24,5 @@ public class SessionXml {
         this.selfUri = selfUri;
         this.id = id;
         this.title = title;
-    }
-
-    public String getSelfUri() {
-        return selfUri;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
     }
 }

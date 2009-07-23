@@ -35,11 +35,8 @@ public class IncogitoSecurityFilter extends SpringSecurityFilter {
 
     protected void doFilterHttp(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-        System.out.println("IncogitoSecurityFilter.doFilterHttp");
-
         String remoteUser = request.getRemoteUser();
         if (remoteUser == null) {
-            System.out.println("remoteUser == null");
             chain.doFilter(request, response);
             return;
         }
@@ -47,7 +44,6 @@ public class IncogitoSecurityFilter extends SpringSecurityFilter {
         HttpSession session = request.getSession();
 
         if (session.getAttribute(PROCESSED) != null) {
-            System.out.println("session.getAttribute(PROCESSED) != null");
             chain.doFilter(request, response);
             return;
         }
@@ -56,7 +52,6 @@ public class IncogitoSecurityFilter extends SpringSecurityFilter {
         OperationResult<User> operationResult = application.createUser(user);
 
         if (operationResult.isOk() || operationResult.isConflict()) {
-
             log.warn("Creating new user: " + remoteUser);
 
             session.setAttribute(PROCESSED, "yep");

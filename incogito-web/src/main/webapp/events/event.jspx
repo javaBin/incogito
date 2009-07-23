@@ -26,5 +26,11 @@
   </security:authorize>
 </ul>
 
+<script type="text/javascript">
+  getMySchedule("${eventName}", function(data){
+    console.log(data)
+  })
+</script>
+
 </body>
 </html>

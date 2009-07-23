@@ -53,3 +53,48 @@ function getSession(eventName, sessionName, success) {
         }
     })
 }
+
+function getMySchedule(eventName, success) {
+    console.log("Fetching schedule for event " + eventName + "...")
+    var s = success
+    $.ajax({
+        dataType: "json",
+        url: baseurl + "/rest/events/" + eventName + "/my-schedule",
+        success: function(data) {
+            console.log("Got schedule for event " + eventName)
+            s(data)
+        }
+    })
+}
+
+function getSchedule(eventName, userName, success) {
+    console.log("Fetching " + userName + "' schedule for event " + eventName + "...")
+    var s = success
+    $.ajax({
+        dataType: "json",
+        url: baseurl + "/rest/events/" + eventName + "/schedules/" + userName,
+        success: function(data) {
+            console.log("Got " + userName + "' schedule for event " + eventName)
+            s(data)
+        }
+    })
+}
+
+function markInterest(eventName, sessionName, success) {
+    console.log("Marking interest on " + sessionName + " for event " + eventName + "...")
+
+    attendanceMarker = {}
+
+    var s = success
+    $.ajax({
+        dataType: "json",
+        url: baseurl + "/rest/events/" + eventName + "/attendance-markers/" + sessionName,
+        type: "POST",
+        data: attendanceMarker,
+        success: function(data) {
+            console.log("Marked interest on " + sessionName + " for event " + eventName)
+            console.log(data)
+            s(data)
+        }
+    })
+}
