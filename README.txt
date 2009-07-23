@@ -2,7 +2,7 @@ To run the EMS server:
 
 $ mvn -f incogito-ems-server/pom.xml exec:java
 
-To use an existing EMS database:
+To use an existing EMS database (do this before starting incognito-ems-server):
 
 $ cd incogito-ems-server
 $ rm -rf target/ems-home
