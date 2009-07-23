@@ -52,7 +52,7 @@ public class IncogitoApplicationIntegrationTest {
     IncogitoApplication incogito;
 
     @Autowired
-    EmsServices services;
+    EmsServices services;    
 
     @Autowired
     VoldemortServer voldemortServer;
