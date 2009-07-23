@@ -119,7 +119,6 @@
     <module>incogito-ems-client</module>
     <module>incogito-ems-server</module>
     <module>incogito-native-pkg</module>
-    <module>incogito-server</module>
     <module>incogito-voldemort</module>
     <module>incogito-web</module>
     <module>incogito-util</module>
