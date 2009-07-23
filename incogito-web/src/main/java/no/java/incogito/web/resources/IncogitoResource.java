@@ -16,8 +16,8 @@ import static no.java.incogito.dto.EventListXml.eventListXml;
 import no.java.incogito.dto.EventXml;
 import no.java.incogito.dto.SessionListXml;
 import no.java.incogito.dto.SessionXml;
-import static no.java.incogito.web.resources.Functions.eventListToXml;
-import static no.java.incogito.web.resources.Functions.eventToXml;
+import static no.java.incogito.web.resources.XmlFunctions.eventListToXml;
+import static no.java.incogito.web.resources.XmlFunctions.eventToXml;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +83,7 @@ public class IncogitoResource {
             }
         };
 
-        F<List<Session>, List<SessionXml>> sessionToXmlList = List.<Session, SessionXml>map_().f(Functions.sessionToXml.f(uriBuilder));
+        F<List<Session>, List<SessionXml>> sessionToXmlList = List.<Session, SessionXml>map_().f(XmlFunctions.sessionToXml.f(uriBuilder));
 
         return toJsr311(incogito.getSessions(eventName).
                 ok().map(compose(SessionListXml.sessionListXml, sessionToXmlList)));
@@ -97,20 +97,26 @@ public class IncogitoResource {
         System.out.println("IncogitoResource.getSessionForEvent");
 
         // TODO: Consider replacing this with the configured hostname and base url
-        F<Session, SessionXml> sessionToXml = Functions.sessionToXml.f(uriBuilderClone.f(uriInfo.getRequestUriBuilder()));
+        F<Session, SessionXml> sessionToXml = XmlFunctions.sessionToXml.f(uriBuilderClone.f(uriInfo.getRequestUriBuilder()));
 
         return toJsr311(incogito.getSession(eventName, sessionTitle).
                 ok().map(sessionToXml));
     }
 
-    @Path("/events/{eventName}/attendance-markers/{sessionTitle}")
+    @Path("/events/{eventName}/attendance-markers")
     @POST
     public Response addAttendanceMarker(@Context final UriInfo uriInfo,
+                                        @Context final SecurityContext securityContext,
                                         @PathParam("eventName") final String eventName,
-                                        @PathParam("sessionTitle") final String sessionTitle,
                                         AttendanceMarkerXml attendanceMarkerXml) {
 
         System.out.println("attendanceMarkerXml = " + attendanceMarkerXml);
+        System.out.println("attendanceMarkerXml.getSessionId() = " + attendanceMarkerXml.sessionId);
+        System.out.println("attendanceMarkerXml.state = " + attendanceMarkerXml.state);
+
+        incogito.updateAttendance(securityContext.getUserPrincipal().getName(),
+                eventName,
+                XmlFunctions.attendanceMarkerFromXml.f(attendanceMarkerXml));
 
         return Response.ok().build();
     }
@@ -133,7 +139,7 @@ public class IncogitoResource {
         UriBuilder uriBuilder = uriInfo.getBaseUriBuilder().segment("events", eventName, "sessions");
 
         return toJsr311(incogito.getSchedule(eventName, userName).ok().
-                map(Functions.scheduleToXml.f(uriBuilderClone.f(uriBuilder))));
+                map(XmlFunctions.scheduleToXml.f(uriBuilderClone.f(uriBuilder))));
     }
 
     // -----------------------------------------------------------------------

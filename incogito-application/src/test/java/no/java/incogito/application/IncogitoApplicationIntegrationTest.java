@@ -24,6 +24,8 @@ import static no.java.incogito.domain.User.createTransientUser;
 import no.java.incogito.domain.User.UserId;
 import no.java.incogito.ems.server.DataGenerator;
 import org.apache.log4j.Logger;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -89,7 +91,7 @@ public class IncogitoApplicationIntegrationTest {
         final SessionId sessionA = new SessionId("session-a");
         final SessionId sessionB = new SessionId("session-b");
 
-        final no.java.incogito.domain.User.UserId userId = new no.java.incogito.domain.User.UserId("trygvis");
+        final UserId userId = new UserId("trygvis");
 
         OperationResult<User> userOperationResult = incogito.getUser(userId);
 
@@ -103,7 +105,7 @@ public class IncogitoApplicationIntegrationTest {
         User user = incogito.getUser(userId).value();
 
         assertEquals(userId, user.id);
-        assertEquals(2, user.attendanceMarkers.length());
+        assertEquals(2, user.attendanceMarkers.size());
 
         no.java.ems.domain.Event event = services.getEventDao().getEvents().get(0);
 
@@ -131,14 +133,14 @@ public class IncogitoApplicationIntegrationTest {
         }
 
         // Create all users. This will normally happen when logging in
-        for (UserId userId : Stream.range(0, nUsers).map(Show.intShow.showS_()).map(no.java.incogito.domain.User.UserId.fromString)) {
+        for (UserId userId : Stream.range(0, nUsers).map(Show.intShow.showS_()).map(UserId.fromString)) {
             OperationResult<Unit> removeResult = incogito.removeUser(userId);
             assertTrue(removeResult.isOk() || removeResult.isNotFound());
             assertEquals(OperationResult.Status.OK, incogito.createUser(User.createTransientUser(userId)).status);
         }
 
         // For each user
-        for (no.java.incogito.domain.User.UserId userId : Stream.range(0, nUsers).map(Show.intShow.showS_()).map(no.java.incogito.domain.User.UserId.fromString)) {
+        for (UserId userId : Stream.range(0, nUsers).map(Show.intShow.showS_()).map(UserId.fromString)) {
 
             // Select an event
             Event event = events.index(numbers.head() % eventCount);
@@ -155,10 +157,36 @@ public class IncogitoApplicationIntegrationTest {
                     createInterest(session.id) :
                     createAttendance(session.id);
 
-                OperationResult result = incogito.markAttendance(userId, session.id, attendanceMarker);
+                OperationResult result = incogito.updateAttendance(userId.value, event.name, attendanceMarker);
 
                 assertEquals(OperationResult.Status.OK, result.status);
             }
         }
+    }
+
+    public void testAttendance() {
+        User user = createTransientUser(UserId.fromString("trygvis"));
+        OperationResult<User> userOperationResult = incogito.createUser(user);
+        assertTrue(userOperationResult.isOk());
+        user = userOperationResult.value();
+
+        Event event = incogito.getEvents().value().head();
+        Session session = incogito.getSessions(event.name).value().head();
+
+        OperationResult operationResult = incogito.updateAttendance(user.id.value, event.name, createAttendance(session.id));
+        assertTrue(operationResult.isOk());
+
+        OperationResult<Schedule> scheduleOperationResult = incogito.getSchedule(event.name, user.id.value);
+        assertTrue(scheduleOperationResult.isOk());
+        Schedule schedule = scheduleOperationResult.value();
+        List<Session> sessions = schedule.getAttendingSessions();
+        Show<List<Session>> sessionShow = Show.listShow(Show.showS(new F<Session, String>() {
+            public String f(Session session) {
+                return ToStringBuilder.reflectionToString(session, ToStringStyle.MULTI_LINE_STYLE);
+            }
+        }));
+        sessionShow.println(sessions);
+
+        // TODO: Add asserts for change of attendance and removal
     }
 }

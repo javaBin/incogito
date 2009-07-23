@@ -14,6 +14,23 @@
     <to type="redirect" last="true">%{context-path}</to>
   </rule>
 
+  <!--
+  Spring security does not return the correct status codes on protected resources so fix that here for the
+  REST resources
+  -->
+
+<!--
+  This won't work either as spring security will fills remote-user, but SS runs after the urlrewrite filter
+
+  TODO: Have to figure out how to solve this. The javascript *depend* upon correct status codes
+  <rule>
+    <condition operator="equal" type="remote-user"/>
+    <from>(/rest/.*/my-.*)</from>
+    <set type="status">403</set>
+    <to type="redirect" last="true">/js</to>
+  </rule>
+-->
+
   <rule>
     <from>(/rest/.*)</from>
     <to type="forward" last="true">$1</to>

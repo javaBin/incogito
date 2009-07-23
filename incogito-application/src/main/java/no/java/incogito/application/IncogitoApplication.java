@@ -6,9 +6,7 @@ import no.java.incogito.domain.AttendanceMarker;
 import no.java.incogito.domain.Event;
 import no.java.incogito.domain.Schedule;
 import no.java.incogito.domain.Session;
-import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.User;
-import no.java.incogito.domain.User.UserId;
 
 /**
  * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
@@ -31,5 +29,5 @@ public interface IncogitoApplication {
 
     OperationResult<Schedule> getSchedule(String eventName, String userId);
 
-    OperationResult markAttendance(UserId userId, SessionId session, AttendanceMarker attendanceMarker);
+    OperationResult updateAttendance(String userName, String eventName, AttendanceMarker attendanceMarker);
 }

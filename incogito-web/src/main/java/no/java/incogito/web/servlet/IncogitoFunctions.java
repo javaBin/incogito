@@ -9,7 +9,7 @@ import no.java.incogito.domain.Session;
 import no.java.incogito.domain.Speaker;
 import no.java.incogito.dto.ScheduleXml;
 import no.java.incogito.dto.SessionXml;
-import no.java.incogito.web.resources.Functions;
+import no.java.incogito.web.resources.XmlFunctions;
 
 import javax.ws.rs.core.UriBuilder;
 import java.io.UnsupportedEncodingException;
@@ -24,9 +24,9 @@ public class IncogitoFunctions {
     private static UriBuilder uriBuilder = UriBuilder.fromPath("http://you-re.doing.it.wrong");
 
     // The URI will never be used by the JSP pages. If they are, you're going it wrong.
-    private static final F<Session, SessionXml> sessionToXml = Functions.sessionToXml.f(P.p(uriBuilder));
+    private static final F<Session, SessionXml> sessionToXml = XmlFunctions.sessionToXml.f(P.p(uriBuilder));
 
-    private static final F<Schedule, ScheduleXml> scheduleToXml = Functions.scheduleToXml.f(P.p(uriBuilder));
+    private static final F<Schedule, ScheduleXml> scheduleToXml = XmlFunctions.scheduleToXml.f(P.p(uriBuilder));
 
     public static String urlDecode(String input) {
         try {

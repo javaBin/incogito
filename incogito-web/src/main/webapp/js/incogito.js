@@ -80,19 +80,46 @@ function getSchedule(eventName, userName, success) {
     })
 }
 
-function markInterest(eventName, sessionName, success) {
-    console.log("Marking interest on " + sessionName + " for event " + eventName + "...")
+function markInterest(eventName, sessionId, success) {
+    console.log("Marking interest on " + sessionId + " for event " + eventName + "...")
 
-    attendanceMarker = {}
+    var attendanceMarker = {
+        sessionId: sessionId,
+        state: "INTERESTED"
+    }
 
     var s = success
     $.ajax({
         dataType: "json",
-        url: baseurl + "/rest/events/" + eventName + "/attendance-markers/" + sessionName,
+        url: baseurl + "/rest/events/" + eventName + "/attendance-markers",
         type: "POST",
-        data: attendanceMarker,
+        contentType: "application/json",
+        data: $.json.encode(attendanceMarker),
         success: function(data) {
-            console.log("Marked interest on " + sessionName + " for event " + eventName)
+            console.log("Marked interest on " + sessionTitle + " for event " + eventName)
+            console.log(data)
+            s(data)
+        }
+    })
+}
+
+function markInterest(eventName, sessionId, success) {
+    console.log("Marking interest on " + sessionId + " for event " + eventName + "...")
+
+    var attendanceMarker = {
+        sessionId: sessionId,
+        state: "NOT_ATTENDING"
+    }
+
+    var s = success
+    $.ajax({
+        dataType: "json",
+        url: baseurl + "/rest/events/" + eventName + "/attendance-markers",
+        type: "POST",
+        contentType: "application/json",
+        data: $.json.encode(attendanceMarker),
+        success: function(data) {
+            console.log("Deleted interest on " + sessionTitle + " for event " + eventName)
             console.log(data)
             s(data)
         }

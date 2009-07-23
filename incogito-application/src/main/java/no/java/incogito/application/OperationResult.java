@@ -69,6 +69,10 @@ public abstract class OperationResult<T> {
         return new OkOperationResult<T>(some(t));
     }
 
+    public static <T> OperationResult<T> ok(Option<T> t) {
+        return new OkOperationResult<T>(t);
+    }
+
     public static OperationResult<Unit> emptyOk() {
         return new OkOperationResult<Unit>(Option.<Unit>none());
     }
@@ -189,6 +193,16 @@ public abstract class OperationResult<T> {
             if (isOk()) {
                 effect.e(value());
             }
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    //
+    // -----------------------------------------------------------------------
+
+    public void foreach(Effect<T> effect) {
+        if(isOk() && hasValue()) {
+            effect.e(value());
         }
     }
 }

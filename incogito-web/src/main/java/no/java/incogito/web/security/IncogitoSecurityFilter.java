@@ -4,10 +4,10 @@ import no.java.incogito.application.IncogitoApplication;
 import no.java.incogito.application.OperationResult;
 import no.java.incogito.domain.User;
 import no.java.incogito.domain.User.UserId;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.ui.SpringSecurityFilter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.ui.SpringSecurityFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -52,7 +52,11 @@ public class IncogitoSecurityFilter extends SpringSecurityFilter {
         OperationResult<User> operationResult = application.createUser(user);
 
         if (operationResult.isOk() || operationResult.isConflict()) {
-            log.warn("Creating new user: " + remoteUser);
+            if (operationResult.isOk()) {
+                log.warn("Creating new user: " + remoteUser);
+            } else {
+                log.info("User already exist: " + remoteUser);
+            }
 
             session.setAttribute(PROCESSED, "yep");
 

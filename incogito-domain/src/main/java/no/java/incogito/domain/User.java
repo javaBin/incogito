@@ -1,10 +1,10 @@
 package no.java.incogito.domain;
 
-import fj.data.List;
-import fj.data.Option;
 import fj.F;
-import static no.java.incogito.domain.AttendanceMarker.createInterest;
+import fj.data.Option;
+import fj.data.Set;
 import static no.java.incogito.domain.AttendanceMarker.createAttendance;
+import static no.java.incogito.domain.AttendanceMarker.createInterest;
 
 /**
  * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
@@ -12,34 +12,34 @@ import static no.java.incogito.domain.AttendanceMarker.createAttendance;
  */
 public class User {
     public final UserId id;
-    public final List<AttendanceMarker> attendanceMarkers;
+    public final Set<AttendanceMarker> attendanceMarkers;
     public final Option<User> original;
 
     // -----------------------------------------------------------------------
     //
     // -----------------------------------------------------------------------
 
-    public User(UserId id, List<AttendanceMarker> attendanceMarkers, Option<User> original) {
+    private User(UserId id, Set<AttendanceMarker> attendanceMarkers, Option<User> original) {
         this.id = id;
         this.attendanceMarkers = attendanceMarkers;
         this.original = original;
+    }
+
+    private User(UserId id, Set<AttendanceMarker> attendanceMarkers, boolean persistent) {
+        this.id = id;
+        this.attendanceMarkers = attendanceMarkers;
+        this.original = persistent ? Option.some(this) : Option.<User>none();
     }
 
     // -----------------------------------------------------------------------
     //
     // -----------------------------------------------------------------------
 
-    private User(UserId id, List<AttendanceMarker> attendanceMarkers, boolean persistent) {
-        this.id = id;
-        this.attendanceMarkers = attendanceMarkers;
-        this.original = persistent ? Option.some(this) : Option.<User>none();
-    }
-
     public static User createTransientUser(UserId id) {
-        return new User(id, List.<AttendanceMarker>nil(), false);
+        return new User(id, Set.empty(AttendanceMarker.ord), false);
     }
 
-    public static User createPersistentUser(UserId id, List<AttendanceMarker> sessionAssociations) {
+    public static User createPersistentUser(UserId id, Set<AttendanceMarker> sessionAssociations) {
         return new User(id, sessionAssociations, true);
     }
 
@@ -48,11 +48,11 @@ public class User {
     // -----------------------------------------------------------------------
 
     public User markAttendance(SessionId session) {
-        return new User(id, attendanceMarkers.cons(createAttendance(session)), original);
+        return new User(id, attendanceMarkers.insert(createAttendance(session)), original);
     }
 
     public User markInterest(SessionId session) {
-        return new User(id, attendanceMarkers.cons(createInterest(session)), original);
+        return new User(id, attendanceMarkers.insert(createInterest(session)), original);
     }
 
     /**

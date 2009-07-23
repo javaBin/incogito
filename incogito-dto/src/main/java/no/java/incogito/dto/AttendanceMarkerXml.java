@@ -1,20 +1,30 @@
 package no.java.incogito.dto;
 
+import static javax.xml.bind.annotation.XmlAccessType.FIELD;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlEnum;
+import javax.xml.bind.annotation.XmlElement;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 @XmlRootElement(name = "attendanceMarker")
+@XmlAccessorType(FIELD)
 public class AttendanceMarkerXml {
+    @XmlEnum
     public enum State {
+        NOT_ATTENDING,
         ATTENDING,
-        INTEREST
+        INTERESTED
     }
 
-    private String sessionId;
-    private State state;
+    @XmlElement(required = true)
+    public String sessionId;
+
+    @XmlElement(required = true)
+    public State state;
 
     public AttendanceMarkerXml() {
     }

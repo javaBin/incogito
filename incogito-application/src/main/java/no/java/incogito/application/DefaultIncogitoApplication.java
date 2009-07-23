@@ -2,6 +2,7 @@ package no.java.incogito.application;
 
 import fj.Effect;
 import fj.F;
+import fj.F2;
 import fj.F3;
 import fj.Function;
 import static fj.Function.compose;
@@ -18,11 +19,11 @@ import static fj.data.Option.none;
 import static fj.data.Option.some;
 import no.java.incogito.Functions;
 import no.java.incogito.domain.AttendanceMarker;
+import no.java.incogito.domain.AttendanceMarker.AttendingMarker;
 import no.java.incogito.domain.Comment;
 import no.java.incogito.domain.Event;
 import no.java.incogito.domain.Schedule;
 import no.java.incogito.domain.Session;
-import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.Speaker;
 import no.java.incogito.domain.User;
 import no.java.incogito.domain.User.UserId;
@@ -67,16 +68,7 @@ public class DefaultIncogitoApplication implements IncogitoApplication {
     }
 
     public OperationResult<Session> getSession(String eventName, String sessionTitle) {
-
-        F<no.java.ems.domain.Event, Option<Session>> f = Functions.compose(
-                Functions.<Session>Option_join_(),
-                Functions.<String, Option<Session>>Option_map(compose(sessionFromEms, emsWrapper.getSessionById)),
-                Functions.<String>toOption_(),
-                flip(emsWrapper.findSessionIdsByEventIdAndTitle).f(sessionTitle),
-                EmsFunctions.eventId);
-
-        return join(emsWrapper.findEventByName.f(eventName).
-                map(f)).
+        return findSession().f(eventName).f(sessionTitle).
                 map(OperationResult.<Session>ok_()).
                 orSome(OperationResult.<Session>notFound("Could not find session with title '" + sessionTitle + "' not found."));
     }
@@ -102,7 +94,7 @@ public class DefaultIncogitoApplication implements IncogitoApplication {
         }
     }
 
-    public OperationResult<User> getUser(no.java.incogito.domain.User.UserId userId) {
+    public OperationResult<User> getUser(UserId userId) {
         return userClient.getUser(userId).
                 map(OperationResult.<User>ok_()).
                 orSome(OperationResult.<User>notFound("User with id '" + userId.value + "' does not exist."));
@@ -128,19 +120,24 @@ public class DefaultIncogitoApplication implements IncogitoApplication {
                 orSome(OperationResult.<Schedule>$notFound("User '" + userId + "' not found."));
     }
 
-    public OperationResult markAttendance(no.java.incogito.domain.User.UserId userId, final SessionId sessionId, AttendanceMarker attendanceMarker) {
+    public OperationResult updateAttendance(String userName, String eventName, AttendanceMarker attendanceMarker) {
 
-        Option<User> option = userClient.getUser(userId);
+        // TODO: This is the way it should be
+//        OperationResult<User> result = OperationResult.ok(userClient.getUser(userId)).
+//                ok().map(updateAttendanceOnUser.f(attendanceMarker));
+//
+//        result.foreach(userClient.setUser);
+//
+//        return result.map(OperationResult.<User>ok_()).
+//                orSome(OperationResult.<User>$notFound("User '" + userId.value + "' not found."));
 
-        option.foreach(new Effect<User>() {
-            public void e(User user) {
-                user = user.markAttendance(sessionId);
-                userClient.setUser(user);
-            }
-        });
+        Option<User> user = userClient.getUser(new UserId(userName)).
+                map(updateAttendanceOnUser.f(attendanceMarker));
 
-        return option.map(OperationResult.<User>ok_()).
-                orSome(OperationResult.<User>$notFound("User '" + userId.value + "' not found."));
+        user.foreach(userClient.setUser);
+
+        return user.map(OperationResult.<User>ok_()).
+                orSome(OperationResult.<User>$notFound("User '" + userName + "' not found."));
     }
 
     // -----------------------------------------------------------------------
@@ -193,6 +190,20 @@ public class DefaultIncogitoApplication implements IncogitoApplication {
             EmsFunctions.eventId);
     }
 
+    private F<String, F<String, Option<Session>>> findSession() {
+        return curry(new F2<String, String, Option<Session>>() {
+            public Option<Session> f(final String eventName, final String sessionTitle) {
+                F<no.java.ems.domain.Event, Option<Session>> f = Functions.compose(
+                        Functions.<Session>Option_join_(),
+                        Functions.<String, Option<Session>>Option_map(compose(sessionFromEms, emsWrapper.getSessionById)),
+                        Functions.<String>toOption_(),
+                        flip(emsWrapper.findSessionIdsByEventIdAndTitle).f(sessionTitle),
+                        EmsFunctions.eventId);
+                return join(emsWrapper.findEventByName.f(eventName).map(f));
+            }
+        });
+    }
+
     F<User, F<List<Session>, F<Event, Schedule>>> createSchedule = curry( new F3<User, List<Session>, Event, Schedule>() {
         public Schedule f(User user, List<Session> sessions, Event event) {
             return new Schedule(event, sessions, user.attendanceMarkers);
@@ -204,4 +215,19 @@ public class DefaultIncogitoApplication implements IncogitoApplication {
             List.<Option<A>, A>map_().f(Functions.<A>Option_somes()),
             Functions.<Option<A>>List_filter().f(Option.<A>isSome_()));
     }
+
+    // -----------------------------------------------------------------------
+    // Operations
+    // -----------------------------------------------------------------------
+
+    F<AttendanceMarker, F<User, User>> updateAttendanceOnUser = curry( new F2<AttendanceMarker, User, User>() {
+        public User f(AttendanceMarker attendanceMarker, User user) {
+            if(attendanceMarker instanceof AttendingMarker) {
+                return user.markAttendance(attendanceMarker.sessionId);
+            }
+            else {
+                return user.markInterest(attendanceMarker.sessionId);
+            }
+        }
+    });
 }

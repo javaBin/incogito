@@ -1,0 +1,1 @@
+o Remove filtering of sessions with titles that contain ";"

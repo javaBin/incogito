@@ -14,11 +14,31 @@
 
 <head>
   <script type="text/javascript">
+    var eventName = "${eventName}"
+
+    var onInterestedClick = function(){
+      var sessionId = $(this).parent().find(".session-id").text();
+
+      markInterest(eventName, sessionId)
+    };
+
+    var onAttendingClick = function(){
+      var sessionId = $(this).parent().find(".session-id").text();
+
+      markInterest(eventName, sessionId)
+    };
+
+    var onDropClick = function(){
+      var sessionId = $(this).parent().find(".session-id").text();
+
+      dropInterest(eventName, sessionId)
+    };
+
     $(document).ready(function() {
-      $(".interested").bind("click", function(x){
-        var title = $(this).parent().find(".title").text();
-        console.log("title: " + title)
-      })
+
+      $(".interested").bind("click", onInterestedClick)
+      $(".attending").bind("click", onAttendingClick)
+      $(".drop").bind("click", onDropClick)
     })
   </script>
 </head>
@@ -34,14 +54,21 @@
 <ul>
 <c:forEach var="attendanceMarker" items="${schedule.attendanceMarkers}">
   <c:set var="session" value="${i:castToSession(i:mapGet(schedule.sessionMap,attendanceMarker.sessionId))}"/>
-  <li>Title: ${session.title}</li>
+  <li>
+    <span class="drop">Drop</span> -
+    ${session.title} <span class=".session-id" style="display: none">${session.id}</span>
+  </li>
 </c:forEach>
 </ul>
 
 <h2>All sessions (${fn:length(schedule.sessions)})</h2>
 <c:forEach var="session" items="${schedule.sessions}">
   <li>
-    <span class="interested">Interested</span> - <span class="attending">Attending</span> - <span class="title"><b>${session.title}</b></span>
+    <span class=".session-id" style="display: none">${session.id}</span>
+    <span class="interested">Interested</span> -
+    <span class="attending">Attending</span> -
+    <span class="title"><b>${session.title}</b>
+  </span>
   </li>
 </c:forEach>
 

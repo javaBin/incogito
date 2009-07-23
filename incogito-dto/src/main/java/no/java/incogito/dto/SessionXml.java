@@ -25,4 +25,16 @@ public class SessionXml {
         this.id = id;
         this.title = title;
     }
+
+    public String getSelfUri() {
+        return selfUri;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
 }

@@ -6,13 +6,12 @@ import static fj.P.p;
 import fj.P4;
 import fj.data.Java;
 import fj.data.List;
-import static fj.data.List.nil;
 import fj.data.Option;
 import static fj.data.Option.fromNull;
+import fj.data.Set;
 import no.java.incogito.domain.AttendanceMarker;
 import static no.java.incogito.domain.AttendanceMarker.createAttendance;
 import static no.java.incogito.domain.AttendanceMarker.createInterest;
-import no.java.incogito.domain.AttendingMarker;
 import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.SessionRating;
 import no.java.incogito.domain.User;
@@ -53,7 +52,7 @@ public class UserClient {
     }
 
     public void setUser(final User user) {
-        final UpdateAction<String, Map> updateAction = new UpdateAction<String, Map>() {
+        UpdateAction<String, Map> updateAction = new UpdateAction<String, Map>() {
             public void update(StoreClient<String, Map> client) {
                 client.put(user.id.value, toMap.f(user));
             }
@@ -73,13 +72,29 @@ public class UserClient {
         return client.delete(id.value);
     }
 
+    // -----------------------------------------------------------------------
+    // First-Order Functions
+    // -----------------------------------------------------------------------
+
+    public Effect<User> setUser = new Effect<User>() {
+        public void e(User user) {
+            setUser(user);
+        }
+    };
+
+    // -----------------------------------------------------------------------
+    // Utility Functions
+    // -----------------------------------------------------------------------
+
     private static final F<Map, User> fromMap = new F<Map, User>() {
         public User f(Map map) {
-            List<AttendanceMarker> attendanceMarkers = nil();
+            Set<AttendanceMarker> attendanceMarkers = Set.empty(AttendanceMarker.ord);
+
+            System.out.println("fromMap: map = " + map);
 
             //noinspection unchecked
             for (Map markers : (java.util.List<Map>) map.get("attendanceMarkers")) {
-                attendanceMarkers = attendanceMarkers.cons(attendanceMarkersFromMap.f(markers));
+                attendanceMarkers = attendanceMarkers.insert(attendanceMarkersFromMap.f(markers));
             }
 
             return createPersistentUser(no.java.incogito.domain.User.UserId.fromString.f(map.get("id").toString()), attendanceMarkers);
@@ -88,12 +103,15 @@ public class UserClient {
 
     private static final F<User, Map> toMap = new F<User, Map>() {
         public Map f(final User user) {
-            final List<Map> attendanceMarkers = user.attendanceMarkers.map(attendanceMarkersToMap);
+            final List<Map> attendanceMarkers = user.attendanceMarkers.toList().map(attendanceMarkersToMap);
 
-            return new HashMap<String, Object>() {{
+
+            HashMap<String, Object> m = new HashMap<String, Object>() {{
                 put("id", user.id.value);
                 put("attendanceMarkers", Java.<Map>List_ArrayList().f(attendanceMarkers));
             }};
+            System.out.println("toMap: m = " + m);
+            return m;
         }
     };
 
@@ -101,8 +119,8 @@ public class UserClient {
         public Map f(final AttendanceMarker attendanceMarker) {
             P4<SessionId, Boolean, Option<SessionRating>, Option<String>> p;
 
-            if (attendanceMarker instanceof AttendingMarker) {
-                AttendingMarker attendingMarker = (AttendingMarker) attendanceMarker;
+            if (attendanceMarker instanceof no.java.incogito.domain.AttendanceMarker.AttendingMarker) {
+                no.java.incogito.domain.AttendanceMarker.AttendingMarker attendingMarker = (no.java.incogito.domain.AttendanceMarker.AttendingMarker) attendanceMarker;
                 p = p(attendingMarker.sessionId,
                         Boolean.TRUE,
                         attendingMarker.rating,
@@ -138,23 +156,15 @@ public class UserClient {
         }
     };
 
-    public static F<SessionRating, String> sessionRatingToString = new F<SessionRating, String>() {
+    private static F<SessionRating, String> sessionRatingToString = new F<SessionRating, String>() {
         public String f(SessionRating sessionRating) {
             return sessionRating.name();
         }
     };
 
-    public static F<String, SessionRating> sessionRatingFromString = new F<String, SessionRating>() {
+    private static F<String, SessionRating> sessionRatingFromString = new F<String, SessionRating>() {
         public SessionRating f(String s) {
             return SessionRating.valueOf(s);
         }
     };
-
-    public static <K, V> Effect<V> putEffect(final Map<K, V> map, final K key) {
-        return new Effect<V>() {
-            public void e(V v) {
-                map.put(key, v);
-            }
-        };
-    }
 }

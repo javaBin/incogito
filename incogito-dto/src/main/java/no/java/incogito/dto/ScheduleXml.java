@@ -44,4 +44,12 @@ public class ScheduleXml {
         }
         return sessionMap;
     }
+
+    public List<SessionXml> getSessions() {
+        return sessions;
+    }
+
+    public List<AttendanceMarkerXml> getAttendanceMarkers() {
+        return attendanceMarkers;
+    }
 }
