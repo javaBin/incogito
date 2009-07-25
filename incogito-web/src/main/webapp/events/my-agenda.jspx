@@ -25,7 +25,7 @@
     var onAttendingClick = function(){
       var sessionId = $(this).parent().find(".session-id").text();
 
-      markInterest(eventName, sessionId)
+      markAttendance(eventName, sessionId)
     };
 
     var onDropClick = function(){
@@ -35,7 +35,6 @@
     };
 
     $(document).ready(function() {
-
       $(".interested").bind("click", onInterestedClick)
       $(".attending").bind("click", onAttendingClick)
       $(".drop").bind("click", onDropClick)
@@ -55,8 +54,9 @@
 <c:forEach var="attendanceMarker" items="${schedule.attendanceMarkers}">
   <c:set var="session" value="${i:castToSession(i:mapGet(schedule.sessionMap,attendanceMarker.sessionId))}"/>
   <li>
+    <span class="session-id" style="display: none">${session.id}</span>
     <span class="drop">Drop</span> -
-    ${session.title} <span class=".session-id" style="display: none">${session.id}</span>
+    <span class="title"><b>${session.title}</b> (${attendanceMarker.state})</span>
   </li>
 </c:forEach>
 </ul>
@@ -64,7 +64,7 @@
 <h2>All sessions (${fn:length(schedule.sessions)})</h2>
 <c:forEach var="session" items="${schedule.sessions}">
   <li>
-    <span class=".session-id" style="display: none">${session.id}</span>
+    <span class="session-id" style="display: none">${session.id}</span>
     <span class="interested">Interested</span> -
     <span class="attending">Attending</span> -
     <span class="title"><b>${session.title}</b>
