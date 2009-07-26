@@ -12,7 +12,7 @@
     </key-serializer>
     <value-serializer>
       <type>json</type>
-      <schema-info>{"id":"string", "attendanceMarkers":[{   "session":"string",    "attending":"boolean",    "rating":"string",    "ratingComment":"string"}]}</schema-info>
+      <schema-info>{"id":"string", "sessionAssociations":[{   "sessionId":"string",    "interestLevel":"string",    "rating":"string",    "ratingComment":"string"}]}</schema-info>
     </value-serializer>
   </store>
 </stores>

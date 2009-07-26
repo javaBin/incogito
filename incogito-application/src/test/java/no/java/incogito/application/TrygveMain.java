@@ -32,7 +32,7 @@ public class TrygveMain {
         // Insert users
 //        for (UserId userId : userIds) {
 //
-//            User user = User.createTransientUser(userId);
+//            User user = User.createPristineUser(userId);
 //
 //            incogito.setUser(user);
 //        }

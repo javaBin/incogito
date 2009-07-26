@@ -48,7 +48,7 @@ public class IncogitoSecurityFilter extends SpringSecurityFilter {
             return;
         }
 
-        User user = User.createTransientUser(new UserId(remoteUser));
+        User user = User.createPristineUser(new UserId(remoteUser));
         OperationResult<User> operationResult = application.createUser(user);
 
         if (operationResult.isOk() || operationResult.isConflict()) {

@@ -18,15 +18,15 @@ import static fj.data.Option.join;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
 import no.java.incogito.Functions;
-import no.java.incogito.domain.AttendanceMarker;
-import no.java.incogito.domain.AttendanceMarker.AttendingMarker;
 import no.java.incogito.domain.Comment;
 import no.java.incogito.domain.Event;
 import no.java.incogito.domain.Schedule;
 import no.java.incogito.domain.Session;
+import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.Speaker;
 import no.java.incogito.domain.User;
 import no.java.incogito.domain.User.UserId;
+import no.java.incogito.domain.UserSessionAssociation.InterestLevel;
 import no.java.incogito.ems.client.EmsFunctions;
 import no.java.incogito.ems.client.EmsWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,11 +120,11 @@ public class DefaultIncogitoApplication implements IncogitoApplication {
                 orSome(OperationResult.<Schedule>$notFound("User '" + userId + "' not found."));
     }
 
-    public OperationResult updateAttendance(String userName, String eventName, AttendanceMarker attendanceMarker) {
+    public OperationResult<User> setInterestLevel(String userName, String eventName, SessionId sessionId, InterestLevel interestLevel) {
 
         // TODO: This is the way it should be
 //        OperationResult<User> result = OperationResult.ok(userClient.getUser(userId)).
-//                ok().map(updateAttendanceOnUser.f(attendanceMarker));
+//                ok().map(updateInterestLevelOnUser.f(userSessionAssociation));
 //
 //        result.foreach(userClient.setUser);
 //
@@ -132,8 +132,9 @@ public class DefaultIncogitoApplication implements IncogitoApplication {
 //                orSome(OperationResult.<User>$notFound("User '" + userId.value + "' not found."));
 
         Option<User> user = userClient.getUser(new UserId(userName)).
-                map(updateAttendanceOnUser.f(attendanceMarker));
+                map(User.setInterestLevel.f(sessionId).f(interestLevel));
 
+        // TODO: Only save the user if needed
         user.foreach(userClient.setUser);
 
         return user.map(OperationResult.<User>ok_()).
@@ -206,7 +207,7 @@ public class DefaultIncogitoApplication implements IncogitoApplication {
 
     F<User, F<List<Session>, F<Event, Schedule>>> createSchedule = curry( new F3<User, List<Session>, Event, Schedule>() {
         public Schedule f(User user, List<Session> sessions, Event event) {
-            return new Schedule(event, sessions, user.attendanceMarkers);
+            return new Schedule(event, sessions, user.sessionAssociations);
         }
     });
 
@@ -215,19 +216,4 @@ public class DefaultIncogitoApplication implements IncogitoApplication {
             List.<Option<A>, A>map_().f(Functions.<A>Option_somes()),
             Functions.<Option<A>>List_filter().f(Option.<A>isSome_()));
     }
-
-    // -----------------------------------------------------------------------
-    // Operations
-    // -----------------------------------------------------------------------
-
-    F<AttendanceMarker, F<User, User>> updateAttendanceOnUser = curry( new F2<AttendanceMarker, User, User>() {
-        public User f(AttendanceMarker attendanceMarker, User user) {
-            if(attendanceMarker instanceof AttendingMarker) {
-                return user.markAttendance(attendanceMarker.sessionId);
-            }
-            else {
-                return user.markInterest(attendanceMarker.sessionId);
-            }
-        }
-    });
 }

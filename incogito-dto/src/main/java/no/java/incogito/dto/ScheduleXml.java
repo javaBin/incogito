@@ -25,31 +25,34 @@ public class ScheduleXml {
     @XmlElement(name = "session")
     public List<SessionXml> sessions = new ArrayList<SessionXml>();
 
-    @XmlElementWrapper(name = "attendanceMarkers", nillable = false, required = true)
+    @XmlElementWrapper(name = "sessionAssociations", nillable = false, required = true)
     @XmlElement(name = "attendanceMarker")
-    public List<AttendanceMarkerXml> attendanceMarkers = new ArrayList<AttendanceMarkerXml>();
+    public List<UserSessionAssociationXml> sessionAssociations = new ArrayList<UserSessionAssociationXml>();
+
+    private Map<String, UserSessionAssociationXml> sessionAssociationMap;
 
     public ScheduleXml() {
     }
 
-    public ScheduleXml(Iterable<SessionXml> sessions, Iterable<AttendanceMarkerXml> attendanceMarkers) {
+    public ScheduleXml(Iterable<SessionXml> sessions, Iterable<UserSessionAssociationXml> sessionAssociations) {
         this.sessions = toList(sessions);
-        this.attendanceMarkers = toList(attendanceMarkers);
-    }
+        this.sessionAssociations = toList(sessionAssociations);
 
-    public Map<String, SessionXml> getSessionMap() {
-        Map<String, SessionXml> sessionMap = new HashMap<String, SessionXml>();
-        for (SessionXml session : sessions) {
-            sessionMap.put(session.id, session);
+        sessionAssociationMap = new HashMap<String, UserSessionAssociationXml>();
+        for (UserSessionAssociationXml sessionAssociation : this.sessionAssociations) {
+            sessionAssociationMap.put(sessionAssociation.sessionId, sessionAssociation);
         }
-        return sessionMap;
     }
 
     public List<SessionXml> getSessions() {
         return sessions;
     }
 
-    public List<AttendanceMarkerXml> getAttendanceMarkers() {
-        return attendanceMarkers;
+    public List<UserSessionAssociationXml> getSessionAssociations() {
+        return sessionAssociations;
+    }
+
+    public Map<String, UserSessionAssociationXml> getSessionAssociationMap() {
+        return sessionAssociationMap;
     }
 }

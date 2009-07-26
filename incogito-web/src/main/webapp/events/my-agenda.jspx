@@ -17,26 +17,41 @@
     var eventName = "${eventName}"
 
     var onInterestedClick = function(){
-      var sessionId = $(this).parent().find(".session-id").text();
+      var parent = $(this).parent()
+      var sessionId = parent.find(".session-id").text();
 
-      markInterest(eventName, sessionId)
+      markInterest(eventName, sessionId, function() {
+        parent.find(".attend").show()
+        parent.find(".interest").hide()
+        parent.find(".drop").show()
+      })
     };
 
     var onAttendingClick = function(){
-      var sessionId = $(this).parent().find(".session-id").text();
+      var parent = $(this).parent()
+      var sessionId = parent.find(".session-id").text();
 
-      markAttendance(eventName, sessionId)
+      markAttendance(eventName, sessionId, function() {
+        parent.find(".attend").hide()
+        parent.find(".interest").show()
+        parent.find(".drop").show()
+      })
     };
 
     var onDropClick = function(){
-      var sessionId = $(this).parent().find(".session-id").text();
+      var parent = $(this).parent()
+      var sessionId = parent.find(".session-id").text();
 
-      dropInterest(eventName, sessionId)
+      dropInterest(eventName, sessionId, function() {
+        parent.find(".attend").show()
+        parent.find(".interest").show()
+        parent.find(".drop").hide()
+      })
     };
 
     $(document).ready(function() {
-      $(".interested").bind("click", onInterestedClick)
-      $(".attending").bind("click", onAttendingClick)
+      $(".interest").bind("click", onInterestedClick)
+      $(".attend").bind("click", onAttendingClick)
       $(".drop").bind("click", onDropClick)
     })
   </script>
@@ -49,28 +64,33 @@
 </ul>
 <h2>Agenda for ${eventName}</h2>
 
-<h2>Attending sessions (${fn:length(schedule.attendanceMarkers)})</h2>
-<ul>
-<c:forEach var="attendanceMarker" items="${schedule.attendanceMarkers}">
-  <c:set var="session" value="${i:castToSession(i:mapGet(schedule.sessionMap,attendanceMarker.sessionId))}"/>
-  <li>
-    <span class="session-id" style="display: none">${session.id}</span>
-    <span class="drop">Drop</span> -
-    <span class="title"><b>${session.title}</b> (${attendanceMarker.state})</span>
-  </li>
-</c:forEach>
-</ul>
-
 <h2>All sessions (${fn:length(schedule.sessions)})</h2>
-<c:forEach var="session" items="${schedule.sessions}">
-  <li>
-    <span class="session-id" style="display: none">${session.id}</span>
-    <span class="interested">Interested</span> -
-    <span class="attending">Attending</span> -
-    <span class="title"><b>${session.title}</b>
-  </span>
-  </li>
-</c:forEach>
-
+<ul id="all-sessions">
+  <c:forEach var="session" items="${schedule.sessions}">
+    <c:set var="association" value="${i:mapGet(schedule.sessionAssociationMap, session.id)}"/>
+    <li>
+      <span class="session-id" style="display: none">${session.id}</span>
+      <c:choose>
+        <c:when test="${association.interestLevel eq 'ATTEND'}">
+          <span class="attend" style="display: none;">Attending -</span>
+          <span class="interest">Interested -</span>
+          <span class="drop">Drop -</span>
+        </c:when>
+        <c:when test="${association.interestLevel eq 'INTEREST'}">
+          <span class="attend">Attending -</span>
+          <span class="interest" style="display: none;">Interested -</span>
+          <span class="drop">Drop -</span>
+        </c:when>
+        <c:otherwise>
+          <span class="attend">Attending -</span>
+          <span class="interest">Interested -</span>
+          <span class="drop" style="display: none;">Drop -</span>
+        </c:otherwise>
+      </c:choose>
+      <span class="title"><b>${session.title}</b>
+    </span>
+    </li>
+  </c:forEach>
+</ul>
 </body>
 </html>

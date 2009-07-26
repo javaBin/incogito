@@ -2,25 +2,28 @@ package no.java.incogito.application;
 
 import fj.Effect;
 import fj.F;
-import static fj.P.p;
-import fj.P4;
+import fj.F2;
+import fj.Function;
 import fj.data.Java;
 import fj.data.List;
 import fj.data.Option;
 import static fj.data.Option.fromNull;
-import fj.data.Set;
-import no.java.incogito.domain.AttendanceMarker;
-import static no.java.incogito.domain.AttendanceMarker.createAttendance;
-import static no.java.incogito.domain.AttendanceMarker.createInterest;
+import fj.data.TreeMap;
+import fj.pre.Ord;
 import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.SessionRating;
 import no.java.incogito.domain.User;
+import static no.java.incogito.domain.User.UserId.fromString;
 import static no.java.incogito.domain.User.createPersistentUser;
+import no.java.incogito.domain.UserSessionAssociation;
+import no.java.incogito.domain.UserSessionAssociation.InterestLevel;
+import no.java.incogito.util.Enums;
 import no.java.incogito.voldemort.VoldemortF;
 import voldemort.client.StoreClient;
 import voldemort.client.UpdateAction;
 import voldemort.versioning.Versioned;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,14 +33,26 @@ import java.util.Map;
  */
 public class UserClient {
 
+    public static final String SCHEMA_ID = "id";
+
+    public static final String SCHEMA_SESSION_ASSOCIATIONS = "sessionAssociations";
+
+    public static final String SCHEMA_SESSION_ID = "sessionId";
+
+    public static final String SCHEMA_INTEREST_LEVEL = "interestLevel";
+
+    public static final String SCHEMA_RATING = "rating";
+
+    public static final String SCHEMA_RATING_COMMENT = "ratingComment";
+
     public static final String SCHEMA = "{" +
-        "\"id\":\"string\", " +
-        "\"attendanceMarkers\":[{" +
-        "   \"session\":\"string\", " +
-        "   \"attending\":\"boolean\", " +
-        "   \"rating\":\"string\", " +
-        "   \"ratingComment\":\"string\"}]" +
-        "}";
+            "\"" + SCHEMA_ID + "\":\"string\", " +
+            "\"" + SCHEMA_SESSION_ASSOCIATIONS + "\":[{" +
+            "   \"" + SCHEMA_SESSION_ID + "\":\"string\", " +
+            "   \"" + SCHEMA_INTEREST_LEVEL + "\":\"string\", " +
+            "   \"" + SCHEMA_RATING + "\":\"string\", " +
+            "   \"" + SCHEMA_RATING_COMMENT + "\":\"string\"}]" +
+            "}";
 
     private final StoreClient<String, Map> client;
 
@@ -88,71 +103,65 @@ public class UserClient {
 
     private static final F<Map, User> fromMap = new F<Map, User>() {
         public User f(Map map) {
-            Set<AttendanceMarker> attendanceMarkers = Set.empty(AttendanceMarker.ord);
-
             System.out.println("fromMap: map = " + map);
 
             //noinspection unchecked
-            for (Map markers : (java.util.List<Map>) map.get("attendanceMarkers")) {
-                attendanceMarkers = attendanceMarkers.insert(attendanceMarkersFromMap.f(markers));
-            }
 
-            return createPersistentUser(no.java.incogito.domain.User.UserId.fromString.f(map.get("id").toString()), attendanceMarkers);
+            List<Map> list = List.iterableList(Option.fromNull((java.util.List<Map>) map.get(SCHEMA_SESSION_ASSOCIATIONS)).orSome(Collections.<Map>emptyList()));
+
+            F2<TreeMap<SessionId, UserSessionAssociation>, UserSessionAssociation, TreeMap<SessionId, UserSessionAssociation>> folder = new F2<TreeMap<SessionId, UserSessionAssociation>, UserSessionAssociation, TreeMap<SessionId, UserSessionAssociation>>() {
+                public TreeMap<SessionId, UserSessionAssociation> f(TreeMap<SessionId, UserSessionAssociation> sessionAssociations, UserSessionAssociation sessionAssociation) {
+                    return sessionAssociations.set(sessionAssociation.sessionId, sessionAssociation);
+                }
+            };
+
+            TreeMap<SessionId, UserSessionAssociation> sessionAssociations = Option.somes(list.map(sessionAssociationFromMap)).
+                    foldLeft(folder, TreeMap.<SessionId, UserSessionAssociation>empty(SessionId.ord));
+
+            return createPersistentUser(fromString.f(map.get(SCHEMA_ID).toString()), sessionAssociations);
         }
     };
 
     private static final F<User, Map> toMap = new F<User, Map>() {
         public Map f(final User user) {
-            final List<Map> attendanceMarkers = user.attendanceMarkers.toList().map(attendanceMarkersToMap);
-
+            final List<Map> attendanceMarkers = user.sessionAssociations.values().map(sessionAssociationToMap);
 
             HashMap<String, Object> m = new HashMap<String, Object>() {{
-                put("id", user.id.value);
-                put("attendanceMarkers", Java.<Map>List_ArrayList().f(attendanceMarkers));
+                put(SCHEMA_ID, user.id.value);
+                put(SCHEMA_SESSION_ASSOCIATIONS, Java.<Map>List_ArrayList().f(attendanceMarkers));
             }};
             System.out.println("toMap: m = " + m);
             return m;
         }
     };
 
-    private static F<AttendanceMarker, Map> attendanceMarkersToMap = new F<AttendanceMarker, Map>() {
-        public Map f(final AttendanceMarker attendanceMarker) {
-            P4<SessionId, Boolean, Option<SessionRating>, Option<String>> p;
-
-            if (attendanceMarker instanceof no.java.incogito.domain.AttendanceMarker.AttendingMarker) {
-                no.java.incogito.domain.AttendanceMarker.AttendingMarker attendingMarker = (no.java.incogito.domain.AttendanceMarker.AttendingMarker) attendanceMarker;
-                p = p(attendingMarker.sessionId,
-                        Boolean.TRUE,
-                        attendingMarker.rating,
-                        attendingMarker.ratingComment
-                );
-            } else {
-                p = p(attendanceMarker.sessionId,
-                        Boolean.TRUE,
-                        Option.<SessionRating>none(),
-                        Option.<String>none());
-            }
-
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("session", p._1().value);
-            map.put("attending", p._2());
-            map.put("rating", p._3().map(sessionRatingToString).orSome((String)null));
-            map.put("ratingComment", p._4().orSome((String)null));
-            return map;
+    private static F<UserSessionAssociation, Map> sessionAssociationToMap = new F<UserSessionAssociation, Map>() {
+        public Map f(final UserSessionAssociation sessionAssociation) {
+            return new HashMap<String, Object>() {{
+                put(SCHEMA_SESSION_ID, sessionAssociation.sessionId.value);
+                put(SCHEMA_INTEREST_LEVEL, sessionAssociation.interestLevel.toString());
+                put(SCHEMA_RATING, sessionAssociation.rating.map(sessionRatingToString).orSome((String) null));
+                put(SCHEMA_RATING_COMMENT, sessionAssociation.ratingComment.orSome((String) null));
+            }};
         }
     };
 
-    private static F<Map, AttendanceMarker> attendanceMarkersFromMap = new F<Map, AttendanceMarker>() {
-        public AttendanceMarker f(Map map) {
-            SessionId sessionId = new SessionId(map.get("session").toString());
+    private static F<Map, Option<UserSessionAssociation>> sessionAssociationFromMap = new F<Map, Option<UserSessionAssociation>>() {
+        public Option<UserSessionAssociation> f(Map m) {
+            @SuppressWarnings({"unchecked"})
+            TreeMap<String, String> map = TreeMap.<String, String>fromMutableMap(Ord.stringOrd, m);
 
-            if ((Boolean) map.get("attending")) {
-                return createAttendance(sessionId,
-                    Option.<String>fromNull((String) map.get("rating")).map(sessionRatingFromString),
-                    Option.<String>fromNull((String) map.get("ratingComment")));
-            } else {
-                return createInterest(sessionId);
-            }
+            Option<SessionId> sessionId = map.get(SCHEMA_SESSION_ID).bind(Option.fromString()).map(SessionId.fromString);
+
+            Option<SessionRating> rating = map.get(SCHEMA_RATING).bind(Option.fromString()).map(sessionRatingFromString);
+            Option<String> ratingComment = map.get(SCHEMA_RATING_COMMENT).bind(Option.fromString());
+
+            Option<InterestLevel> interestLevel = map.get(SCHEMA_INTEREST_LEVEL).
+                    map(Enums.<InterestLevel>valueOf().f(InterestLevel.class));
+
+            return sessionId.bind(interestLevel, UserSessionAssociation.constructor_).
+                    map(UserSessionAssociation.rating_.f(rating)).
+                    map(UserSessionAssociation.ratingComment_.f(ratingComment));
         }
     };
 

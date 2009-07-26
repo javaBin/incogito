@@ -9,7 +9,7 @@ import java.net.URI;
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
-@XmlRootElement
+@XmlRootElement(name = "session")
 public class SessionXml {
     public String selfUri;
 

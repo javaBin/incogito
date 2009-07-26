@@ -11,7 +11,9 @@ import no.java.incogito.application.OperationResult;
 import no.java.incogito.application.OperationResult.NotFoundOperationResult;
 import no.java.incogito.application.OperationResult.OkOperationResult;
 import no.java.incogito.domain.Session;
-import no.java.incogito.dto.AttendanceMarkerXml;
+import no.java.incogito.domain.SessionId;
+import no.java.incogito.domain.User;
+import no.java.incogito.domain.UserSessionAssociation.InterestLevel;
 import static no.java.incogito.dto.EventListXml.eventListXml;
 import no.java.incogito.dto.EventXml;
 import no.java.incogito.dto.SessionListXml;
@@ -33,6 +35,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -103,22 +106,21 @@ public class IncogitoResource {
                 ok().map(sessionToXml));
     }
 
-    @Path("/events/{eventName}/attendance-markers")
+    @Path("/events/{eventName}/{sessionId}/session-interest")
     @POST
-    public Response addAttendanceMarker(@Context final UriInfo uriInfo,
-                                        @Context final SecurityContext securityContext,
-                                        @PathParam("eventName") final String eventName,
-                                        AttendanceMarkerXml attendanceMarkerXml) {
-
-        System.out.println("attendanceMarkerXml = " + attendanceMarkerXml);
-        System.out.println("attendanceMarkerXml.getSessionId() = " + attendanceMarkerXml.sessionId);
-        System.out.println("attendanceMarkerXml.state = " + attendanceMarkerXml.state);
-
-        incogito.updateAttendance(securityContext.getUserPrincipal().getName(),
+    public Response setSessionInterest(@Context final UriInfo uriInfo,
+                                       @Context final SecurityContext securityContext,
+                                       @PathParam("eventName") final String eventName,
+                                       @PathParam("sessionId") final String sessionId,
+                                       String payload) {
+        OperationResult<User> result = incogito.setInterestLevel(securityContext.getUserPrincipal().getName(),
                 eventName,
-                XmlFunctions.attendanceMarkerFromXml.f(attendanceMarkerXml));
+                new SessionId(sessionId),
+                InterestLevel.valueOf(payload));
 
-        return Response.ok().build();
+        return this.<User>defaultResponsePatternMatcher().
+                add(OkOperationResult.class, this.<OperationResult<User>>created()).
+                match(result);
     }
 
     @Path("/events/{eventName}/my-schedule")
@@ -126,7 +128,6 @@ public class IncogitoResource {
     public Response getMySchedule(@Context final UriInfo uriInfo,
                                   @Context final SecurityContext securityContext,
                                   @PathParam("eventName") final String eventName) {
-
         return getScheduleForUser(uriInfo, securityContext, eventName, securityContext.getUserPrincipal().getName());
     }
 
@@ -156,6 +157,16 @@ public class IncogitoResource {
         };
     }
 
+    private <T> F<T, Response> created() {
+        return new F<T, Response>() {
+            public Response f(T operationResult) {
+                Object value = ((OperationResult) operationResult).value();
+                ToStringBuilder.reflectionToString(value, ToStringStyle.MULTI_LINE_STYLE);
+                return Response.status(Status.CREATED).build();
+            }
+        };
+    }
+
     private <T> F<T, Response> notFound() {
         return new F<T, Response>() {
             public Response f(T operationResult) {
@@ -169,10 +180,14 @@ public class IncogitoResource {
         };
     }
 
-    private <T> Response toJsr311(OperationResult<T> result) {
+    private <T> PatternMatcher<OperationResult<T>, Response> defaultResponsePatternMatcher() {
         return PatternMatcher.<OperationResult<T>, Response>match().
+            add(NotFoundOperationResult.class, this.<OperationResult<T>>notFound());
+    }
+
+    private <T> Response toJsr311(OperationResult<T> result) {
+        return this.<T>defaultResponsePatternMatcher().
                 add(OkOperationResult.class, this.<OperationResult<T>>ok()).
-                add(NotFoundOperationResult.class, this.<OperationResult<T>>notFound()).
                 match(result);
     }
 

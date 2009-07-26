@@ -4,6 +4,7 @@ import fj.pre.Ord;
 import fj.pre.Ordering;
 import fj.Function;
 import fj.F2;
+import fj.F;
 
 /**
  * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
@@ -22,4 +23,10 @@ public class SessionId {
     public SessionId(String value) {
         this.value = value;
     }
+
+    public static final F<String, SessionId> fromString = new F<String, SessionId>() {
+        public SessionId f(String s) {
+            return new SessionId(s);
+        }
+    };
 }

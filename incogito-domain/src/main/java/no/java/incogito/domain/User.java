@@ -1,10 +1,11 @@
 package no.java.incogito.domain;
 
 import fj.F;
+import fj.F3;
+import static fj.Function.curry;
 import fj.data.Option;
-import fj.data.Set;
-import static no.java.incogito.domain.AttendanceMarker.createAttendance;
-import static no.java.incogito.domain.AttendanceMarker.createInterest;
+import fj.data.TreeMap;
+import no.java.incogito.domain.UserSessionAssociation.InterestLevel;
 
 /**
  * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
@@ -12,53 +13,60 @@ import static no.java.incogito.domain.AttendanceMarker.createInterest;
  */
 public class User {
     public final UserId id;
-    public final Set<AttendanceMarker> attendanceMarkers;
+    public final TreeMap<SessionId, UserSessionAssociation> sessionAssociations;
+    /**
+     * If none, this is a new object.
+     */
     public final Option<User> original;
 
     // -----------------------------------------------------------------------
     //
     // -----------------------------------------------------------------------
 
-    private User(UserId id, Set<AttendanceMarker> attendanceMarkers, Option<User> original) {
+    private User(UserId id, TreeMap<SessionId, UserSessionAssociation> sessionAssociations, Option<User> original) {
         this.id = id;
-        this.attendanceMarkers = attendanceMarkers;
+        this.sessionAssociations = sessionAssociations;
         this.original = original;
     }
 
-    private User(UserId id, Set<AttendanceMarker> attendanceMarkers, boolean persistent) {
-        this.id = id;
-        this.attendanceMarkers = attendanceMarkers;
-        this.original = persistent ? Option.some(this) : Option.<User>none();
+    // -----------------------------------------------------------------------
+    //
+    // -----------------------------------------------------------------------
+
+    public static User createPristineUser(UserId id) {
+        return new User(id, TreeMap.<SessionId, UserSessionAssociation>empty(SessionId.ord), Option.<User>none());
+    }
+
+    public static User createPersistentUser(UserId id, TreeMap<SessionId, UserSessionAssociation> sessionAssociations) {
+        return new User(id, sessionAssociations, Option.<User>none());
     }
 
     // -----------------------------------------------------------------------
     //
     // -----------------------------------------------------------------------
 
-    public static User createTransientUser(UserId id) {
-        return new User(id, Set.empty(AttendanceMarker.ord), false);
+    public User setInterestLevel(SessionId sessionId, InterestLevel interestLevel) {
+        UserSessionAssociation userSessionAssociation = sessionAssociations.get(sessionId).
+                orSome(UserSessionAssociation.$constructor_().f(sessionId).f(interestLevel)).
+                interestLevel(interestLevel);
+
+        return new User(id, sessionAssociations.set(sessionId, userSessionAssociation), original);
     }
 
-    public static User createPersistentUser(UserId id, Set<AttendanceMarker> sessionAssociations) {
-        return new User(id, sessionAssociations, true);
-    }
+    // -----------------------------------------------------------------------
+    // Higher-order functions
+    // -----------------------------------------------------------------------
+
+    public static final F<SessionId, F<InterestLevel, F<User, User>>> setInterestLevel = curry( new F3<SessionId, InterestLevel, User, User>() {
+        public User f(SessionId sessionId, InterestLevel interestLevel, User user) {
+            return user.setInterestLevel(sessionId, interestLevel);
+        }
+    });
 
     // -----------------------------------------------------------------------
     //
     // -----------------------------------------------------------------------
 
-    public User markAttendance(SessionId session) {
-        return new User(id, attendanceMarkers.insert(createAttendance(session)), original);
-    }
-
-    public User markInterest(SessionId session) {
-        return new User(id, attendanceMarkers.insert(createInterest(session)), original);
-    }
-
-    /**
-     * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
-     * @version $Id$
-     */
     public static class UserId {
         public final String value;
 
@@ -78,7 +86,6 @@ public class User {
             UserId userId = (UserId) o;
 
             return value.equals(userId.value);
-
         }
 
         @Override
