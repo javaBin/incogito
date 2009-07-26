@@ -28,6 +28,12 @@
 <a href="${incogito.baseurl}/login">Log in</a><br/>
 </security:authorize>
 
+<br/>
+Other instances (may not be up):
+<a href="http://node-a.incogito:8096${incogito.baseurl}">Node A</a> -
+<a href="http://node-b.incogito:8097${incogito.baseurl}">Node B</a> -
+<a href="http://node-c.incogito:8098${incogito.baseurl}">Node C</a>
+
 <decorator:body/>
 </body>
 </html>

@@ -1,21 +1,29 @@
-Functional.install()
-
 var InterestLevel = {
     ATTEND: "ATTEND",
     INTEREST: "INTEREST",
     NO_INTEREST: "NO_INTEREST"
 }
 
-if (window.opera && !window.console) {
-    window.console = {};
+function createConsole() {
     var names = ["log", "debug", "info", "warn", "error", "assert", "dir", "dirxml", "group", "groupEnd", "time", "timeEnd", "count", "trace", "profile", "profileEnd"];
-    for (var i = 0; i < names.length; ++i) {
-        window.console[names[i]] = function() {
+    if (window.opera && !window.console) {
+        window.console = {};
+        for (var i = 0; i < names.length; ++i) {
+            window.console[names[i]] = function() {
+            }
+        }
+
+        window.console.info = function() {
+            opera.postError(arguments);
         }
     }
 
-    window.console.info = function() {
-        opera.postError(arguments);
+    if (!window.console) {
+        window.console = {};
+        for (i = 0; i < names.length; ++i) {
+            window.console[names[i]] = function() {
+            }
+        }
     }
 }
 
@@ -119,3 +127,6 @@ function updateInterest(eventName, sessionId, state, success) {
         }
     })
 }
+
+Functional.install()
+createConsole()
