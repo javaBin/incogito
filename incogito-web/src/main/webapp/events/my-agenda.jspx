@@ -72,19 +72,19 @@
       <span class="session-id" style="display: none">${session.id}</span>
       <c:choose>
         <c:when test="${association.interestLevel eq 'ATTEND'}">
-          <span class="attend" style="display: none;">Attending -</span>
-          <span class="interest">Interested -</span>
-          <span class="drop">Drop -</span>
+          <span class="attend" style="display: none;">Attending - </span>
+          <span class="interest">Interested - </span>
+          <span class="drop">Drop - </span>
         </c:when>
         <c:when test="${association.interestLevel eq 'INTEREST'}">
-          <span class="attend">Attending -</span>
-          <span class="interest" style="display: none;">Interested -</span>
-          <span class="drop">Drop -</span>
+          <span class="attend">Attending - </span>
+          <span class="interest" style="display: none;">Interested - </span>
+          <span class="drop">Drop - </span>
         </c:when>
         <c:otherwise>
-          <span class="attend">Attending -</span>
-          <span class="interest">Interested -</span>
-          <span class="drop" style="display: none;">Drop -</span>
+          <span class="attend">Attending - </span>
+          <span class="interest">Interested - </span>
+          <span class="drop" style="display: none;">Drop - </span>
         </c:otherwise>
       </c:choose>
       <span class="title"><b>${session.title}</b>
