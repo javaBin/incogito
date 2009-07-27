@@ -27,6 +27,17 @@
     <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
     <function-signature>no.java.incogito.dto.SessionXml castToSession(java.lang.Object)</function-signature>
   </function>
+  <function>
+    <name>castToSessionList</name>
+    <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
+    <function-signature>no.java.incogito.dto.SessionXml[] castToSessionList(java.lang.Object)</function-signature>
+  </function>
+
+  <function>
+    <name>getCalendar</name>
+    <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
+    <function-signature>no.java.incogito.web.servlet.WebCalendar getCalendar(no.java.incogito.application.IncogitoApplication,java.lang.String,java.lang.String)</function-signature>
+  </function>
 
   <function>
     <name>getEvent</name>

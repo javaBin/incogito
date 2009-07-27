@@ -13,8 +13,9 @@
 <head>
   <style type="text/css">
     iframe {
-      border: 1px black solid;
-      width: 100%;
+      /*border: 1px black solid;*/
+      border: 0;
+      width: 92em;
       height: 100%;
     }
   </style>

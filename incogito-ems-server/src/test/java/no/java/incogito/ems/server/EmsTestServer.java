@@ -22,7 +22,7 @@ public class EmsTestServer {
 
         System.setProperty("ems.home", emsHome.getAbsolutePath());
 
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:incogito-ems-server-applicationContext-test.xml");
 
         EmsServices emsServices = (EmsServices) context.getBean("emsServices");
 

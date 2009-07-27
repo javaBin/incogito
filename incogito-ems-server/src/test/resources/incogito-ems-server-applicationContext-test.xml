@@ -12,5 +12,6 @@
     <property name="emsHome" value="${ems.home}"/>
     <property name="httpPort" value="3000"/>
     <property name="startDatabase" value="true"/>
+    <property name="secure" value="true"/>
   </bean>
 </beans>

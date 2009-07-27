@@ -62,7 +62,7 @@ table {
 #times {
   position: absolute;
   margin-top: 1.5em;
-  width: 80em;
+  width: 91em;
 }
 
 #times li {
@@ -106,104 +106,72 @@ table {
   position: absolute;
 }
 
-div.room.r1 {
-  left: 0;
-  position: absolute;
-}
-
-div.room.r2 {
-  left: 11em;
-  position: absolute;
-}
-
-div.room.r3 {
-  left: 22em;
-  position: absolute;
-}
-
-div.room.r4 {
-  left: 33em;
-  position: absolute;
-}
-
-div.room.r5 {
-  left: 44em;
-  position: absolute;
-}
-
-div.room.r6 {
-  left: 55em;
-  position: absolute;
-}
-
-div.room.r7 {
-  left: 66em;
-  position: absolute;
-}
+/*
+ * Rooms
+ */
+div.room.r1 { left: 0; position: absolute; }
+div.room.r2 { left: 11em; position: absolute; }
+div.room.r3 { left: 22em; position: absolute; }
+div.room.r4 { left: 33em; position: absolute; }
+div.room.r5 { left: 44em; position: absolute; }
+div.room.r6 { left: 55em; position: absolute; }
+div.room.r7 { left: 66em; position: absolute; }
+div.room.r8 { left: 77em; position: absolute; }
 
 /*
  * Durations
  */
-div.session.d15 {
-  height: 1em;
-  margin: 0;
-  padding: 0;
-}
-
-div.session.d60 {
-  height: 4em;
-  margin: 0;
-  padding: 0;
-}
+div.session.d15 { height: 1em; margin: 0; padding: 0; }
+div.session.d60 { height: 4em; margin: 0; padding: 0; }
 
 /*
  * Session start
  *
 echo {09,10,11,12,13,14,15,16,17,18,19}{00,15,30,45} |\
 tr " " "\n" |\
-awk 'BEGIN{x=1.5} {x=x+1; print "div.session.s" $1 " { top: " x "em;}"}'
+awk 'BEGIN{x=0.5} {x=x+1; print "div.session.s" $1 " { top: " x "em; }"}'
  */
-div.session.s0900 { top: 2.5em;}
-div.session.s0915 { top: 3.5em;}
-div.session.s0930 { top: 4.5em;}
-div.session.s0945 { top: 5.5em;}
-div.session.s1000 { top: 6.5em;}
-div.session.s1015 { top: 7.5em;}
-div.session.s1030 { top: 8.5em;}
-div.session.s1045 { top: 9.5em;}
-div.session.s1100 { top: 10.5em;}
-div.session.s1115 { top: 11.5em;}
-div.session.s1130 { top: 12.5em;}
-div.session.s1145 { top: 13.5em;}
-div.session.s1200 { top: 14.5em;}
-div.session.s1215 { top: 15.5em;}
-div.session.s1230 { top: 16.5em;}
-div.session.s1245 { top: 17.5em;}
-div.session.s1300 { top: 18.5em;}
-div.session.s1315 { top: 19.5em;}
-div.session.s1330 { top: 20.5em;}
-div.session.s1345 { top: 21.5em;}
-div.session.s1400 { top: 22.5em;}
-div.session.s1415 { top: 23.5em;}
-div.session.s1430 { top: 24.5em;}
-div.session.s1445 { top: 25.5em;}
-div.session.s1500 { top: 26.5em;}
-div.session.s1515 { top: 27.5em;}
-div.session.s1530 { top: 28.5em;}
-div.session.s1545 { top: 29.5em;}
-div.session.s1600 { top: 30.5em;}
-div.session.s1615 { top: 31.5em;}
-div.session.s1630 { top: 32.5em;}
-div.session.s1645 { top: 33.5em;}
-div.session.s1700 { top: 34.5em;}
-div.session.s1715 { top: 35.5em;}
-div.session.s1730 { top: 36.5em;}
-div.session.s1745 { top: 37.5em;}
-div.session.s1800 { top: 38.5em;}
-div.session.s1815 { top: 39.5em;}
-div.session.s1830 { top: 40.5em;}
-div.session.s1845 { top: 41.5em;}
-div.session.s1900 { top: 42.5em;}
-div.session.s1915 { top: 43.5em;}
-div.session.s1930 { top: 44.5em;}
-div.session.s1945 { top: 45.5em;}
+div.session.s0900 { top: 1.5em; }
+div.session.s0915 { top: 2.5em; }
+div.session.s0930 { top: 3.5em; }
+div.session.s0945 { top: 4.5em; }
+div.session.s1000 { top: 5.5em; }
+div.session.s1015 { top: 6.5em; }
+div.session.s1030 { top: 7.5em; }
+div.session.s1045 { top: 8.5em; }
+div.session.s1100 { top: 9.5em; }
+div.session.s1115 { top: 10.5em; }
+div.session.s1130 { top: 11.5em; }
+div.session.s1145 { top: 12.5em; }
+div.session.s1200 { top: 13.5em; }
+div.session.s1215 { top: 14.5em; }
+div.session.s1230 { top: 15.5em; }
+div.session.s1245 { top: 16.5em; }
+div.session.s1300 { top: 17.5em; }
+div.session.s1315 { top: 18.5em; }
+div.session.s1330 { top: 19.5em; }
+div.session.s1345 { top: 20.5em; }
+div.session.s1400 { top: 21.5em; }
+div.session.s1415 { top: 22.5em; }
+div.session.s1430 { top: 23.5em; }
+div.session.s1445 { top: 24.5em; }
+div.session.s1500 { top: 25.5em; }
+div.session.s1515 { top: 26.5em; }
+div.session.s1530 { top: 27.5em; }
+div.session.s1545 { top: 28.5em; }
+div.session.s1600 { top: 29.5em; }
+div.session.s1615 { top: 30.5em; }
+div.session.s1630 { top: 31.5em; }
+div.session.s1645 { top: 32.5em; }
+div.session.s1700 { top: 33.5em; }
+div.session.s1715 { top: 34.5em; }
+div.session.s1730 { top: 35.5em; }
+div.session.s1745 { top: 36.5em; }
+div.session.s1800 { top: 37.5em; }
+div.session.s1815 { top: 38.5em; }
+div.session.s1830 { top: 39.5em; }
+div.session.s1845 { top: 40.5em; }
+div.session.s1900 { top: 41.5em; }
+div.session.s1915 { top: 42.5em; }
+div.session.s1930 { top: 43.5em; }
+div.session.s1945 { top: 44.5em; }

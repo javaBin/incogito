@@ -2,6 +2,7 @@ package no.java.incogito.web.servlet;
 
 import fj.F;
 import fj.P;
+import fj.data.List;
 import no.java.incogito.application.IncogitoApplication;
 import no.java.incogito.domain.Schedule;
 import no.java.incogito.domain.Session;
@@ -45,6 +46,16 @@ public class IncogitoFunctions {
 
     public static SessionXml castToSession(Object o) {
         return SessionXml.class.cast(o);
+    }
+
+    public static SessionXml[] castToSessionList(Object o) {
+        List<SessionXml> list = (List<SessionXml>) o;
+
+        return list.toArray(SessionXml[].class).array();
+    }
+
+    public static WebCalendar getCalendar(IncogitoApplication app, String eventName, String userName) {
+        return new WebCalendar(app.getSchedule(urlDecode(eventName), userName).value());
     }
 
     public static EventXml[] getEvents(IncogitoApplication app) {
