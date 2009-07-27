@@ -6,18 +6,18 @@ package no.java.incogito.domain;
  */
 public class Speaker {
     public final String name;
-    public final String description;
+    public final WikiString bio;
 
-    public Speaker(String name, String description) {
+    public Speaker(String name, WikiString bio) {
         this.name = name;
-        this.description = description;
+        this.bio = bio;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getDescription() {
-        return description;
+    public WikiString getBio() {
+        return bio;
     }
 }

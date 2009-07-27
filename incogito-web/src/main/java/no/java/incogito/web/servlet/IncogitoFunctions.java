@@ -3,10 +3,9 @@ package no.java.incogito.web.servlet;
 import fj.F;
 import fj.P;
 import no.java.incogito.application.IncogitoApplication;
-import no.java.incogito.domain.Event;
 import no.java.incogito.domain.Schedule;
 import no.java.incogito.domain.Session;
-import no.java.incogito.domain.Speaker;
+import no.java.incogito.dto.EventXml;
 import no.java.incogito.dto.ScheduleXml;
 import no.java.incogito.dto.SessionXml;
 import no.java.incogito.web.resources.XmlFunctions;
@@ -48,16 +47,16 @@ public class IncogitoFunctions {
         return SessionXml.class.cast(o);
     }
 
-    public static Event[] getEvents(IncogitoApplication app) {
-        return app.getEvents().value().toArray(Event[].class).array();
+    public static EventXml[] getEvents(IncogitoApplication app) {
+        return app.getEvents().value().map(XmlFunctions.eventToXml).toArray(EventXml[].class).array();
     }
 
     public static SessionXml[] getSessions(IncogitoApplication app, String eventName) {
         return app.getSessions(urlDecode(eventName)).value().map(sessionToXml).toArray(SessionXml[].class).array();
     }
 
-    public static Event getEventByName(IncogitoApplication app, String eventName) {
-        return app.getEventByName(urlDecode(eventName)).value();
+    public static EventXml getEventByName(IncogitoApplication app, String eventName) {
+        return app.getEventByName(urlDecode(eventName)).ok().map(XmlFunctions.eventToXml).value();
     }
 
     public static SessionXml getSession(IncogitoApplication app, String eventName, String sessionTitle) {
@@ -66,9 +65,5 @@ public class IncogitoFunctions {
 
     public static ScheduleXml getSchedule(IncogitoApplication app, String eventName, String userName) {
         return app.getSchedule(urlDecode(eventName), userName).ok().map(scheduleToXml).value();
-    }
-
-    public static Speaker[] speakers(Session session) {
-        return session.speakers.toArray(Speaker[].class).array();
     }
 }

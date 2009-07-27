@@ -12,15 +12,20 @@ import org.joda.time.Interval;
 public class Session {
     public final SessionId id;
     public final String title;
+    public final WikiString _abstract;
+    public final WikiString body;
     public final Option<Interval> timeslot;
     public final Option<String> room;
     public final List<String> tags;
     public final List<Speaker> speakers;
     public final List<Comment> comments;
 
-    public Session(SessionId id, String title, Option<Interval> timeslot, Option<String> room, List<String> tags, List<Speaker> speakers, List<Comment> comments) {
+    public Session(SessionId id, String title, WikiString _abstract, WikiString body, Option<Interval> timeslot,
+                   Option<String> room, List<String> tags, List<Speaker> speakers, List<Comment> comments) {
         this.id = id;
         this.title = title;
+        this._abstract = _abstract;
+        this.body = body;
         this.timeslot = timeslot;
         this.room = room;
         this.tags = tags;

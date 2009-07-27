@@ -25,6 +25,7 @@ import no.java.incogito.domain.Session;
 import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.Speaker;
 import no.java.incogito.domain.User;
+import no.java.incogito.domain.WikiString;
 import no.java.incogito.domain.User.UserId;
 import no.java.incogito.domain.UserSessionAssociation.InterestLevel;
 import no.java.incogito.ems.client.EmsFunctions;
@@ -153,7 +154,7 @@ public class DefaultIncogitoApplication implements IncogitoApplication {
 
     F<no.java.ems.domain.Speaker, Speaker> speakerFromEms = new F<no.java.ems.domain.Speaker, Speaker>() {
         public Speaker f(no.java.ems.domain.Speaker speaker) {
-            return new Speaker(speaker.getName(), speaker.getDescription());
+            return new Speaker(speaker.getName(), new WikiString(speaker.getDescription()));
         }
     };
 
@@ -170,6 +171,8 @@ public class DefaultIncogitoApplication implements IncogitoApplication {
 
             return some(new Session(Session.id(session.getId()),
                     session.getTitle(),
+                    new WikiString(session.getLead()),
+                    new WikiString(session.getBody()),
                     fromNull(session.getTimeslot()),
                     fromNull(session.getRoom()).map(EmsFunctions.roomName),
                     iterableList(session.getTags()),

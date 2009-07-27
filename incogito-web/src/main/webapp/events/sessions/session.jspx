@@ -12,6 +12,14 @@
 <c:set var="session" value="${i:getSession(app, eventName, sessionName)}"/>
 <c:set var="eventName" value="${i:urlDecode(eventName)}"/>
 
+<!--
+TODO: Add level
+TODO: Add tracs
+TODO: Add speaker image
+
+http://javazone.no/incogito/session/Agility+at+Scale+-+Using+Team+Concert+in+a+Globally+Distributed+Team.html
+-->
+
 <body>
 <ul>
   <li><a href="${incogito.baseurl}/events">Back to event list</a></li>
@@ -22,13 +30,13 @@
 <ul>
   <li>Room:
     <c:choose>
-      <c:when test="${session.room.some}">${i:some(session.room)}</c:when>
+      <c:when test="${not(session.room eq null)}">${session.room}</c:when>
       <c:otherwise>not assigned</c:otherwise>
     </c:choose>
   </li>
   <li>Time:
     <c:choose>
-      <c:when test="${session.timeslot.some}">${i:some(session.timeslot)}</c:when>
+      <c:when test="${not(session.timeslot eq null)}">${session.timeslot}</c:when>
       <c:otherwise>not assigned</c:otherwise>
     </c:choose>
   </li>
@@ -41,11 +49,32 @@
         Speakers:
       </c:otherwise>
     </c:choose>
-    <c:forEach var="speaker" varStatus="i" items="${i:speakers(session)}">
+    <c:forEach var="speaker" varStatus="i" items="${session.speakers}">
       <c:if test="${not i.last}">${speaker.name}, </c:if>
       <c:if test="${i.last}">${speaker.name}</c:if>
     </c:forEach>
   </li>
+</ul>
+
+<h2>Description</h2>
+
+<div class="abstract">
+  ${session.abstractHtml}
+</div>
+
+<div class="body">
+  ${session.bodyHtml}
+</div>
+
+<ul class="speaker-bioses">
+  <c:forEach var="speaker" varStatus="i" items="${session.speakers}">
+    <li>
+      <div class="speaker-name">${speaker.name}</div>
+      <div class="speaker-bio">
+        ${speaker.bioHtml}
+      </div>
+    </li>
+  </c:forEach>
 </ul>
 
 </body>

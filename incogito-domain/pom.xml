@@ -14,5 +14,10 @@
       <artifactId>unix-common</artifactId>
       <version>1.0-alpha-4</version>
     </dependency>
+    <dependency>
+      <groupId>no.java.ems</groupId>
+      <artifactId>ems-wiki</artifactId>
+      <version>${version.ems}</version>
+    </dependency>
   </dependencies>
 </project>
