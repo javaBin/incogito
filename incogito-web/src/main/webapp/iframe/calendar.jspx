@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:i="http://taglib.java.no/incogito"
+      xmlns:security="http://www.springframework.org/security/tags">
+<jsp:directive.page pageEncoding="utf-8" contentType="text/html;charset=utf-8"/>
+<jsp:useBean id="incogito" type="no.java.incogito.web.servlet.IncogitoConfiguration" scope="application"/>
+<jsp:useBean id="app" type="no.java.incogito.application.IncogitoApplication" scope="application"/>
+<jsp:useBean id="eventName" type="java.lang.String" scope="request"/>
+<c:set var="eventName" value="${i:urlDecode(eventName)}"/>
+
+<head>
+  <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/calendar.css"/>
+</head>
+
+<body>
+
+<div id="bd">
+
+<ul id="times">
+  <li class="hour"><div>08:00</div></li>
+  <li class="quarter"><div>08:15</div></li>
+  <li class="quarter"><div>08:30</div></li>
+  <li class="quarter"><div>08:45</div></li>
+
+  <li class="hour"><div>09:00</div></li>
+  <li class="quarter"><div>09:15</div></li>
+  <li class="quarter"><div>09:30</div></li>
+  <li class="quarter"><div>09:45</div></li>
+
+  <li class="hour"><div>10:00</div></li>
+  <li class="quarter"><div>10:15</div></li>
+  <li class="quarter"><div>10:30</div></li>
+  <li class="quarter"><div>10:45</div></li>
+
+  <li class="hour"><div>11:00</div></li>
+  <li class="quarter"><div>11:15</div></li>
+  <li class="quarter"><div>11:30</div></li>
+  <li class="quarter"><div>11:45</div></li>
+
+  <li class="hour"><div>12:00</div></li>
+  <li class="quarter"><div>12:15</div></li>
+  <li class="quarter"><div>12:30</div></li>
+  <li class="quarter"><div>12:45</div></li>
+
+  <li class="hour"><div>13:00</div></li>
+  <li class="quarter"><div>13:15</div></li>
+  <li class="quarter"><div>13:30</div></li>
+  <li class="quarter"><div>13:45</div></li>
+
+  <li class="hour"><div>14:00</div></li>
+  <li class="quarter"><div>14:15</div></li>
+  <li class="quarter"><div>14:30</div></li>
+  <li class="quarter"><div>14:45</div></li>
+
+  <li class="hour"><div>15:00</div></li>
+  <li class="quarter"><div>15:15</div></li>
+  <li class="quarter"><div>15:30</div></li>
+  <li class="quarter"><div>15:45</div></li>
+
+  <li class="hour"><div>16:00</div></li>
+  <li class="quarter"><div>16:15</div></li>
+  <li class="quarter"><div>16:30</div></li>
+  <li class="quarter"><div>16:45</div></li>
+  
+  <li class="hour"><div>17:00</div></li>
+  <li class="quarter"><div>17:15</div></li>
+  <li class="quarter"><div>17:30</div></li>
+  <li class="quarter"><div>17:45</div></li>
+
+  <li class="hour"><div>18:00</div></li>
+  <li class="quarter"><div>18:15</div></li>
+  <li class="quarter"><div>18:30</div></li>
+  <li class="quarter"><div>18:45</div></li>
+
+  <li class="hour"><div>19:00</div></li>
+  <li class="quarter"><div>19:15</div></li>
+  <li class="quarter"><div>19:30</div></li>
+  <li class="quarter"><div>19:45</div></li>
+</ul>
+
+<div id="paneContainer">
+  <div id="pane">
+    <div id="view">
+      <div class="day">
+        <div class="room r1">
+          <h2>Room 1</h2>
+
+          <div class="session s0915 d60">
+            topic
+          </div>
+        </div>
+        <div class="room r2">
+          <h2>Room 2</h2>
+
+          <div class="session s0900 d60">
+            topic
+          </div>
+        </div>
+        <div class="room r3">
+          <h2>Room 3</h2>
+
+          <div class="session s0915 d60">
+            topic
+          </div>
+          <div class="session s1030 d60">
+            topic
+          </div>
+        </div>
+        <div class="room r4">
+          <h2>Room 4</h2>
+
+          <div class="session s0945 d60">
+            topic
+          </div>
+        </div>
+        <div class="room r5">
+          <h2>Room 5</h2>
+
+          <div class="session s1000 d60">
+            topic
+          </div>
+        </div>
+        <div class="room r6">
+          <h2>Room 6</h2>
+
+          <div class="session s1215 d60">
+            topic
+          </div>
+        </div>
+        <div class="room r7">
+          <h2>Room 7</h2>
+
+          <div class="session s1015 d60">
+            topic
+          </div>
+        </div>
+      </div>
+      <div class="day">
+        <div class="room r1">
+          <h2>Room 1</h2>
+
+          <div class="session s1015 d60">
+            topic
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</body>
+</html>

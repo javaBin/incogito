@@ -20,9 +20,11 @@
   <li><a href="${incogito.baseurl}/events/${eventName}/sessions">Sessions</a></li>
   <security:authorize ifNotGranted="ROLE_USER">
     <li><a href="${incogito.baseurl}/events/${eventName}/agenda">Agenda</a></li>
+    <li><a href="${incogito.baseurl}/events/${eventName}/calendar">Calendar</a></li>
   </security:authorize>
   <security:authorize ifAllGranted="ROLE_USER">
     <li><a href="${incogito.baseurl}/events/${eventName}/my-agenda">My agenda</a></li>
+    <li><a href="${incogito.baseurl}/events/${eventName}/my-calendar">My calendar</a></li>
   </security:authorize>
 </ul>
 

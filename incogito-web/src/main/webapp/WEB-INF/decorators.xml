@@ -4,6 +4,7 @@
 
   <excludes>
     <pattern>/js/*</pattern>
+    <pattern>/iframe/*</pattern>
   </excludes>
 
   <!--

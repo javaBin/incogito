@@ -10,11 +10,23 @@
 <jsp:useBean id="eventName" type="java.lang.String" scope="request"/>
 <c:set var="eventName" value="${i:urlDecode(eventName)}"/>
 
+<head>
+  <style type="text/css">
+    iframe {
+      border: 1px black solid;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+
 <body>
 <ul>
   <li><a href="${incogito.baseurl}/events">Back to event list</a></li>
 </ul>
 <h2>${eventName}</h2>
+
+<iframe scrolling="auto" src="${incogito.baseurl}/iframe/calendar/${eventName}"><!-- space --></iframe>
 
 </body>
 </html>
