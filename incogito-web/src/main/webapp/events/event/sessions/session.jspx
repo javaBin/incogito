@@ -16,6 +16,7 @@
 TODO: Add level
 TODO: Add tracs
 TODO: Add speaker image
+TODO: Proper formatting of timeslot
 
 http://javazone.no/incogito/session/Agility+at+Scale+-+Using+Team+Concert+in+a+Globally+Distributed+Team.html
 -->
@@ -58,13 +59,17 @@ http://javazone.no/incogito/session/Agility+at+Scale+-+Using+Team+Concert+in+a+G
 
 <h2>Description</h2>
 
-<div class="abstract">
-  ${session.abstractHtml}
-</div>
+<c:if test="${not (session.abstractHtml eq null)}">
+  <div class="abstract">
+    ${session.abstractHtml}
+  </div>
+</c:if>
 
-<div class="body">
-  ${session.bodyHtml}
-</div>
+<c:if test="${not (session.bodyHtml eq null)}">
+  <div class="body">
+    ${session.bodyHtml}
+  </div>
+</c:if>
 
 <ul class="speaker-bioses">
   <c:forEach var="speaker" varStatus="i" items="${session.speakers}">

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:i="http://taglib.java.no/incogito"
+      xmlns:security="http://www.springframework.org/security/tags">
+<jsp:directive.page pageEncoding="utf-8" contentType="text/html;charset=utf-8"/>
+<jsp:useBean id="incogito" type="no.java.incogito.web.servlet.IncogitoConfiguration" scope="application"/>
+<jsp:useBean id="app" type="no.java.incogito.application.IncogitoApplication" scope="application"/>
+<jsp:useBean id="eventName" type="java.lang.String" scope="request"/>
+<c:set var="eventName" value="${i:urlDecode(eventName)}"/>
+
+<body>
+<ul>
+  <li><a href="${incogito.baseurl}/events">Back to event list</a></li>
+</ul>
+<h2>${eventName}</h2>
+
+</body>
+</html>

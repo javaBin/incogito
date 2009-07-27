@@ -16,9 +16,4 @@ public class VoldemortF {
             }
         };
     }
-
-    // I'll get killed for this - trygve
-    public static <A> A toNull(Option<A> option){
-        return option.isSome() ? option.some() : null;
-    }
 }

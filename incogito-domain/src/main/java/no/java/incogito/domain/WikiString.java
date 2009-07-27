@@ -1,5 +1,6 @@
 package no.java.incogito.domain;
 
+import fj.F;
 import no.java.ems.wiki.DefaultHtmlWikiSink;
 import no.java.ems.wiki.DefaultWikiEngine;
 
@@ -16,6 +17,12 @@ public class WikiString {
         this.wikiText = wikiText;
     }
 
+    public static final F<String, WikiString> constructor = new F<String, WikiString>() {
+        public WikiString f(String wikiText) {
+            return new WikiString(wikiText);
+        }
+    };
+
     public String toHtml() {
         try {
             DefaultWikiEngine<DefaultHtmlWikiSink> wikiEngine =
@@ -26,4 +33,14 @@ public class WikiString {
             throw new RuntimeException("Unable to convert wiki text.", e);
         }
     }
+
+    // -----------------------------------------------------------------------
+    // First-Order Functions
+    // -----------------------------------------------------------------------
+
+    public static final F<WikiString, String> toHtml = new F<WikiString, String>() {
+        public String f(WikiString wikiString) {
+            return wikiString.toHtml();
+        }
+    };
 }

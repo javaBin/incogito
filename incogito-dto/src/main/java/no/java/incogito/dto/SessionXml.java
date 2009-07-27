@@ -28,19 +28,16 @@ public class SessionXml {
     public SessionXml() {
     }
 
-    public SessionXml(String selfUri, String id, String title, String abstractHtml, String bodyHtml, Option<String> room, Option<XMLGregorianCalendar> timeslot, Iterable<SpeakerXml> speakers) {
+    public SessionXml(String selfUri, String id, String title, Option<String> abstractHtml, Option<String> bodyHtml,
+                      Option<String> room, Option<XMLGregorianCalendar> timeslot, Iterable<SpeakerXml> speakers) {
         this.selfUri = selfUri;
         this.id = id;
         this.title = title;
-        this.abstractHtml = abstractHtml;
-        this.bodyHtml = bodyHtml;
+        this.abstractHtml = abstractHtml.orSome((String) null);
+        this.bodyHtml = bodyHtml.orSome((String) null);
         this.room = room.orSome((String) null);
         this.timeslot = timeslot.orSome((XMLGregorianCalendar) null);
         this.speakers = toList(speakers);
-    }
-
-    public String getSelfUri() {
-        return selfUri;
     }
 
     public String getId() {

@@ -17,6 +17,12 @@ public class Functions {
         }
     });
 
+
+    // I'll get killed for this - trygve
+    public static <A> A toNull(Option<A> option){
+        return option.isSome() ? option.some() : null;
+    }
+
     public static <T> F<List<T>, T> head_() {
         return new F<List<T>, T>() {
             public T f(List<T> list) {

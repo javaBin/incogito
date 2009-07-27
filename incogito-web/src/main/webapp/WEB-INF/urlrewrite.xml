@@ -64,38 +64,38 @@
   <rule match-type="regex">
     <from>^/events/(.*)/sessions/?$</from>
     <set name="eventName">$1</set>
-    <to last="true">/events/sessions/index.jspx</to>
+    <to last="true">/events/event/sessions/index.jspx</to>
   </rule>
 
   <rule match-type="regex">
     <from>^/events/(.*)/sessions/(.*)$</from>
     <set name="eventName">$1</set>
     <set name="sessionName">$2</set>
-    <to last="true">/events/sessions/session.jspx</to>
+    <to last="true">/events/event/sessions/session.jspx</to>
   </rule>
 
   <rule match-type="regex">
     <from>^/events/(.*)/agenda/?$</from>
     <set name="eventName">$1</set>
-    <to last="true">/events/agenda.jspx</to>
+    <to last="true">/events/event/agenda.jspx</to>
   </rule>
 
   <rule match-type="regex">
     <from>^/events/(.*)/agenda</from>
     <set name="eventName">$1</set>
-    <to last="true">/events/agenda.jspx</to>
+    <to last="true">/events/event/agenda.jspx</to>
   </rule>
 
   <rule match-type="regex">
     <from>^/events/(.*)/my-agenda</from>
     <set name="eventName">$1</set>
-    <to last="true">/events/my-agenda.jspx</to>
+    <to last="true">/events/event/my-agenda.jspx</to>
   </rule>
 
   <rule match-type="wildcard">
     <from>/events/*</from>
     <set name="eventName">$1</set>
-    <to last="true">/events/event.jspx</to>
+    <to last="true">/events/event/event.jspx</to>
   </rule>
 
 </urlrewrite>

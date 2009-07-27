@@ -1,5 +1,7 @@
 package no.java.incogito.dto;
 
+import fj.data.Option;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -14,9 +16,9 @@ public class SpeakerXml {
     public SpeakerXml() {
     }
 
-    public SpeakerXml(String name, String bioHtml) {
+    public SpeakerXml(String name, Option<String> bioHtml) {
         this.name = name;
-        this.bioHtml = bioHtml;
+        this.bioHtml = bioHtml.orSome((String) null);
     }
 
     public String getName() {

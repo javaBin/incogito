@@ -17,6 +17,7 @@ import static fj.data.Option.fromNull;
 import static fj.data.Option.join;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
+import static fj.data.Option.fromString;
 import no.java.incogito.Functions;
 import no.java.incogito.domain.Comment;
 import no.java.incogito.domain.Event;
@@ -154,7 +155,7 @@ public class DefaultIncogitoApplication implements IncogitoApplication {
 
     F<no.java.ems.domain.Speaker, Speaker> speakerFromEms = new F<no.java.ems.domain.Speaker, Speaker>() {
         public Speaker f(no.java.ems.domain.Speaker speaker) {
-            return new Speaker(speaker.getName(), new WikiString(speaker.getDescription()));
+            return new Speaker(speaker.getName(), fromString(speaker.getDescription()).map(WikiString.constructor));
         }
     };
 
@@ -169,10 +170,10 @@ public class DefaultIncogitoApplication implements IncogitoApplication {
                 return none();
             }
 
-            return some(new Session(Session.id(session.getId()),
+            return some(new Session(new SessionId(session.getId()),
                     session.getTitle(),
-                    new WikiString(session.getLead()),
-                    new WikiString(session.getBody()),
+                    fromString(session.getLead()).map(WikiString.constructor),
+                    fromString(session.getBody()).map(WikiString.constructor),
                     fromNull(session.getTimeslot()),
                     fromNull(session.getRoom()).map(EmsFunctions.roomName),
                     iterableList(session.getTags()),

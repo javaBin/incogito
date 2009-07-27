@@ -11,6 +11,7 @@ import no.java.incogito.domain.Session;
 import no.java.incogito.domain.SessionRating;
 import no.java.incogito.domain.UserSessionAssociation;
 import no.java.incogito.domain.Speaker;
+import no.java.incogito.domain.WikiString;
 import no.java.incogito.dto.EventXml;
 import no.java.incogito.dto.InterestLevelXml;
 import no.java.incogito.dto.ScheduleXml;
@@ -57,18 +58,17 @@ public class XmlFunctions {
 
     private static F<Speaker, SpeakerXml> speakerToXml = new F<Speaker, SpeakerXml>() {
         public SpeakerXml f(Speaker speaker) {
-            return new SpeakerXml(speaker.name, speaker.bio.toHtml());
+            return new SpeakerXml(speaker.name, speaker.bio.map(WikiString.toHtml));
         }
     };
 
     public static final F<P1<UriBuilder>, F<Session, SessionXml>> sessionToXml = curry(new F2<P1<UriBuilder>, Session, SessionXml>() {
         public SessionXml f(P1<UriBuilder> uriBuilder, Session session) {
-
             return new SessionXml(uriBuilder._1().segment(session.title).build().toString(),
                     session.id.value,
                     session.title,
-                    session._abstract.toHtml(),
-                    session.body.toHtml(),
+                    session._abstract.map(WikiString.toHtml),
+                    session.body.map(WikiString.toHtml),
                     session.room,
                     session.timeslot.map(toXmlGregorianCalendar),
                     session.speakers.map(speakerToXml));
@@ -77,7 +77,6 @@ public class XmlFunctions {
 
     public static final F<UserSessionAssociation, UserSessionAssociationXml> sessionAssociationToXml = new F<UserSessionAssociation, UserSessionAssociationXml>() {
         public UserSessionAssociationXml f(UserSessionAssociation userSessionAssociation) {
-
             F<String, SessionRatingXml> f = Enums.<SessionRatingXml>valueOf().f(SessionRatingXml.class);
 
             return new UserSessionAssociationXml(userSessionAssociation.sessionId.value,
