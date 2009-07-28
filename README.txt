@@ -1,3 +1,7 @@
+For the full documentation on Incogito, please go here:
+
+  http://wiki.github.com/javaBin/incogito
+
 To run the EMS server:
 
 $ mvn -f incogito-ems-server/pom.xml exec:java
