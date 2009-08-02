@@ -5,11 +5,23 @@
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
+  <!-- Incogito -->
+
+  <bean id="incogitoHome" class="no.java.incogito.util.TestPathFactoryBean">
+    <property name="testClass" value="no.java.incogito.application.IncogitoApplication"/>
+    <property name="path" value="src/test/resources/cluster-it/node-it"/>
+  </bean>
+  
   <bean id="userClient" class="no.java.incogito.application.UserClient">
     <constructor-arg ref="userStoreClient"/>
   </bean>
 
   <!-- Voldemort -->
+
+  <bean id="voldemortHome" class="no.java.incogito.util.TestPathFactoryBean">
+    <property name="testClass" value="no.java.incogito.application.IncogitoApplication"/>
+    <property name="path" value="src/test/resources/cluster-it/node-it/voldemort"/>
+  </bean>
 
   <bean id="voldemortServer" class="no.java.incogito.voldemort.VoldemortHomeServerFactoryBean">
     <description>Voldemort Server</description>
@@ -27,6 +39,11 @@
 
   <!-- EMS -->
 
+  <bean id="emsHome" class="no.java.incogito.util.TestPathFactoryBean">
+    <property name="testClass" value="no.java.incogito.application.IncogitoApplication"/>
+    <property name="path" value="target/ems-home"/>
+  </bean>
+
   <bean id="emsServices" class="no.java.incogito.ems.server.EmsServicesFactoryBean">
     <description>
       EMS Server
@@ -41,18 +58,6 @@
       EMS Client
     </description>
     <property name="baseurl" value="http://localhost:3300/ems"/>
-  </bean>
-
-  <!-- Paths -->
-
-  <bean id="emsHome" class="no.java.incogito.util.TestPathFactoryBean">
-    <property name="testClass" value="no.java.incogito.application.IncogitoApplication"/>
-    <property name="path" value="target/ems-home"/>
-  </bean>
-
-  <bean id="voldemortHome" class="no.java.incogito.util.TestPathFactoryBean">
-    <property name="testClass" value="no.java.incogito.application.IncogitoApplication"/>
-    <property name="path" value="src/test/resources/cluster-it/node-it"/>
   </bean>
 
 </beans>

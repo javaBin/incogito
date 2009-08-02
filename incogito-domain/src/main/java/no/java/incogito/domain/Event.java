@@ -2,6 +2,7 @@ package no.java.incogito.domain;
 
 import fj.pre.Ord;
 import fj.F;
+import fj.data.Option;
 
 import java.util.UUID;
 
@@ -13,6 +14,8 @@ public class Event {
     public final EventId id;
 
     public final String name;
+
+    public final Option<String> welcome;
 
     public static final F<Event, String> getName = new F<Event, String>() {
         public String f(Event event) {
@@ -26,20 +29,26 @@ public class Event {
         }
     };
 
-    public Event(EventId id, String name) {
+    public Event(EventId id, String name, Option<String> welcome) {
         this.id = id;
         this.name = name;
-    }
-
-    public static EventId id(String value) {
-        return new EventId(value);
+        this.welcome = welcome;
     }
 
     public static class EventId extends Id {
-        public static Ord<EventId> ord = Ord.comparableOrd();
+        public static final Ord<EventId> ord = Ord.comparableOrd();
+        public static final F<String, EventId> eventId = new F<String, EventId>() {
+            public EventId f(String value) {
+                return eventId(value);
+            }
+        };
 
         private EventId(String value) {
             super(value);
+        }
+
+        public static EventId eventId(String value) {
+            return new EventId(value);
         }
     }
 
@@ -54,17 +63,5 @@ public class Event {
         public int compareTo(Object o) {
             return value.compareTo(((Id) o).value);
         }
-    }
-
-    // -----------------------------------------------------------------------
-    // Getters
-    // -----------------------------------------------------------------------
-
-    public EventId getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
     }
 }

@@ -13,6 +13,11 @@
 
   <bean id="voldemortHome" class="no.java.incogito.util.TestPathFactoryBean">
     <property name="testClass" value="no.java.incogito.application.IncogitoApplication"/>
+    <property name="path" value="src/test/resources/cluster-${voldemort.clusterId}/node-${voldemort.nodeId}/voldemort"/>
+  </bean>
+
+  <bean id="incogitoHome" class="no.java.incogito.util.TestPathFactoryBean">
+    <property name="testClass" value="no.java.incogito.application.IncogitoApplication"/>
     <property name="path" value="src/test/resources/cluster-${voldemort.clusterId}/node-${voldemort.nodeId}"/>
   </bean>
 

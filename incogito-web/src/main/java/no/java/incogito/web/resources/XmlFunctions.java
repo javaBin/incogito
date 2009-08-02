@@ -19,7 +19,7 @@ import no.java.incogito.dto.SessionRatingXml;
 import no.java.incogito.dto.SessionXml;
 import no.java.incogito.dto.UserSessionAssociationXml;
 import no.java.incogito.dto.SpeakerXml;
-import no.java.incogito.util.Enums;
+import no.java.incogito.Enums;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -96,7 +96,7 @@ public class XmlFunctions {
 
     public static final F<Event, EventXml> eventToXml = new F<Event, EventXml>() {
         public EventXml f(Event event) {
-            return new EventXml(event.name);
+            return new EventXml(event.id.value.toString(), event.name, event.welcome);
         }
     };
 

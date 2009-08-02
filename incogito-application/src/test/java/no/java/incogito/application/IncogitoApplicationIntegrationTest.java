@@ -9,8 +9,12 @@ import fj.data.Option;
 import static fj.data.Option.some;
 import fj.data.Stream;
 import fj.data.TreeMap;
+import fj.pre.Ord;
 import fj.pre.Show;
 import no.java.ems.server.EmsServices;
+import no.java.incogito.IO;
+import static no.java.incogito.IO.Strings.stringToStream;
+import static no.java.incogito.PropertiesF.storePropertiesMap;
 import no.java.incogito.domain.Event;
 import no.java.incogito.domain.Schedule;
 import no.java.incogito.domain.Session;
@@ -21,23 +25,27 @@ import static no.java.incogito.domain.User.createPristineUser;
 import no.java.incogito.domain.UserSessionAssociation.InterestLevel;
 import static no.java.incogito.domain.UserSessionAssociation.InterestLevel.ATTEND;
 import static no.java.incogito.domain.UserSessionAssociation.InterestLevel.INTEREST;
-import static no.java.incogito.domain.UserSessionAssociation.InterestLevel.valueOf;
 import no.java.incogito.ems.server.DataGenerator;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.apache.log4j.Logger;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import voldemort.server.VoldemortServer;
 
+import java.io.File;
+import java.net.URL;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
@@ -58,6 +66,12 @@ public class IncogitoApplicationIntegrationTest {
     @Autowired
     VoldemortServer voldemortServer;
 
+    @Autowired
+    @Qualifier("incogitoHome")
+    File incogitoHome;
+
+    DataGenerator.DataSet1 dataSet;
+
     // All numbers but zero has twice the probability
     Stream<Integer> numbers = Stream.unfold(new F<Object, Option<P2<Integer, Object>>>() {
         private final Random random = new Random(0);
@@ -68,11 +82,24 @@ public class IncogitoApplicationIntegrationTest {
     }, 0);
 
     @BeforeClass
-    public static void beforeClass() {
+    public static void beforeClass() throws Exception {
         logger.info("=============================================================");
         logger.info("===================== STARTING SETUP ========================");
         logger.info("=============================================================");
         System.out.println(UserClient.SCHEMA);
+
+        URL resource = IncogitoApplicationIntegrationTest.class.getResource("/");
+        File basedir = new File(resource.toURI().getPath()).getParentFile().getParentFile().getAbsoluteFile();
+
+        File etc = new File(basedir, "src/test/resources/cluster-it/node-it/etc");
+        if (!etc.isDirectory()) {
+            assertTrue(etc.mkdirs());
+        }
+
+        TreeMap<String, String> properties = TreeMap.<String, String>empty(Ord.stringOrd).
+                set("baseurl", "http://");
+        IO.runFileOutputStream(storePropertiesMap.f(properties), new File(etc, "incogito.properties")).call();
+        System.out.println("properties = " + properties);
     }
 
     @Before
@@ -80,7 +107,7 @@ public class IncogitoApplicationIntegrationTest {
         logger.info("=============================================================");
         logger.info("================ STARTING DATA GENERATION ===================");
         logger.info("=============================================================");
-        new DataGenerator(services).generate1();
+        dataSet = new DataGenerator(services).generate1();
         logger.info("=============================================================");
         logger.info("======================= SETUP DONE ==========================");
         logger.info("=============================================================");
@@ -112,6 +139,37 @@ public class IncogitoApplicationIntegrationTest {
 
         OperationResult<Schedule> scheduleOperationResult = incogito.getSchedule(event.getName(), userId.value);
         assertEquals(OperationResult.Status.OK, scheduleOperationResult.status);
+    }
+
+    @Test
+    public void testWelcomeMessages() throws Exception {
+        // Gah .. since the events are generated dynamically, we have to create a properties file for the app to load
+
+        String text = "Welcome to JavaZone 2008!";
+
+        assertNotNull(incogitoHome);
+        assertTrue(incogitoHome.isDirectory());
+
+        File etc = new File(incogitoHome, "etc");
+        File props = new File(etc, "incogito.properties");
+        File jz08Welcome = new File(etc, "jz08-welcome.txt");
+
+        TreeMap<String, String> properties = TreeMap.<String, String>empty(Ord.stringOrd).
+                set("baseurl", "tjoho").
+                set("events", UUID.randomUUID().toString() + ", " + dataSet.javaZone2008.getId() + ",").
+                set("event." + dataSet.javaZone2008.getId() + ".welcome", jz08Welcome.getName());
+        IO.runFileOutputStream(storePropertiesMap.f(properties), props).call();
+
+        IO.runFileOutputStream(stringToStream.f(text), jz08Welcome).call();
+
+        incogito.reloadConfiguration();
+
+        OperationResult<Event> operationResult = incogito.getEventByName(dataSet.javaZone2008.getName());
+        assertTrue(operationResult.isOk());
+        Event jz08 = operationResult.value();
+
+        assertTrue(jz08.welcome.isSome());
+        assertEquals(text, jz08.welcome.some());
     }
 
     @Test

@@ -9,6 +9,7 @@ import voldemort.client.StoreClient;
 import voldemort.versioning.TimeBasedInconsistencyResolver;
 
 import java.util.Map;
+import java.io.File;
 
 /**
  * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
@@ -25,7 +26,7 @@ public class TrygveMain {
         StoreClient<String, Map> client = clientFactory.getStoreClient("user", new TimeBasedInconsistencyResolver<Map>());
 
         UserClient userClient = new UserClient(client);
-        IncogitoApplication incogito = new DefaultIncogitoApplication(userClient, null);
+        IncogitoApplication incogito = new DefaultIncogitoApplication(new File(""), userClient, null);
 
         List<UserId> userIds = List.range(1, 1000).map(toString).map(UserId.fromString);
 

@@ -13,7 +13,7 @@ To run the Incogito web application:
 
 $ mvn -f incogito-web/pom.xml jetty:run
 
-The application will be available on http://localhost:8096/incogito-web
+The application will be available on http://localhost:8096/incogito
 
 = How to run a Incogito cluster:
 

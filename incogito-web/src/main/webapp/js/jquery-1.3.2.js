@@ -917,12 +917,12 @@ jQuery.extend({
 				// Remove IE's autoinserted <tbody> from table fragments
 				if ( !jQuery.support.tbody ) {
 
-					// String was a <table>, *may* have spurious <tbody>
+					// Strings was a <table>, *may* have spurious <tbody>
 					var hasBody = /<tbody/i.test(elem),
 						tbody = !tags.indexOf("<table") && !hasBody ?
 							div.firstChild && div.firstChild.childNodes :
 
-						// String was a bare <thead> or <tfoot>
+						// Strings was a bare <thead> or <tfoot>
 						wrap[1] == "<table>" && !hasBody ?
 							div.childNodes :
 							[];

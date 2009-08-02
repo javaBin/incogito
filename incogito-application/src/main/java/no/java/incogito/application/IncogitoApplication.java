@@ -14,6 +14,10 @@ import no.java.incogito.domain.UserSessionAssociation.InterestLevel;
  * @version $Id$
  */
 public interface IncogitoApplication {
+    IncogitoConfiguration getConfiguration();
+
+    void reloadConfiguration() throws Exception;
+
     OperationResult<List<Event>> getEvents();
 
     OperationResult<Event> getEventByName(String eventName);

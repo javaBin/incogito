@@ -14,3 +14,5 @@ nbproject
 private
 target
 voldemort-*.tar.gz
+
+incogito-application/src/test/resources/cluster-it/node-it/etc/

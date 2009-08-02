@@ -5,10 +5,11 @@
       xmlns:i="http://taglib.java.no/incogito"
       xmlns:security="http://www.springframework.org/security/tags">
 <jsp:directive.page pageEncoding="utf-8" contentType="text/html;charset=utf-8"/>
-<jsp:useBean id="incogito" type="no.java.incogito.web.servlet.IncogitoConfiguration" scope="application"/>
+<jsp:useBean id="incogito" type="no.java.incogito.application.IncogitoConfiguration" scope="request"/>
 <jsp:useBean id="app" type="no.java.incogito.application.IncogitoApplication" scope="application"/>
 <jsp:useBean id="eventName" type="java.lang.String" scope="request"/>
 <c:set var="eventName" value="${i:urlDecode(eventName)}"/>
+<c:set var="event" value="${i:getEvent(app, eventName)}"/>
 
 <body>
 <ul>
@@ -28,11 +29,9 @@
   </security:authorize>
 </ul>
 
-<script type="text/javascript">
-  getMySchedule("${eventName}", function(data){
-    console.log(data)
-  })
-</script>
+<c:if test="${not(event.welcomeHtml eq null)}">
+  ${event.welcomeHtml}
+</c:if>
 
 </body>
 </html>

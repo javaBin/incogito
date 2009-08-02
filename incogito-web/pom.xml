@@ -125,6 +125,8 @@
         <artifactId>maven-jetty-plugin</artifactId>
         <version>6.1.14</version>
         <configuration>
+          <useTestClasspath>true</useTestClasspath>
+          <contextPath>/incogito</contextPath>
           <systemProperties>
             <systemProperty>
               <key>ems.url</key>
@@ -139,7 +141,6 @@
               <value>${voldemort.clusterId}</value>
             </systemProperty>
           </systemProperties>
-          <useTestClasspath>true</useTestClasspath>
           <connectors>
             <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
               <port>${jetty.port}</port>

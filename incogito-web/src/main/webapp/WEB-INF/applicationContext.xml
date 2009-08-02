@@ -9,4 +9,23 @@
   <import resource="classpath*:incogito-web-applicationContext-test.xml"/> <!-- A hack for now - trygve -->
   <import resource="applicationContext-security.xml"/>
 
+  <bean id="timerFactory" class="org.springframework.scheduling.timer.TimerFactoryBean">
+    <property name="scheduledTimerTasks">
+      <list>
+        <ref bean="reloadConfigurationTask"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="reloadConfigurationTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
+    <property name="delay" value="10000"/>
+    <property name="period" value="10000"/>
+    <property name="timerTask" ref="reloadConfiguration"/>
+  </bean>
+
+  <bean id="reloadConfiguration" class="org.springframework.scheduling.timer.MethodInvokingTimerTaskFactoryBean">
+    <property name="targetObject" ref="incogitoApplication"/>
+    <property name="targetMethod" value="reloadConfiguration"/>
+  </bean>
+
 </beans>

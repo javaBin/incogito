@@ -1,5 +1,7 @@
 package no.java.incogito.dto;
 
+import fj.data.Option;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -8,20 +10,26 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class EventXml {
-    private String name;
+    public String id;
+
+    public String name;
+
+    public String welcomeHtml;
 
     public EventXml() {
     }
 
-    public EventXml(String name) {
+    public EventXml(String id, String name, Option<String> welcomeHtml) {
+        this.id = id;
         this.name = name;
+        this.welcomeHtml = welcomeHtml.orSome((String) null);
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getWelcomeHtml() {
+        return welcomeHtml;
     }
 }

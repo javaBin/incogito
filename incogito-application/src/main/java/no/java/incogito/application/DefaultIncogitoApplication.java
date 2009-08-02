@@ -9,53 +9,132 @@ import static fj.Function.compose;
 import static fj.Function.curry;
 import static fj.Function.flip;
 import fj.Unit;
+import fj.function.Strings;
+import fj.function.Booleans;
 import fj.data.Either;
 import fj.data.List;
 import static fj.data.List.iterableList;
 import fj.data.Option;
 import static fj.data.Option.fromNull;
+import static fj.data.Option.fromString;
 import static fj.data.Option.join;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
-import static fj.data.Option.fromString;
+import fj.data.TreeMap;
 import no.java.incogito.Functions;
+import static no.java.incogito.Functions.throwLeft;
+import no.java.incogito.IO;
+import no.java.incogito.PropertiesF;
+import static no.java.incogito.IO.Strings.streamToString;
 import no.java.incogito.domain.Comment;
 import no.java.incogito.domain.Event;
+import no.java.incogito.domain.Event.EventId;
 import no.java.incogito.domain.Schedule;
 import no.java.incogito.domain.Session;
 import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.Speaker;
 import no.java.incogito.domain.User;
-import no.java.incogito.domain.WikiString;
 import no.java.incogito.domain.User.UserId;
 import no.java.incogito.domain.UserSessionAssociation.InterestLevel;
+import no.java.incogito.domain.WikiString;
 import no.java.incogito.ems.client.EmsFunctions;
 import no.java.incogito.ems.client.EmsWrapper;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.apache.log4j.Logger;
+
+import java.io.File;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 @Component("incogitoApplication")
-public class DefaultIncogitoApplication implements IncogitoApplication {
+public class DefaultIncogitoApplication implements IncogitoApplication, InitializingBean {
+    private final Logger logger = Logger.getLogger(DefaultIncogitoApplication.class);
+    private final File incogitoHome;
     private final UserClient userClient;
     private final EmsWrapper emsWrapper;
 
+    private IncogitoConfiguration configuration;
+
     @Autowired
-    public DefaultIncogitoApplication(UserClient userClient, EmsWrapper emsWrapper) {
+    public DefaultIncogitoApplication(@Qualifier("incogitoHome") File incogitoHome, UserClient userClient, EmsWrapper emsWrapper) {
+        this.incogitoHome = incogitoHome;
         this.userClient = userClient;
         this.emsWrapper = emsWrapper;
     }
 
+    public void afterPropertiesSet() throws Exception {
+        reloadConfiguration();
+    }
+
+    // -----------------------------------------------------------------------
+    // IncogitoApplication Implementation
+    // -----------------------------------------------------------------------
+
+    public IncogitoConfiguration getConfiguration() {
+        return configuration;
+    }
+
+    /*
+     * TODO: Consider improving the logging here.
+     * Set the initial logger to log to debug() and log only any changes to info(). That way there will be no repeated
+     * logging output, but it will be possible to turn it on to check that the application is working.
+     */
+    public void reloadConfiguration() throws Exception {
+        File props = new File(incogitoHome, "etc/incogito.properties").getAbsoluteFile();
+        logger.info("Reloading configuration from: " + props);
+        File etc = props.getParentFile();
+
+        TreeMap<String, String> properties = IO.<TreeMap<String, String>>runFileInputStream_().
+                f(PropertiesF.loadPropertiesAsMap).
+                f(props).call();
+
+        @SuppressWarnings({"ThrowableInstanceNeverThrown"})
+        String baseurl = throwLeft(properties.get("baseurl").toEither(new Exception("Missing required property: baseurl")));
+
+        List<EventId> events = properties.get("events").
+                bind(Option.fromString()).
+                map(Functions.split.f(",")).orSome(List.<String>nil()).
+                map(Functions.trim).
+                filter(compose(Booleans.not, Strings.isEmpty)).
+                map(EventId.eventId);
+
+        TreeMap<EventId, String> welcomeTexts = TreeMap.empty(EventId.ord);
+
+        for (EventId event : events) {
+            logger.debug("Loading " + event.value.toString() + "...");
+
+            Option<File> fileOption = properties.get("event." + event.value.toString() + ".welcome").
+                    map(Functions.newFile.f(etc)).
+                    filter(Functions.canRead);
+
+            if (fileOption.isNone()) {
+                continue;
+            }
+
+            logger.debug("Welcome file: " + fileOption.some());
+
+            String welcomeHtml = IO.<String>runFileInputStream_().f(streamToString).f(fileOption.some()).call();
+
+            welcomeTexts = welcomeTexts.set(event, welcomeHtml);
+        }
+
+        this.configuration = new IncogitoConfiguration(baseurl, welcomeTexts);
+    }
+
     public OperationResult<List<Event>> getEvents() {
-        return OperationResult.ok(emsWrapper.listEvents().map(eventFromEms));
+        F<EventId, Option<String>> getter = flip(Functions.<EventId,String>TreeMap_get()).f(configuration.welcomeTexts);
+        return OperationResult.ok(emsWrapper.listEvents().map(eventFromEms.f(getter)));
     }
 
     public OperationResult<Event> getEventByName(String eventName) {
+        F<EventId, Option<String>> getter = flip(Functions.<EventId,String>TreeMap_get()).f(configuration.welcomeTexts);
         return emsWrapper.findEventByName.f(eventName).
-                map(compose(OperationResult.<Event>ok_(), eventFromEms)).
+                map(compose(OperationResult.<Event>ok_(), eventFromEms.f(getter))).
                 orSome(OperationResult.<Event>notFound("Event with name '" + eventName + "' not found."));
     }
 
@@ -113,7 +192,9 @@ public class DefaultIncogitoApplication implements IncogitoApplication {
                 emsWrapper.findSessionIdsByEventId,
                 EmsFunctions.eventId);
 
-        Option<Event> event = emsEvent.map(eventFromEms);
+        F<EventId, Option<String>> getter = flip(Functions.<EventId,String>TreeMap_get()).f(configuration.welcomeTexts);
+
+        Option<Event> event = emsEvent.map(eventFromEms.f(getter));
         Option<List<Session>> sessions = emsEvent.map(f);
         Option<User> user = userClient.getUser(new UserId(userId));
 
@@ -147,11 +228,12 @@ public class DefaultIncogitoApplication implements IncogitoApplication {
     // Functions from EMS domain objects to Incogito domain objects
     // -----------------------------------------------------------------------
 
-    F<no.java.ems.domain.Event, Event> eventFromEms = new F<no.java.ems.domain.Event, Event>() {
-        public Event f(no.java.ems.domain.Event event) {
-            return new Event(Event.id(event.getId()), event.getName());
+    F<F<EventId, Option<String>>, F<no.java.ems.domain.Event, Event>> eventFromEms = curry(new F2<F<EventId, Option<String>>, no.java.ems.domain.Event, Event>() {
+        public Event f(F<EventId, Option<String>> welcomeTextGetter, no.java.ems.domain.Event event) {
+            EventId id = EventId.eventId(event.getId());
+            return new Event(id, event.getName(), welcomeTextGetter.f(id));
         }
-    };
+    });
 
     F<no.java.ems.domain.Speaker, Speaker> speakerFromEms = new F<no.java.ems.domain.Speaker, Speaker>() {
         public Speaker f(no.java.ems.domain.Speaker speaker) {

@@ -11,6 +11,8 @@
   <context:component-scan base-package="no.java.incogito.web.resources"/>
   <context:component-scan base-package="no.java.incogito.web.servlet"/>
 
+  <!-- Incogito -->
+
   <bean id="userClient" class="no.java.incogito.application.UserClient">
     <constructor-arg ref="userStoreClient"/>
   </bean>

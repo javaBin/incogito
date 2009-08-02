@@ -1,4 +1,4 @@
-package no.java.incogito.util;
+package no.java.incogito;
 
 import fj.F;
 import fj.F2;
