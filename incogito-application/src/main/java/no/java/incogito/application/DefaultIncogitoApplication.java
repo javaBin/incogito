@@ -37,6 +37,7 @@ import no.java.incogito.domain.User;
 import no.java.incogito.domain.User.UserId;
 import no.java.incogito.domain.UserSessionAssociation.InterestLevel;
 import no.java.incogito.domain.WikiString;
+import no.java.incogito.domain.Room;
 import no.java.incogito.ems.client.EmsFunctions;
 import no.java.incogito.ems.client.EmsWrapper;
 import org.springframework.beans.factory.InitializingBean;
@@ -105,6 +106,9 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
 
         TreeMap<EventId, String> welcomeTexts = TreeMap.empty(EventId.ord);
 
+        // TODO: Load the order of the rooms
+        // TODO: Load "extra" room sessions which are special like "lunch" and "party zone"
+        // TODO: Consider switching to reading a <event id>.xml file if it exist and use that as configuration
         for (EventId event : events) {
             logger.debug("Loading " + event.value.toString() + "...");
 
@@ -228,10 +232,16 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
     // Functions from EMS domain objects to Incogito domain objects
     // -----------------------------------------------------------------------
 
+    public F<no.java.ems.domain.Room, Room> roomFromEms = new F<no.java.ems.domain.Room, Room>() {
+        public Room f(no.java.ems.domain.Room room) {
+            return new Room(room.getName());
+        }
+    };
+
     F<F<EventId, Option<String>>, F<no.java.ems.domain.Event, Event>> eventFromEms = curry(new F2<F<EventId, Option<String>>, no.java.ems.domain.Event, Event>() {
         public Event f(F<EventId, Option<String>> welcomeTextGetter, no.java.ems.domain.Event event) {
             EventId id = EventId.eventId(event.getId());
-            return new Event(id, event.getName(), welcomeTextGetter.f(id));
+            return new Event(id, event.getName(), welcomeTextGetter.f(id), List.iterableList(event.getRooms()).map(roomFromEms));
         }
     });
 

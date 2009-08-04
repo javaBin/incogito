@@ -1,22 +1,29 @@
 package no.java.incogito;
 
 import fj.Bottom;
+import static fj.Bottom.error;
 import fj.F;
 import fj.F2;
 import fj.F3;
 import static fj.Function.curry;
+import static fj.P.p;
+import fj.P1;
 import fj.P2;
 import fj.data.Either;
 import fj.data.List;
 import static fj.data.List.cons;
 import static fj.data.List.list;
 import fj.data.Option;
+import static fj.data.Option.none;
+import static fj.data.Option.some;
+import fj.data.Stream;
 import fj.data.TreeMap;
 import fj.pre.Show;
 import static fj.pre.Show.show;
 
 import java.io.File;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -64,13 +71,13 @@ public class Functions {
         }
     });
 
-    public static final F<Integer, F<String, String>> substring = curry( new F2<Integer, String, String>() {
-        public String f(Integer integer, String s) {
-            return s.substring(integer);
+    public static final F<Integer, F<String, String>> substringFrom = curry( new F2<Integer, String, String>() {
+        public String f(Integer beginIndex, String s) {
+            return s.substring(beginIndex);
         }
     });
 
-    public static final F<Integer, F<Integer, F<String, String>>> substring2 = curry( new F3<Integer, Integer, String, String>() {
+    public static final F<Integer, F<Integer, F<String, String>>> substring = curry( new F3<Integer, Integer, String, String>() {
         public String f(Integer beginIndex, Integer endIndex, String s) {
             return s.substring(beginIndex, endIndex);
         }
@@ -193,6 +200,115 @@ public class Functions {
                 return list.filter(filter);
             }
         });
+    }
+
+    public static <A, B, C> List<C> List_product(List<A> as, final List<B> bs, final F<A, F<B, C>> f) {
+        class State {
+            final A a;
+
+            final Iterator<A> ai;
+            final Iterator<B> bi;
+
+            State(A a, Iterator<A> ai, Iterator<B> bi) {
+                this.a = a;
+                this.ai = ai;
+                this.bi = bi;
+            }
+        }
+
+        if(as.isEmpty() || bs.isEmpty()) {
+            return List.nil();
+        }
+
+        Iterator<A> ai = as.iterator();
+        return List.unfold(new F<State, Option<P2<C, State>>>() {
+            public Option<P2<C, State>> f(State state) {
+                // Still running Bs
+                if (state.bi.hasNext()) {
+                    C c = f.f(state.a).f(state.bi.next());
+                    return some(p(c, new State(state.a, state.ai, state.bi)));
+                }
+
+                // Out of Bs
+                if (state.ai.hasNext()) {
+                    A a = state.ai.next();
+                    Iterator<B> bi = bs.iterator();
+                    C c = f.f(a).f(bi.next());
+                    return some(p(c, new State(a, state.ai, bi)));
+                }
+
+                // Out of As
+                return none();
+            }
+        }, new State(ai.next(), ai, bs.iterator()));
+    }
+
+    public static <A> Iterator<A> List_iterator(final List<A> l) {
+        return new Iterator<A>() {
+            List<A> list = l;
+
+            public boolean hasNext() {
+                return list.isEmpty();
+            }
+
+            public A next() {
+                if(list.isEmpty()) {
+                    throw new NoSuchElementException();
+                }
+
+                A head = list.head();
+                list = list.tail();
+                return head;
+            }
+
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        };
+    }
+
+    // -----------------------------------------------------------------------
+    // fj.data.Stream
+    // -----------------------------------------------------------------------
+
+    public static <A> Stream<A> Stream_cycle(final Stream<A> stream) {
+        if (stream.isEmpty())
+            throw error("cycle on empty list");
+
+        return Stream.unfold(new F<Iterator<A>, Option<P2<A, Iterator<A>>>>() {
+            public Option<P2<A, Iterator<A>>> f(Iterator<A> it) {
+                if(it.hasNext()) {
+                    return some(p(it.next(), it));
+                }
+                it = Stream_iterator(stream);
+                return some(p(it.next(), it));
+            }
+        }, Functions.<A>Stream_iterator(stream));
+    }
+
+    public static <A> Iterator<A> Stream_iterator(final Stream<A> s) {
+        return new Iterator<A>() {
+            P1<Stream<A>> stream = p(s);
+
+            public boolean hasNext() {
+                return stream._1().isNotEmpty();
+            }
+
+            public A next() {
+                Stream<A> s = stream._1();
+                if(s.isEmpty()) {
+                    throw new NoSuchElementException();
+                }
+
+                A head = s.head();
+                stream = s.tail();
+                return head;
+            }
+
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        };
     }
 
     // -----------------------------------------------------------------------

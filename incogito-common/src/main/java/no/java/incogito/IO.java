@@ -76,7 +76,8 @@ public class IO {
                 return new Callable<Unit>() {
                     public Unit call() throws Exception {
                         OutputStreamWriter writer = new OutputStreamWriter(outputStream);
-                        writer.append(s);
+                        writer.write(s);
+                        writer.flush();
                         return unit();
                     }
                 };

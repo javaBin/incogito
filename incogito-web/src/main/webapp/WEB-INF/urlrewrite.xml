@@ -9,6 +9,13 @@
 <urlrewrite use-context="false">
 
   <rule>
+    <note>Redirect matches for a event's calendar CSS to the CSS Servlet</note>
+    <from>^/css/calendar/(.*).css$</from>
+    <set name="eventName">$1</set>
+    <to type="forward" last="true">/servlet/calendar-css</to>
+  </rule>
+
+  <rule>
     <note>This denies direct access to all jspx files</note>
     <from>^.*.jspx$</from>
     <to type="redirect" last="true">%{context-path}</to>

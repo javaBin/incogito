@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
       xmlns:i="http://taglib.java.no/incogito"
       xmlns:security="http://www.springframework.org/security/tags">
 <jsp:directive.page pageEncoding="utf-8" contentType="text/html;charset=utf-8"/>
@@ -9,16 +10,11 @@
 <jsp:useBean id="app" type="no.java.incogito.application.IncogitoApplication" scope="application"/>
 <jsp:useBean id="eventName" type="java.lang.String" scope="request"/>
 <c:set var="eventName" value="${i:urlDecode(eventName)}"/>
+<c:set var="calendar" value="${i:getCalendar(app, eventName, pageContext.request.remoteUser)}"/>
 
 <head>
-  <style type="text/css">
-    iframe {
-      /*border: 1px black solid;*/
-      border: 0;
-      width: 92em;
-      height: 100%;
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/calendar.css"/>
+  <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/calendar/${eventName}.css"/>
 </head>
 
 <body>
@@ -27,7 +23,39 @@
 </ul>
 <h2>${eventName}</h2>
 
-<iframe scrolling="auto" src="${incogito.baseurl}/iframe/calendar/${eventName}"><!-- space --></iframe>
+<div id="calendar">
 
+<div id="paneContainer">
+
+  <div id="pane">
+    <div id="view">
+      <div id="times">
+        <c:forEach var="hour" items="${calendar.timeslotHours}">
+          <fmt:formatNumber var="h" value="${hour}" maxIntegerDigits="2" minIntegerDigits="2"/>
+          <div class="hour start${h}00">${h}:00</div>
+          <div class="quarter start${h}15">${h}:15</div>
+          <div class="quarter start${h}30">${h}:30</div>
+          <div class="quarter start${h}45">${h}:45</div>
+        </c:forEach>
+      </div>
+      <div class="day">
+        <c:forEach var="room" items="${calendar.rooms}" varStatus="i">
+          <div class="room room${i.index + 1}">
+            <h2>${room}</h2>
+
+            <c:forEach var="session" items="${i:castToSessionList(i:mapGet(calendar.roomToSessionMap, room))}" varStatus="i">
+              <fmt:formatNumber var="hour" value="${session.timeslot.hour}" maxIntegerDigits="2" minIntegerDigits="2"/>
+              <fmt:formatNumber var="minute" value="${session.timeslot.minute}" maxIntegerDigits="2" minIntegerDigits="2"/>
+              <div class="session start${hour}${minute} duration60">
+                ${session.title}
+              </div>
+            </c:forEach>
+          </div>
+        </c:forEach>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
 </body>
 </html>

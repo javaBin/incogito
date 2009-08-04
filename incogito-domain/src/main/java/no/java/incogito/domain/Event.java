@@ -3,6 +3,7 @@ package no.java.incogito.domain;
 import fj.pre.Ord;
 import fj.F;
 import fj.data.Option;
+import fj.data.List;
 
 import java.util.UUID;
 
@@ -17,6 +18,8 @@ public class Event {
 
     public final Option<String> welcome;
 
+    public final List<Room> rooms;
+
     public static final F<Event, String> getName = new F<Event, String>() {
         public String f(Event event) {
             return event.name;
@@ -29,10 +32,11 @@ public class Event {
         }
     };
 
-    public Event(EventId id, String name, Option<String> welcome) {
+    public Event(EventId id, String name, Option<String> welcome, List<Room> rooms) {
         this.id = id;
         this.name = name;
         this.welcome = welcome;
+        this.rooms = rooms;
     }
 
     public static class EventId extends Id {

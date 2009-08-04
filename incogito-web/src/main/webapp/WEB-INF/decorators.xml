@@ -3,8 +3,9 @@
 <decorators defaultdir="/WEB-INF/decorators">
 
   <excludes>
-    <pattern>/js/*</pattern>
+    <pattern>/css/*</pattern>
     <pattern>/iframe/*</pattern>
+    <pattern>/js/*</pattern>
   </excludes>
 
   <!--
