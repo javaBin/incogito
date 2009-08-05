@@ -15,6 +15,40 @@
 <head>
   <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/calendar.css"/>
   <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/calendar/${eventName}.css"/>
+  <script type="text/javascript">
+    var eventName = "${eventName}"
+    var closeSessionButton
+    var sessionOverlay
+    var sessionOverlayBg
+    $(document).ready(function() {
+      closeSessionButton = $("#close-session-button")
+      sessionOverlay = $("#session-overlay")
+      sessionOverlayBg = $("#session-overlay-bg")
+
+      $(document).keypress(function(e) {
+        if (e.keyCode == 27 &amp;&amp; sessionOverlay.css("display") != "none") {
+          closeSession()
+        }
+      })
+      $(".show-more-button").bind("click", showSession)
+      closeSessionButton.bind("click", closeSession)
+    })
+
+    function showSession(e) {
+      sessionOverlay.show()
+      sessionOverlayBg.show()
+
+      var sessionId = $(this).parent().find(".session-id").text()
+      getSession(eventName, sessionId, function() {
+        // TODO: Show content
+      })
+    }
+
+    function closeSession() {
+      sessionOverlay.hide()
+      sessionOverlayBg.hide()
+    }
+  </script>
 </head>
 
 <body>
@@ -47,7 +81,9 @@
               <fmt:formatNumber var="hour" value="${session.timeslot.hour}" maxIntegerDigits="2" minIntegerDigits="2"/>
               <fmt:formatNumber var="minute" value="${session.timeslot.minute}" maxIntegerDigits="2" minIntegerDigits="2"/>
               <div class="session start${hour}${minute} duration60">
-                ${session.title}
+                <div class="session-id">${session.id}</div>
+                <div class="session-title">${session.title}</div>
+                <div class="show-more-button">Show more</div>
               </div>
             </c:forEach>
           </div>
@@ -57,5 +93,16 @@
   </div>
 </div>
 </div>
+
+<div style="display: none;" id="session-overlay-bg"><!-- space --></div>
+<div style="display: none;" id="session-overlay">
+  <div class="overlay-content">
+    <div class="spinner">Loading</div>
+  </div>
+  <div id="session-overlay-close">
+    <a id="close-session-button" title="Close session">Close</a>
+  </div>
+</div>
+
 </body>
 </html>

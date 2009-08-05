@@ -15,9 +15,9 @@ import static fj.data.List.iterableList;
 import fj.data.Option;
 import static fj.data.Option.fromNull;
 import static fj.data.Option.fromString;
-import static fj.data.Option.join;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
+import static fj.data.Option.join;
 import fj.data.TreeMap;
 import fj.function.Booleans;
 import fj.function.Strings;
@@ -39,6 +39,7 @@ import no.java.incogito.domain.User.UserId;
 import no.java.incogito.domain.UserSessionAssociation.InterestLevel;
 import no.java.incogito.domain.WikiString;
 import no.java.incogito.ems.client.EmsFunctions;
+import static no.java.incogito.ems.client.EmsFunctions.eventId;
 import no.java.incogito.ems.client.EmsWrapper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
@@ -152,10 +153,16 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
                 orSome(OperationResult.<List<Session>>notFound("Event with name '" + eventName + "' not found."));
     }
 
-    public OperationResult<Session> getSession(String eventName, String sessionTitle) {
+    public OperationResult<Session> getSessionByTitle(String eventName, String sessionTitle) {
         return findSession().f(eventName).f(sessionTitle).
                 map(OperationResult.<Session>ok_()).
                 orSome(OperationResult.<Session>notFound("Could not find session with title '" + sessionTitle + "' not found."));
+    }
+
+    public OperationResult<Session> getSession(String eventName, SessionId sessionId) {
+        return emsWrapper.getSessionById.f(sessionId.value).bind(sessionFromEms).
+                map(OperationResult.<Session>ok_()).
+                orSome(OperationResult.<Session>notFound("Could not find session: '" + sessionId + "'."));
     }
 
     public OperationResult<User> createUser(User user) {
@@ -205,9 +212,10 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
         F<no.java.ems.domain.Event, List<Session>> f = Functions.compose(
                 DefaultIncogitoApplication.<Session>filterAndRemove(),
                 List.<no.java.ems.domain.Session, Option<Session>>map_().f(sessionFromEms),
-                List.<String, no.java.ems.domain.Session>map_().f(emsWrapper.getSessionById),
+                DefaultIncogitoApplication.<no.java.ems.domain.Session>filterAndRemove(),
+                List.<String, Option<no.java.ems.domain.Session>>map_().f(emsWrapper.getSessionById),
                 emsWrapper.findSessionIdsByEventId,
-                EmsFunctions.eventId);
+                eventId);
 
         F<EventId, Option<String>> getter = flip(Functions.<EventId,String>TreeMap_get()).f(configuration.welcomeTexts);
 
@@ -292,11 +300,12 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
 
     F<no.java.ems.domain.Event, List<Session>> getSessionsForEvent() {
         return Functions.compose(
-            DefaultIncogitoApplication.<Session>filterAndRemove(),
-            List.<no.java.ems.domain.Session, Option<Session>>map_().f(sessionFromEms),
-            List.<String, no.java.ems.domain.Session>map_().f(emsWrapper.getSessionById),
-            emsWrapper.findSessionIdsByEventId,
-            EmsFunctions.eventId);
+                DefaultIncogitoApplication.<Session>filterAndRemove(),
+                List.<no.java.ems.domain.Session, Option<Session>>map_().f(sessionFromEms),
+                DefaultIncogitoApplication.<no.java.ems.domain.Session>filterAndRemove(),
+                List.<String, Option<no.java.ems.domain.Session>>map_().f(emsWrapper.getSessionById),
+                emsWrapper.findSessionIdsByEventId,
+                eventId);
     }
 
     private F<String, F<String, Option<Session>>> findSession() {
@@ -304,10 +313,12 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
             public Option<Session> f(final String eventName, final String sessionTitle) {
                 F<no.java.ems.domain.Event, Option<Session>> f = Functions.compose(
                         Functions.<Session>Option_join_(),
-                        Functions.<String, Option<Session>>Option_map(compose(sessionFromEms, emsWrapper.getSessionById)),
-                        Functions.<String>toOption_(),
+                        Functions.<no.java.ems.domain.Session, Option<Session>>Option_map(sessionFromEms),
+                        Functions.<no.java.ems.domain.Session>Option_join_(),
+                        Functions.<String, Option<no.java.ems.domain.Session>>Option_map(emsWrapper.getSessionById),
+                        Functions.<String>List_toOption_(),
                         flip(emsWrapper.findSessionIdsByEventIdAndTitle).f(sessionTitle),
-                        EmsFunctions.eventId);
+                        eventId);
                 return join(emsWrapper.findEventByName.f(eventName).map(f));
             }
         });

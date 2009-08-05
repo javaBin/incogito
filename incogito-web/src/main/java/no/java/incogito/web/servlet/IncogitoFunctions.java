@@ -72,7 +72,7 @@ public class IncogitoFunctions {
     }
 
     public static SessionXml getSession(IncogitoApplication app, String eventName, String sessionTitle) {
-        return sessionToXml.f(app.getSession(urlDecode(eventName), urlDecode(sessionTitle)).value());
+        return sessionToXml.f(app.getSessionByTitle(urlDecode(eventName), urlDecode(sessionTitle)).value());
     }
 
     public static ScheduleXml getSchedule(IncogitoApplication app, String eventName, String userName) {

@@ -31,6 +31,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -92,17 +93,17 @@ public class IncogitoResource {
                 ok().map(compose(SessionListXml.sessionListXml, sessionToXmlList)));
     }
 
-    @Path("/events/{eventName}/sessions/{sessionTitle}")
+    @Path("/events/{eventName}/sessions/{sessionId}")
     @GET
     public Response getSessionForEvent(@Context final UriInfo uriInfo,
                                        @PathParam("eventName") final String eventName,
-                                       @PathParam("sessionTitle") final String sessionTitle) {
+                                       @PathParam("sessionId") final String sessionId) {
         System.out.println("IncogitoResource.getSessionForEvent");
 
         // TODO: Consider replacing this with the configured hostname and base url
         F<Session, SessionXml> sessionToXml = XmlFunctions.sessionToXml.f(uriBuilderClone.f(uriInfo.getRequestUriBuilder()));
 
-        return toJsr311(incogito.getSession(eventName, sessionTitle).
+        return toJsr311(incogito.getSession(eventName, new SessionId(sessionId)).
                 ok().map(sessionToXml));
     }
 
@@ -128,7 +129,13 @@ public class IncogitoResource {
     public Response getMySchedule(@Context final UriInfo uriInfo,
                                   @Context final SecurityContext securityContext,
                                   @PathParam("eventName") final String eventName) {
-        return getScheduleForUser(uriInfo, securityContext, eventName, securityContext.getUserPrincipal().getName());
+        String name = securityContext.getUserPrincipal().getName();
+
+        if (name == null) {
+            throw new WebApplicationException(Status.UNAUTHORIZED);
+        }
+
+        return getScheduleForUser(uriInfo, securityContext, eventName, name);
     }
 
     @Path("/events/{eventName}/schedules/{userName}")

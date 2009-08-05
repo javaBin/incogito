@@ -55,14 +55,14 @@ function getSessionsByEventName(eventName, success) {
     })
 }
 
-function getSession(eventName, sessionName, success) {
-    console.log("Fetching " + sessionName + " for event " + eventName + "...")
+function getSession(eventName, sessionId, success) {
+    console.log("Fetching " + sessionId + " for event " + eventName + "...")
     var s = success
     $.ajax({
         dataType: "json",
-        url: baseurl + "/rest/events/" + eventName + "/sessions/" + sessionName,
+        url: baseurl + "/rest/events/" + eventName + "/sessions/" + sessionId,
         success: function(data) {
-            console.log("Got " + sessionName + " for event " + eventName)
+            console.log("Got '" + data.title + "' for event " + eventName)
             s(data)
         }
     })

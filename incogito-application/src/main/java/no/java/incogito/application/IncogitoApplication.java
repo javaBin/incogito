@@ -25,7 +25,9 @@ public interface IncogitoApplication {
 
     OperationResult<List<Session>> getSessions(String eventName);
 
-    OperationResult<Session> getSession(String eventName, String sessionTitle);
+    OperationResult<Session> getSession(String eventName, SessionId sessionId);
+
+    OperationResult<Session> getSessionByTitle(String eventName, String sessionTitle);
 
     OperationResult<User> createUser(User user);
 

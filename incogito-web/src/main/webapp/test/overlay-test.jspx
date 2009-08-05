@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<jsp:directive.page pageEncoding="utf-8" contentType="text/html;charset=utf-8"/>
+<head>
+  <style type="text/css">
+    .session-id {
+      display: none;
+    }
+
+    div#session-overlay-bg {
+      background: black none repeat scroll 0 0;
+      top: 0;
+      left: 0;
+      height: 100%;
+      opacity: 0.8;
+      position: fixed;
+      width: 100%;
+      z-index: 4999;
+    }
+
+    div#session-overlay {
+      background: white none repeat scroll 0 0;
+      border: 0 none;
+
+      top: 50%;
+      left: 50%;
+
+      width: 800px; /*height: 580px;*/
+      height: 200px;
+
+      margin: -290px 0 0 -400px;
+      position: fixed;
+      z-index: 9999;
+    }
+
+    div#session-overlay-close {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+    }
+  </style>
+  <script type="text/javascript">
+    var showMoreButton
+    var closeSessionButton
+    var sessionOverlay
+    var sessionOverlayBg
+    $(document).ready(function() {
+      showMoreButton = $(".show-more-button")
+      closeSessionButton = $(".close-session-button")
+      sessionOverlay = $("#session-overlay")
+      sessionOverlayBg = $("#session-overlay-bg")
+
+      $(document).keypress(function(e) {
+        console.log(sessionOverlay.css("display"))
+        console.log(sessionOverlay)
+        if (e.keyCode == 27 &amp;&amp; sessionOverlay.css("display") != "none") {
+          console.log("closing..")
+          closeSession()
+        }
+      })
+      showMoreButton.bind("click", showSession)
+      closeSessionButton.bind("click", closeSession)
+    })
+
+    function showSession() {
+      sessionOverlay.show()
+      sessionOverlayBg.show()
+    }
+
+    function closeSession() {
+      sessionOverlay.hide()
+      sessionOverlayBg.hide()
+    }
+  </script>
+</head>
+<body>
+<div style="display: none;" id="session-overlay-bg"><!-- space --></div>
+<div style="display: none;" id="session-overlay">
+  <div class="overlay-content">
+    About session
+  </div>
+  <!--
+    <iframe scrolling="no" name="session" src="" id="session-session-iframe"/>
+  -->
+  <div id="session-overlay-close">
+    <a id="close-session-button" title="Close session">Close</a>
+  </div>
+</div>
+
+<table class="tjoho">
+  <tr>
+    <td><!-- space -->&amp;nbsp;</td>
+    <td>Room 1</td>
+    <td>Room 2</td>
+  </tr>
+  <tr>
+    <td>08:00</td>
+    <td class="session">
+      <div class="session-id">1</div>
+      <h2>Session 1</h2>
+
+      <div class="show-more-button">Show more</div>
+    </td>
+    <td class="session">
+      <div class="session-id">2</div>
+      <h2>Session 2</h2>
+
+      <div class="show-more-button">Show more</div>
+    </td>
+  </tr>
+  <tr>
+    <td>09:00</td>
+    <td class="session">
+      <div class="session-id">3</div>
+      <h2>Session 3</h2>
+
+      <div class="show-more-button">Show more</div>
+    </td>
+    <td class="session">
+      <div class="session-id">4</div>
+      <h2>Session 4</h2>
+
+      <div class="show-more-button">Show more</div>
+    </td>
+  </tr>
+</table>
+</body>
+</html>

@@ -52,9 +52,9 @@ public class EmsWrapper {
     // Session
     // -----------------------------------------------------------------------
 
-    public F<String, Session> getSessionById = new F<String, Session>() {
-        public Session f(String id) {
-            return fromNull(sessionsClient.getSession(id)).some();
+    public F<String, Option<Session>> getSessionById = new F<String, Option<Session>>() {
+        public Option<Session> f(String id) {
+            return fromNull(sessionsClient.getSession(id));
         }
     };
 

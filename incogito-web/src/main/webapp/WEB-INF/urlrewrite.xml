@@ -16,8 +16,14 @@
   </rule>
 
   <rule>
+    <note>Allow access (including JSP) to misc tests</note>
+    <from>^(/test/.*)$</from>
+    <to type="passthrough" last="true">$1</to>
+  </rule>
+
+  <rule>
     <note>This denies direct access to all jspx files</note>
-    <from>^.*.jspx$</from>
+    <from>^.*\.jspx$</from>
     <to type="redirect" last="true">%{context-path}</to>
   </rule>
 
@@ -26,7 +32,7 @@
   REST resources
   -->
 
-<!--
+  <!--
   This won't work either as spring security will fills remote-user, but SS runs after the urlrewrite filter
 
   TODO: Have to figure out how to solve this. The javascript *depend* upon correct status codes
@@ -36,7 +42,7 @@
     <set type="status">403</set>
     <to type="redirect" last="true">/js</to>
   </rule>
--->
+  -->
 
   <!--
    |
@@ -100,13 +106,13 @@
     <to last="true">/events/event/agenda.jspx</to>
   </rule>
 
-<!--
-  <rule>
-    <from>^/events/(.*)/agenda</from>
-    <set name="eventName">$1</set>
-    <to last="true">/events/event/agenda.jspx</to>
-  </rule>
--->
+  <!--
+    <rule>
+      <from>^/events/(.*)/agenda</from>
+      <set name="eventName">$1</set>
+      <to last="true">/events/event/agenda.jspx</to>
+    </rule>
+  -->
 
   <rule>
     <from>^/events/(.*)/calendar</from>

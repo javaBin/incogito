@@ -126,14 +126,6 @@ public class Functions {
         return option.isSome() ? option.some() : null;
     }
 
-    public static <T> F<List<T>, Option<T>> toOption_() {
-        return new F<List<T>, Option<T>>() {
-            public Option<T> f(List<T> list) {
-                return list.toOption();
-            }
-        };
-    }
-
     public static <A, B> F<Option<A>, Option<B>> Option_map(final F<A, B> f) {
         return new F<Option<A>, Option<B>>() {
             public Option<B> f(Option<A> option) {
@@ -190,6 +182,14 @@ public class Functions {
         return new F<List<T>, T>() {
             public T f(List<T> list) {
                 return list.head();
+            }
+        };
+    }
+
+    public static <T> F<List<T>, Option<T>> List_toOption_() {
+        return new F<List<T>, Option<T>>() {
+            public Option<T> f(List<T> list) {
+                return list.toOption();
             }
         };
     }
@@ -351,6 +351,14 @@ public class Functions {
         return new F<A, G>() {
             public G f(A a) {
                 return k.f(j.f(i.f(h.f(g.f(f.f(a))))));
+            }
+        };
+    }
+
+    public static <A, B, C, D, E, F$, G, H> F<A, H> compose(final F<G, H> l, final F<F$, G> k, final F<E, F$> j, final F<D, E> i, final F<C, D> h, final F<B, C> g, final F<A, B> f) {
+        return new F<A, H>() {
+            public H f(A a) {
+                return l.f(k.f(j.f(i.f(h.f(g.f(f.f(a)))))));
             }
         };
     }
