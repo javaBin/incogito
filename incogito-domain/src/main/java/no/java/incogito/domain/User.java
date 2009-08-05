@@ -12,6 +12,8 @@ import no.java.incogito.domain.UserSessionAssociation.InterestLevel;
  * @version $Id$
  */
 public class User {
+    public static final TreeMap<SessionId, UserSessionAssociation> emptySessionAssociations = TreeMap.empty(SessionId.ord);
+
     public final UserId id;
     public final TreeMap<SessionId, UserSessionAssociation> sessionAssociations;
     /**
@@ -57,6 +59,12 @@ public class User {
     // Higher-order functions
     // -----------------------------------------------------------------------
 
+    public static final F<User, TreeMap<SessionId, UserSessionAssociation>> sessionAssociations_ = new F<User, TreeMap<SessionId, UserSessionAssociation>>() {
+        public TreeMap<SessionId, UserSessionAssociation> f(User user) {
+            return user.sessionAssociations;
+        }
+    };
+
     public static final F<SessionId, F<InterestLevel, F<User, User>>> setInterestLevel = curry( new F3<SessionId, InterestLevel, User, User>() {
         public User f(SessionId sessionId, InterestLevel interestLevel, User user) {
             return user.setInterestLevel(sessionId, interestLevel);
@@ -93,7 +101,7 @@ public class User {
             return value.hashCode();
         }
 
-        public static final F<String, UserId> fromString = new F<String, UserId>() {
+        public static final F<String, UserId> userId = new F<String, UserId>() {
             public UserId f(String value) {
                 return fromString(value);
             }

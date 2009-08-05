@@ -10,7 +10,7 @@
 
   <servlet-mapping>
     <servlet-name>Calendar Css Generator</servlet-name>
-    <url-pattern>/css/calendar/*</url-pattern>
+    <url-pattern>servlet/calendar-css/*</url-pattern>
   </servlet-mapping>
 
   <filter>

@@ -28,7 +28,7 @@ public class TrygveMain {
         UserClient userClient = new UserClient(client);
         IncogitoApplication incogito = new DefaultIncogitoApplication(new File(""), userClient, null);
 
-        List<UserId> userIds = List.range(1, 1000).map(toString).map(UserId.fromString);
+        List<UserId> userIds = List.range(1, 1000).map(toString).map(UserId.userId);
 
         // Insert users
 //        for (UserId userId : userIds) {

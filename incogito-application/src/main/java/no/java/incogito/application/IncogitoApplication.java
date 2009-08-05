@@ -2,6 +2,7 @@ package no.java.incogito.application;
 
 import fj.Unit;
 import fj.data.List;
+import fj.data.Option;
 import no.java.incogito.domain.Event;
 import no.java.incogito.domain.Schedule;
 import no.java.incogito.domain.Session;
@@ -33,6 +34,8 @@ public interface IncogitoApplication {
     OperationResult<User> getUser(no.java.incogito.domain.User.UserId userId);
 
     OperationResult<Schedule> getSchedule(String eventName, String userId);
+
+    OperationResult<Schedule> getSchedule(String eventName, Option<String> userId);
 
     OperationResult<User> setInterestLevel(String userName, String eventName, SessionId sessionId, InterestLevel interestLevel);
 }

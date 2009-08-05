@@ -3,6 +3,7 @@ package no.java.incogito.web.servlet;
 import fj.F;
 import fj.P;
 import fj.data.List;
+import static fj.data.Option.fromNull;
 import no.java.incogito.application.IncogitoApplication;
 import no.java.incogito.domain.Schedule;
 import no.java.incogito.domain.Session;
@@ -55,7 +56,7 @@ public class IncogitoFunctions {
     }
 
     public static WebCalendar getCalendar(IncogitoApplication app, String eventName, String userName) {
-        return new WebCalendar(app.getSchedule(urlDecode(eventName), userName).value());
+        return new WebCalendar(app.getSchedule(urlDecode(eventName), fromNull(userName)).value());
     }
 
     public static EventXml[] getEvents(IncogitoApplication app) {
@@ -75,6 +76,6 @@ public class IncogitoFunctions {
     }
 
     public static ScheduleXml getSchedule(IncogitoApplication app, String eventName, String userName) {
-        return app.getSchedule(urlDecode(eventName), userName).ok().map(scheduleToXml).value();
+        return app.getSchedule(urlDecode(eventName), fromNull(userName)).ok().map(scheduleToXml).value();
     }
 }

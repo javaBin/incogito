@@ -155,7 +155,7 @@ public class IncogitoApplicationIntegrationTest {
         File jz08Welcome = new File(etc, "jz08-welcome.txt");
 
         TreeMap<String, String> properties = TreeMap.<String, String>empty(Ord.stringOrd).
-                set("baseurl", "tjoho").
+                set("baseurl", "http://poop").
                 set("events", UUID.randomUUID().toString() + ", " + dataSet.javaZone2008.getId() + ",").
                 set("event." + dataSet.javaZone2008.getId() + ".welcome", jz08Welcome.getName());
         IO.runFileOutputStream(storePropertiesMap.f(properties), props).call();
@@ -190,14 +190,14 @@ public class IncogitoApplicationIntegrationTest {
         }
 
         // Create all users. This will normally happen when logging in
-        for (UserId userId : Stream.range(0, nUsers).map(Show.intShow.showS_()).map(UserId.fromString)) {
+        for (UserId userId : Stream.range(0, nUsers).map(Show.intShow.showS_()).map(UserId.userId)) {
             OperationResult<Unit> removeResult = incogito.removeUser(userId);
             assertTrue(removeResult.isOk() || removeResult.isNotFound());
             assertEquals(OperationResult.Status.OK, incogito.createUser(User.createPristineUser(userId)).status);
         }
 
         // For each user
-        for (UserId userId : Stream.range(0, nUsers).map(Show.intShow.showS_()).map(UserId.fromString)) {
+        for (UserId userId : Stream.range(0, nUsers).map(Show.intShow.showS_()).map(UserId.userId)) {
 
             // Select an event
             Event event = events.index(numbers.head() % eventCount);

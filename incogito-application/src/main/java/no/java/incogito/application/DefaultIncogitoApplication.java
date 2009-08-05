@@ -9,8 +9,6 @@ import static fj.Function.compose;
 import static fj.Function.curry;
 import static fj.Function.flip;
 import fj.Unit;
-import fj.function.Strings;
-import fj.function.Booleans;
 import fj.data.Either;
 import fj.data.List;
 import static fj.data.List.iterableList;
@@ -21,14 +19,17 @@ import static fj.data.Option.join;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
 import fj.data.TreeMap;
+import fj.function.Booleans;
+import fj.function.Strings;
 import no.java.incogito.Functions;
 import static no.java.incogito.Functions.throwLeft;
 import no.java.incogito.IO;
-import no.java.incogito.PropertiesF;
 import static no.java.incogito.IO.Strings.streamToString;
+import no.java.incogito.PropertiesF;
 import no.java.incogito.domain.Comment;
 import no.java.incogito.domain.Event;
 import no.java.incogito.domain.Event.EventId;
+import no.java.incogito.domain.Room;
 import no.java.incogito.domain.Schedule;
 import no.java.incogito.domain.Session;
 import no.java.incogito.domain.SessionId;
@@ -37,14 +38,13 @@ import no.java.incogito.domain.User;
 import no.java.incogito.domain.User.UserId;
 import no.java.incogito.domain.UserSessionAssociation.InterestLevel;
 import no.java.incogito.domain.WikiString;
-import no.java.incogito.domain.Room;
 import no.java.incogito.ems.client.EmsFunctions;
 import no.java.incogito.ems.client.EmsWrapper;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.apache.log4j.Logger;
 
 import java.io.File;
 
@@ -186,11 +186,24 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
     }
 
     public OperationResult<Schedule> getSchedule(String eventName, String userId) {
+        Option<User> user = userClient.getUser(new UserId(userId));
 
+        if(user.isNone()) {
+            return OperationResult.notFound("User with id '" + userId + "' does not exist.");
+        }
+
+        return getSchedule_(eventName, user);
+    }
+
+    public OperationResult<Schedule> getSchedule(String eventName, Option<String> userId) {
+        return getSchedule_(eventName, userId.map(UserId.userId).bind(userClient.getUser));
+    }
+
+    private OperationResult<Schedule> getSchedule_(String eventName, Option<User> user) {
         Option<no.java.ems.domain.Event> emsEvent = emsWrapper.findEventByName.f(eventName);
 
         F<no.java.ems.domain.Event, List<Session>> f = Functions.compose(
-                this.<Session>filterAndRemove(),
+                DefaultIncogitoApplication.<Session>filterAndRemove(),
                 List.<no.java.ems.domain.Session, Option<Session>>map_().f(sessionFromEms),
                 List.<String, no.java.ems.domain.Session>map_().f(emsWrapper.getSessionById),
                 emsWrapper.findSessionIdsByEventId,
@@ -200,11 +213,10 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
 
         Option<Event> event = emsEvent.map(eventFromEms.f(getter));
         Option<List<Session>> sessions = emsEvent.map(f);
-        Option<User> user = userClient.getUser(new UserId(userId));
 
-        return user.bind(sessions, event, createSchedule).
+        return event.bind(sessions, some(user), createSchedule).
                 map(OperationResult.<Schedule>ok_()).
-                orSome(OperationResult.<Schedule>$notFound("User '" + userId + "' not found."));
+                orSome(OperationResult.<Schedule>$notFound("Event '" + eventName + "' not found."));
     }
 
     public OperationResult<User> setInterestLevel(String userName, String eventName, SessionId sessionId, InterestLevel interestLevel) {
@@ -280,7 +292,7 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
 
     F<no.java.ems.domain.Event, List<Session>> getSessionsForEvent() {
         return Functions.compose(
-            this.<Session>filterAndRemove(),
+            DefaultIncogitoApplication.<Session>filterAndRemove(),
             List.<no.java.ems.domain.Session, Option<Session>>map_().f(sessionFromEms),
             List.<String, no.java.ems.domain.Session>map_().f(emsWrapper.getSessionById),
             emsWrapper.findSessionIdsByEventId,
@@ -301,13 +313,13 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
         });
     }
 
-    F<User, F<List<Session>, F<Event, Schedule>>> createSchedule = curry( new F3<User, List<Session>, Event, Schedule>() {
-        public Schedule f(User user, List<Session> sessions, Event event) {
-            return new Schedule(event, sessions, user.sessionAssociations);
+    F<Event, F<List<Session>, F<Option<User>, Schedule>>> createSchedule = curry( new F3<Event, List<Session>, Option<User>, Schedule>() {
+        public Schedule f(Event event, List<Session> sessions, Option<User> userOption) {
+            return new Schedule(event, sessions, userOption.map(User.sessionAssociations_).orSome(User.emptySessionAssociations));
         }
     });
 
-    <A> F<List<Option<A>>, List<A>> filterAndRemove() {
+    static <A> F<List<Option<A>>, List<A>> filterAndRemove() {
         return Function.compose(
             List.<Option<A>, A>map_().f(Functions.<A>Option_somes()),
             Functions.<Option<A>>List_filter().f(Option.<A>isSome_()));

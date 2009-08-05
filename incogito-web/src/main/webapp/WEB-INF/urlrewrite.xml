@@ -100,30 +100,17 @@
     <to last="true">/events/event/agenda.jspx</to>
   </rule>
 
+<!--
   <rule>
     <from>^/events/(.*)/agenda</from>
     <set name="eventName">$1</set>
     <to last="true">/events/event/agenda.jspx</to>
   </rule>
-
-  <rule>
-    <from>^/events/(.*)/my-agenda</from>
-    <set name="eventName">$1</set>
-    <to last="true">/events/event/my-agenda.jspx</to>
-  </rule>
+-->
 
   <rule>
     <from>^/events/(.*)/calendar</from>
     <set name="eventName">$1</set>
-    <to last="true">/events/event/calendar.jspx</to>
-  </rule>
-
-  <rule>
-    <from>^/events/(.*)/my-calendar</from>
-    <set name="eventName">$1</set>
-<!--
-    <to last="true">/events/event/my-calendar.jspx</to>
--->
     <to last="true">/events/event/calendar.jspx</to>
   </rule>
 
