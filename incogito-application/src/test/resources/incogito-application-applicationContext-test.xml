@@ -60,4 +60,6 @@
     <property name="baseurl" value="http://localhost:3300/ems"/>
   </bean>
 
+  <bean class="no.java.incogito.util.ConnectJulToSlf4j" init-method="doIt"/>
+
 </beans>

@@ -5,12 +5,11 @@
     </layout>
   </appender>
 
-  <logger name="org.springframework" level="INFO"/>
-  <logger name="org.springframework.security" level="INFO"/>
-  <logger name="org.springframework.scheduling" level="DEBUG"/>
-  <logger name="org.tuckey" level="INFO"/>
+  <logger name="org.springframework" level="WARN"/>
+  <logger name="voldemort" level="INFO"/>
+  <logger name="no.java.incogito" level="DEBUG"/>
 
-  <root level="debug">
+  <root level="INFO">
     <appender-ref ref="STDOUT"/>
   </root>
 
