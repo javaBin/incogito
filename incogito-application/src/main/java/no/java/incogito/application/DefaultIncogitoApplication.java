@@ -15,9 +15,9 @@ import static fj.data.List.iterableList;
 import fj.data.Option;
 import static fj.data.Option.fromNull;
 import static fj.data.Option.fromString;
+import static fj.data.Option.join;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
-import static fj.data.Option.join;
 import fj.data.TreeMap;
 import fj.function.Booleans;
 import fj.function.Strings;
@@ -41,7 +41,8 @@ import no.java.incogito.domain.WikiString;
 import no.java.incogito.ems.client.EmsFunctions;
 import static no.java.incogito.ems.client.EmsFunctions.eventId;
 import no.java.incogito.ems.client.EmsWrapper;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -55,7 +56,7 @@ import java.io.File;
  */
 @Component("incogitoApplication")
 public class DefaultIncogitoApplication implements IncogitoApplication, InitializingBean {
-    private final Logger logger = Logger.getLogger(DefaultIncogitoApplication.class);
+    private final Logger logger = LoggerFactory.getLogger(DefaultIncogitoApplication.class);
     private final File incogitoHome;
     private final UserClient userClient;
     private final EmsWrapper emsWrapper;

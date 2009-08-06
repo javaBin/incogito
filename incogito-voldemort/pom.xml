@@ -10,9 +10,20 @@
   <name>Incogito 2009 :: Voldemort</name>
   <dependencies>
     <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${version.slf4j}</version>
+    </dependency>
+    <dependency>
       <groupId>voldemort</groupId>
       <artifactId>voldemort</artifactId>
       <version>0.51</version>
+      <exclusions>
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>

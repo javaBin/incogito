@@ -1,9 +1,9 @@
 package no.java.incogito.web.voldemort;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import voldemort.server.VoldemortConfig;
 import voldemort.server.VoldemortServer;
-import voldemort.server.http.gui.VelocityEngine;
 import voldemort.utils.ConfigurationException;
 
 import javax.servlet.ServletContextEvent;
@@ -18,7 +18,7 @@ public class VoldemortServletContextListener implements ServletContextListener {
 
     private VoldemortServer server;
 
-    private static final Logger logger = Logger.getLogger(VoldemortServletContextListener.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(VoldemortServletContextListener.class.getName());
 
     public void contextInitialized(ServletContextEvent event) {
 

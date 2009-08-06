@@ -28,7 +28,6 @@ import static no.java.incogito.domain.UserSessionAssociation.InterestLevel.INTER
 import no.java.incogito.ems.server.DataGenerator;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.apache.log4j.Logger;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -36,6 +35,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
@@ -55,7 +56,7 @@ import java.util.UUID;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class IncogitoApplicationIntegrationTest {
 
-    private static final Logger logger = Logger.getLogger(IncogitoApplicationIntegrationTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(IncogitoApplicationIntegrationTest.class);
 
     @Autowired
     IncogitoApplication incogito;

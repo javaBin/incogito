@@ -1,7 +1,7 @@
 package no.java.incogito.voldemort;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Required;
@@ -16,7 +16,7 @@ import java.io.File;
  */
 public class VoldemortHomeServerFactoryBean implements FactoryBean, DisposableBean {
 
-    private Log log = LogFactory.getLog(VoldemortHomeServerFactoryBean.class);
+    private static final Logger log = LoggerFactory.getLogger(VoldemortHomeServerFactoryBean.class);
 
     private File voldemortHome;
 

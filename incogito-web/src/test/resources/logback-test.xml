@@ -1,0 +1,22 @@
+<configuration scan="true" scanPeriod="1000">
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+<!--
+      <Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
+-->
+      <Pattern>%d{dd-MM-yyyy HH:mm:ss} [%25t] %-5p %-40.40c{1} - %m%n</Pattern>
+    </layout>
+  </appender>
+
+  <logger name="chapter3" level="INFO"/>
+  <logger name="org.springframework" level="INFO"/>
+  <logger name="org.springframework.security" level="INFO"/>
+  <logger name="org.springframework.scheduling" level="DEBUG"/>
+  <logger name="org.tuckey" level="INFO"/>
+
+  <root level="debug">
+    <appender-ref ref="STDOUT"/>
+  </root>
+
+</configuration>
+    
