@@ -4,18 +4,41 @@ import no.java.ems.domain.Event;
 import no.java.ems.domain.Session;
 import no.java.ems.server.EmsServices;
 import org.codehaus.plexus.util.StringUtils;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Handler;
+import java.util.logging.LogManager;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class EmsTestServer {
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
+        // The thread name is so annoyingly long..
+
+        Thread thread = new Thread(new Runnable() {
+            public void run() {
+                runTestServer(args);
+            }
+        }, "main");
+        thread.setDaemon(false);
+        thread.start();
+        thread.wait();
+    }
+
+    public static void runTestServer(String[] args) {
+        java.util.logging.Logger rootLogger = LogManager.getLogManager().getLogger("");
+        Handler[] handlers = rootLogger.getHandlers();
+        for (Handler handler : handlers) {
+            rootLogger.removeHandler(handler);
+        }
+        SLF4JBridgeHandler.install();
+
         File basedir = getBasedir(args);
 
         File emsHome = new File(basedir, "target/ems-home");

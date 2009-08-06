@@ -126,6 +126,8 @@
   <properties>
     <version.ems>1.1.5</version.ems>
     <version.jersey>1.0.3</version.jersey>
+    <version.jetty>6.1.14</version.jetty>
+    <version.slf4j>1.5.8</version.slf4j>
     <version.spring>2.5.6</version.spring>
     <version.spring-security>2.0.4</version.spring-security>
   </properties>
