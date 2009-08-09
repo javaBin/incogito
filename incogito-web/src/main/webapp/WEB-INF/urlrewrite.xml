@@ -9,13 +9,6 @@
 <urlrewrite use-context="false">
 
   <rule>
-    <note>Redirect matches for a event's calendar CSS to the CSS Servlet</note>
-    <from>^/css/calendar/(.*).css$</from>
-    <set name="eventName">$1</set>
-    <to type="forward" last="true">/servlet/calendar-css</to>
-  </rule>
-
-  <rule>
     <note>Allow access (including JSP) to misc tests</note>
     <from>^(/test/.*)$</from>
     <to type="passthrough" last="true">$1</to>

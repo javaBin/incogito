@@ -21,6 +21,10 @@ public class FunctionsTest extends TestCase {
         assertEquals("ba", Functions.append.f("a").f("b"));
     }
 
+    public void testString_Join() {
+        assertEquals("a\n", list("a").foldRight(Functions.String_join.f("\n"), ""));
+    }
+
     public void testStreamProduct() {
         List<String> stringStream = Functions.List_product(list("09", "10", "11"), list("00", "30"), Functions.prepend);
 

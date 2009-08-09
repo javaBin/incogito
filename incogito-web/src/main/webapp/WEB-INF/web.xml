@@ -3,16 +3,6 @@
 <web-app id="starter" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
-  <servlet>
-    <servlet-name>Calendar Css Generator</servlet-name>
-    <servlet-class>no.java.incogito.web.servlet.CssGeneratorServletGenerator</servlet-class>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>Calendar Css Generator</servlet-name>
-    <url-pattern>servlet/calendar-css/*</url-pattern>
-  </servlet-mapping>
-
   <filter>
     <filter-name>Jersey Logging Fixer</filter-name>
     <filter-class>no.java.incogito.web.servlet.JerseyLoggingFixerFilter</filter-class>

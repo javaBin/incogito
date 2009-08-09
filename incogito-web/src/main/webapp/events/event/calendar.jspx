@@ -16,7 +16,7 @@
 
 <head>
   <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/calendar.css"/>
-  <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/calendar/${eventName}.css"/>
+  <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/rest/events/${eventName}/calendar.css"/>
   <script type="text/javascript">
     var eventName = "${eventName}"
     var closeSessionButton

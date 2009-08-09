@@ -9,6 +9,7 @@ import no.java.incogito.domain.Event.EventId;
 import static no.java.incogito.domain.Event.emptyLevelIconMap;
 import static no.java.incogito.domain.Event.emptyLabelIconMap;
 import no.java.incogito.domain.Room;
+import no.java.incogito.Functions;
 
 import java.util.UUID;
 
@@ -21,11 +22,10 @@ public class WebFunctionsTest extends TestCase {
         List<Room> rooms = List.list(new Room("Room 1"), new Room("Room 2"));
         Event event = new Event(EventId.eventId(UUID.randomUUID().toString()), "name", Option.<String>none(), rooms, 
                 emptyLevelIconMap, emptyLabelIconMap);
-        WebFunctions.generateCss.f(event).foreach(new Effect<String>() {
-            public void e(String s) {
-                System.out.println(s);
-            }
-        });
+
+        String s = WebFunctions.generateCss.f(event).toList().foldRight(Functions.String_join.f("\n"), "");
+
+        System.out.println(s);
     }
 
     public void testDuration() {

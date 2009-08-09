@@ -9,6 +9,7 @@ import fj.data.List;
 import fj.data.Option;
 import static fj.data.Option.join;
 import static fj.data.Option.some;
+import no.java.incogito.Functions;
 import no.java.incogito.IO;
 import no.java.incogito.PatternMatcher;
 import no.java.incogito.application.IncogitoApplication;
@@ -25,6 +26,7 @@ import static no.java.incogito.dto.EventListXml.eventListXml;
 import no.java.incogito.dto.EventXml;
 import no.java.incogito.dto.SessionListXml;
 import no.java.incogito.dto.SessionXml;
+import no.java.incogito.web.WebFunctions;
 import static no.java.incogito.web.resources.XmlFunctions.eventListToXml;
 import static no.java.incogito.web.resources.XmlFunctions.eventToXml;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -73,6 +75,17 @@ public class IncogitoResource {
     public Response getEvents() {
         return toJsr311(incogito.getEvents().
                 ok().map(compose(eventListXml, compose(Java.<EventXml>List_ArrayList(), eventListToXml))));
+    }
+
+    @Path("/events/{eventName}/calendar.css")
+    @GET
+    @Produces("image/png")
+    public Response getEventCalendarCss(@PathParam("eventName") final String eventName) {
+        return toJsr311(incogito.getEventByName(eventName).ok().map(new F<Event, String>() {
+            public String f(Event event) {
+                return WebFunctions.generateCss.f(event).toList().foldRight(Functions.String_join.f("\n"), "");
+            }
+        }));
     }
 
     @Path("/events/{eventName}/icons/levels/{level}.png")

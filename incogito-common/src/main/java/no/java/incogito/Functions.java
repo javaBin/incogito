@@ -77,6 +77,15 @@ public class Functions {
     });
 
     /**
+     * f a b = a + b
+     */
+    public static final F<String, F<String, F<String, String>>> String_join = curry(new F3<String, String, String, String>() {
+        public String f(String join, String s1, String s2) {
+            return s1 + join + s2;
+        }
+    });
+
+    /**
      * f a b = b + a
      */
     public static final F<String, F<String, String>> prepend = curry(new F2<String, String, String>() {
