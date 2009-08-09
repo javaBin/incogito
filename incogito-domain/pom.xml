@@ -19,5 +19,10 @@
       <artifactId>ems-wiki</artifactId>
       <version>${version.ems}</version>
     </dependency>
+    <dependency>
+      <groupId>no.java.incogito</groupId>
+      <artifactId>incogito-common</artifactId>
+      <version>${version}</version>
+    </dependency>
   </dependencies>
 </project>

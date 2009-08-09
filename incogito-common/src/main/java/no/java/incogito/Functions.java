@@ -9,6 +9,7 @@ import static fj.Function.curry;
 import static fj.P.p;
 import fj.P1;
 import fj.P2;
+import fj.P3;
 import fj.data.Either;
 import fj.data.List;
 import static fj.data.List.cons;
@@ -22,6 +23,7 @@ import fj.pre.Show;
 import static fj.pre.Show.show;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -35,15 +37,27 @@ public class Functions {
     // java.lang.Strings
     // -----------------------------------------------------------------------
 
-    public static final F<String, F<String, Boolean>> equals = curry( new F2<String, String, Boolean>() {
+    public static final F<String, F<String, Boolean>> equals = curry(new F2<String, String, Boolean>() {
         public Boolean f(String s, String s1) {
             return s.equals(s1);
         }
     });
 
-    public static final F<String, F<String, List<String>>> split = curry( new F2<String, String, List<String>>() {
+    public static final F<String, F<String, Boolean>> String_startsWith = curry(new F2<String, String, Boolean>() {
+        public Boolean f(String s, String s1) {
+            return s1.startsWith(s);
+        }
+    });
+
+    public static final F<String, F<String, Boolean>> String_endsWith = curry(new F2<String, String, Boolean>() {
+        public Boolean f(String s, String s1) {
+            return s1.endsWith(s);
+        }
+    });
+
+    public static final F<String, F<String, List<String>>> split = curry(new F2<String, String, List<String>>() {
         public List<String> f(String regex, String string) {
-            return list( string.split( regex ) );
+            return list(string.split(regex));
         }
     });
 
@@ -56,7 +70,7 @@ public class Functions {
     /**
      * f a b = a + b
      */
-    public static final F<String, F<String, String>> append = curry( new F2<String, String, String>() {
+    public static final F<String, F<String, String>> append = curry(new F2<String, String, String>() {
         public String f(String a, String b) {
             return b.concat(a);
         }
@@ -65,19 +79,19 @@ public class Functions {
     /**
      * f a b = b + a
      */
-    public static final F<String, F<String, String>> prepend = curry( new F2<String, String, String>() {
+    public static final F<String, F<String, String>> prepend = curry(new F2<String, String, String>() {
         public String f(String a, String b) {
             return a.concat(b);
         }
     });
 
-    public static final F<Integer, F<String, String>> substringFrom = curry( new F2<Integer, String, String>() {
+    public static final F<Integer, F<String, String>> substringFrom = curry(new F2<Integer, String, String>() {
         public String f(Integer beginIndex, String s) {
             return s.substring(beginIndex);
         }
     });
 
-    public static final F<Integer, F<Integer, F<String, String>>> substring = curry( new F3<Integer, Integer, String, String>() {
+    public static final F<Integer, F<Integer, F<String, String>>> substring = curry(new F3<Integer, Integer, String, String>() {
         public String f(Integer beginIndex, Integer endIndex, String s) {
             return s.substring(beginIndex, endIndex);
         }
@@ -105,12 +119,46 @@ public class Functions {
         }
     };
 
+    public static final F<File, Boolean> isDirectory = new F<File, Boolean>() {
+        public Boolean f(File file) {
+            return file.isDirectory();
+        }
+    };
+
+    public static final F<File, F<FileFilter, List<File>>> listFilesWithFileFilter = curry(new F2<File, FileFilter, List<File>>() {
+        public List<File> f(File file, FileFilter fileFilter) {
+            return list(file.listFiles(fileFilter));
+        }
+    });
+
+    public static final F<File, List<File>> listFiles = new F<File, List<File>>() {
+        public List<File> f(File file) {
+            return list(file.listFiles());
+        }
+    };
+
+    public static final F<File, String> File_getName = new F<File, String>() {
+        public String f(File file) {
+            return file.getName();
+        }
+    };
+
+    public static final F<File, String> File_getAbsolutePath = new F<File, String>() {
+        public String f(File file) {
+            return file.getAbsolutePath();
+        }
+    };
+
+    public static final Show<File> File_show = Show.showS(File_getName);
+
+    public static final Show<File> File_showAbsolute = Show.showS(File_getAbsolutePath);
+
     // -----------------------------------------------------------------------
     // fj.data.Either
     // -----------------------------------------------------------------------
 
     public static <R> R throwLeft(Either<Exception, R> either) throws Exception {
-        if(either.isLeft()) {
+        if (either.isLeft()) {
             throw either.left().value();
         }
 
@@ -122,7 +170,7 @@ public class Functions {
     // -----------------------------------------------------------------------
 
     // I'll get killed for this - trygve
-    public static <A> A toNull(Option<A> option){
+    public static <A> A toNull(Option<A> option) {
         return option.isSome() ? option.some() : null;
     }
 
@@ -151,7 +199,7 @@ public class Functions {
     }
 
     public static <A> A Option_valueE(Option<A> option, String e) {
-        if(option.isNone()) {
+        if (option.isNone()) {
             throw Bottom.error(e);
         }
 
@@ -195,7 +243,7 @@ public class Functions {
     }
 
     public static <A> F<F<A, Boolean>, F<List<A>, List<A>>> List_filter() {
-        return curry( new F2<F<A, Boolean>, List<A>, List<A>>() {
+        return curry(new F2<F<A, Boolean>, List<A>, List<A>>() {
             public List<A> f(F<A, Boolean> filter, List<A> list) {
                 return list.filter(filter);
             }
@@ -216,7 +264,7 @@ public class Functions {
             }
         }
 
-        if(as.isEmpty() || bs.isEmpty()) {
+        if (as.isEmpty() || bs.isEmpty()) {
             return List.nil();
         }
 
@@ -252,7 +300,7 @@ public class Functions {
             }
 
             public A next() {
-                if(list.isEmpty()) {
+                if (list.isEmpty()) {
                     throw new NoSuchElementException();
                 }
 
@@ -277,7 +325,7 @@ public class Functions {
 
         return Stream.unfold(new F<Iterator<A>, Option<P2<A, Iterator<A>>>>() {
             public Option<P2<A, Iterator<A>>> f(Iterator<A> it) {
-                if(it.hasNext()) {
+                if (it.hasNext()) {
                     return some(p(it.next(), it));
                 }
                 it = Stream_iterator(stream);
@@ -296,7 +344,7 @@ public class Functions {
 
             public A next() {
                 Stream<A> s = stream._1();
-                if(s.isEmpty()) {
+                if (s.isEmpty()) {
                     throw new NoSuchElementException();
                 }
 
@@ -366,20 +414,20 @@ public class Functions {
     public static <A, B> Show<TreeMap<A, B>> treeMapShow(final Show<A> showA, final Show<B> showB) {
         return show(new F<TreeMap<A, B>, List<Character>>() {
             public List<Character> f(final TreeMap<A, B> map) {
-                if(map.isEmpty()) {
+                if (map.isEmpty()) {
                     return list('(', ')');
                 }
 
                 final List.Buffer<Character> buffer = List.Buffer.empty();
 
-                Iterator<P2<A,B>> it = map.iterator();
+                Iterator<P2<A, B>> it = map.iterator();
                 int size = map.size();
                 for (int i = 0; i < size; i++) {
                     P2<A, B> p = it.next();
 
                     buffer.append(showA.show(p._1())).snoc('=').append(showB.show(p._2()));
 
-                    if(i < size - 1) {
+                    if (i < size - 1) {
                         buffer.snoc(',');
                         buffer.snoc(' ');
                     }
@@ -388,5 +436,17 @@ public class Functions {
                 return cons('(', buffer.toList());
             }
         });
+    }
+
+    // -----------------------------------------------------------------------
+    // fj.P3
+    // -----------------------------------------------------------------------
+
+    public static <A, B, C, D> F<P3<A, B, C>, D> P3_tuple(final F<A, F<B, F<C, D>>> f) {
+        return new F<P3<A, B, C>, D>() {
+            public D f(P3<A, B, C> p3) {
+                return f.f(p3._1()).f(p3._2()).f(p3._3());
+            }
+        };
     }
 }

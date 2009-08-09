@@ -7,6 +7,7 @@ import static fj.data.Option.fromNull;
 import no.java.incogito.application.IncogitoApplication;
 import no.java.incogito.domain.Schedule;
 import no.java.incogito.domain.Session;
+import no.java.incogito.domain.Event;
 import no.java.incogito.dto.EventXml;
 import no.java.incogito.dto.ScheduleXml;
 import no.java.incogito.dto.SessionXml;
@@ -67,8 +68,12 @@ public class IncogitoFunctions {
         return app.getSessions(urlDecode(eventName)).value().map(sessionToXml).toArray(SessionXml[].class).array();
     }
 
-    public static EventXml getEventByName(IncogitoApplication app, String eventName) {
+    public static EventXml getEventXmlByName(IncogitoApplication app, String eventName) {
         return app.getEventByName(urlDecode(eventName)).ok().map(XmlFunctions.eventToXml).value();
+    }
+
+    public static Event getEventByName(IncogitoApplication app, String eventName) {
+        return app.getEventByName(urlDecode(eventName)).value();
     }
 
     public static SessionXml getSession(IncogitoApplication app, String eventName, String sessionTitle) {

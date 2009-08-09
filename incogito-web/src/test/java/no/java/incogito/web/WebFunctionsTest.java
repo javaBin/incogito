@@ -6,6 +6,8 @@ import fj.data.Option;
 import junit.framework.TestCase;
 import no.java.incogito.domain.Event;
 import no.java.incogito.domain.Event.EventId;
+import static no.java.incogito.domain.Event.emptyLevelIconMap;
+import static no.java.incogito.domain.Event.emptyLabelIconMap;
 import no.java.incogito.domain.Room;
 
 import java.util.UUID;
@@ -17,7 +19,8 @@ import java.util.UUID;
 public class WebFunctionsTest extends TestCase {
     public void testFunctions() {
         List<Room> rooms = List.list(new Room("Room 1"), new Room("Room 2"));
-        Event event = new Event(EventId.eventId(UUID.randomUUID().toString()), "name", Option.<String>none(), rooms);
+        Event event = new Event(EventId.eventId(UUID.randomUUID().toString()), "name", Option.<String>none(), rooms, 
+                emptyLevelIconMap, emptyLabelIconMap);
         WebFunctions.generateCss.f(event).foreach(new Effect<String>() {
             public void e(String s) {
                 System.out.println(s);

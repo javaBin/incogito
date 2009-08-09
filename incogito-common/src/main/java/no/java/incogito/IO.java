@@ -9,6 +9,7 @@ import static fj.Unit.unit;
 import fj.control.parallel.Callables;
 import fj.data.Either;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -34,6 +35,28 @@ public class IO {
         public static F<OutputStream, java.io.Writer> toWriter = new F<OutputStream, java.io.Writer>() {
             public java.io.Writer f(OutputStream outputStream) {
                 return new OutputStreamWriter(outputStream);
+            }
+        };
+    }
+
+    public static class ByteArrays {
+        public static F<InputStream, Callable<byte[]>> streamToByteArray = new F<InputStream, Callable<byte[]>>() {
+            public Callable<byte[]> f(final InputStream inputStream) {
+                return new Callable<byte[]>() {
+                    public byte[] call() throws Exception {
+                        ByteArrayOutputStream data = new ByteArrayOutputStream();
+                        byte[] buffer = new byte[1024 * 8];
+
+                        int read = inputStream.read(buffer);
+
+                        while (read != -1) {
+                            data.write(buffer, 0, read);
+                            read = inputStream.read(buffer);
+                        }
+
+                        return data.toByteArray();
+                    }
+                };
             }
         };
     }

@@ -21,23 +21,28 @@ public class SessionXml {
     @XmlElement(name = "abstract")
     public String abstractHtml;
     public String bodyHtml;
+    public String level;
     public String room;
     public XMLGregorianCalendar timeslot;
     public List<SpeakerXml> speakers = new ArrayList<SpeakerXml>();
+    public List<String> labels = new ArrayList<String>();
 
     public SessionXml() {
     }
 
     public SessionXml(String selfUri, String id, String title, Option<String> abstractHtml, Option<String> bodyHtml,
-                      Option<String> room, Option<XMLGregorianCalendar> timeslot, Iterable<SpeakerXml> speakers) {
+                      Option<String> level, Option<String> room, Option<XMLGregorianCalendar> timeslot,
+                      Iterable<SpeakerXml> speakers, Iterable<String> labels) {
         this.selfUri = selfUri;
         this.id = id;
         this.title = title;
         this.abstractHtml = abstractHtml.orSome((String) null);
         this.bodyHtml = bodyHtml.orSome((String) null);
+        this.level = level.orSome((String) null);
         this.room = room.orSome((String) null);
         this.timeslot = timeslot.orSome((XMLGregorianCalendar) null);
         this.speakers = toList(speakers);
+        this.labels = toList(labels);
     }
 
     public String getId() {
@@ -56,6 +61,10 @@ public class SessionXml {
         return bodyHtml;
     }
 
+    public String getLevel() {
+        return level;
+    }
+
     public String getRoom() {
         return room;
     }
@@ -66,5 +75,9 @@ public class SessionXml {
 
     public List<SpeakerXml> getSpeakers() {
         return speakers;
+    }
+
+    public List<String> getLabels() {
+        return labels;
     }
 }

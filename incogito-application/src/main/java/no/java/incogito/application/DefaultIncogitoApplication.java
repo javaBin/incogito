@@ -8,7 +8,9 @@ import fj.Function;
 import static fj.Function.compose;
 import static fj.Function.curry;
 import static fj.Function.flip;
+import fj.P1;
 import fj.Unit;
+import fj.control.parallel.Callables;
 import fj.data.Either;
 import fj.data.List;
 import static fj.data.List.iterableList;
@@ -19,19 +21,26 @@ import static fj.data.Option.join;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
 import fj.data.TreeMap;
-import fj.function.Booleans;
-import fj.function.Strings;
+import fj.pre.Show;
+import no.java.incogito.Enums;
 import no.java.incogito.Functions;
 import static no.java.incogito.Functions.throwLeft;
 import no.java.incogito.IO;
 import static no.java.incogito.IO.Strings.streamToString;
 import no.java.incogito.PropertiesF;
+import static no.java.incogito.application.OperationResult.notFound;
+import static no.java.incogito.application.IncogitoConfiguration.emptyLevelIconMaps;
+import static no.java.incogito.application.IncogitoConfiguration.emptyLabelIconMaps;
+import static no.java.incogito.application.IncogitoConfiguration.emptyWelcomeTexts;
 import no.java.incogito.domain.Comment;
 import no.java.incogito.domain.Event;
 import no.java.incogito.domain.Event.EventId;
+import static no.java.incogito.domain.Event.emptyLabelIconMap;
+import static no.java.incogito.domain.Event.emptyLevelIconMap;
 import no.java.incogito.domain.Room;
 import no.java.incogito.domain.Schedule;
 import no.java.incogito.domain.Session;
+import no.java.incogito.domain.Session.Level;
 import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.Speaker;
 import no.java.incogito.domain.User;
@@ -49,6 +58,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.FileFilter;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -61,7 +71,10 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
     private final UserClient userClient;
     private final EmsWrapper emsWrapper;
 
-    private IncogitoConfiguration configuration;
+    /**
+     * This is not ideal, but a configuration is required to load the configuration
+     */
+    private IncogitoConfiguration configuration = IncogitoConfiguration.unconfigured();
 
     @Autowired
     public DefaultIncogitoApplication(@Qualifier("incogitoHome") File incogitoHome, UserClient userClient, EmsWrapper emsWrapper) {
@@ -99,48 +112,94 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
         @SuppressWarnings({"ThrowableInstanceNeverThrown"})
         String baseurl = throwLeft(properties.get("baseurl").toEither(new Exception("Missing required property: baseurl")));
 
-        List<EventId> events = properties.get("events").
-                bind(Option.fromString()).
-                map(Functions.split.f(",")).orSome(List.<String>nil()).
-                map(Functions.trim).
-                filter(compose(Booleans.not, Strings.isEmpty)).
-                map(EventId.eventId);
+        FileFilter fileFilter = new FileFilter() {
+            public boolean accept(File pathname) {
+                return pathname.canRead() && !pathname.getName().startsWith(".");
+            }
+        };
 
-        TreeMap<EventId, String> welcomeTexts = TreeMap.empty(EventId.ord);
+        File[] eventDirectories = new File(etc, "events").listFiles(fileFilter);
 
+        TreeMap<EventId, String> welcomeTexts = emptyWelcomeTexts;
+        TreeMap<EventId, TreeMap<String, File>> labelIconMaps = emptyLabelIconMaps;
+        TreeMap<EventId, TreeMap<Level, File>> levelIconMaps = emptyLevelIconMaps;
+
+        // TODO: Check for icons on disk and put those in a map, including alternative texts for each image
         // TODO: Load the order of the rooms
         // TODO: Load "extra" room sessions which are special like "lunch" and "party zone"
         // TODO: Consider switching to reading a <event id>.xml file if it exist and use that as configuration
-        for (EventId event : events) {
-            logger.debug("Loading " + event.value.toString() + "...");
+        for (File eventDirectory : eventDirectories) {
+            String eventName = eventDirectory.getName();
+            logger.debug("Loading " + eventName + "...");
 
-            Option<File> fileOption = properties.get("event." + event.value.toString() + ".welcome").
-                    map(Functions.newFile.f(etc)).
-                    filter(Functions.canRead);
+            OperationResult<Event> eventOperationResult = getEventByName(eventName);
 
-            if (fileOption.isNone()) {
-                continue;
+            if (!eventOperationResult.isOk()) {
+                logger.warn("Unknown event: '" + eventName + "'.");
             }
 
-            logger.debug("Welcome file: " + fileOption.some());
+            Event event = eventOperationResult.value();
 
-            String welcomeHtml = IO.<String>runFileInputStream_().f(streamToString).f(fileOption.some()).call();
+            Option<String> welcomeText = some(new File(eventDirectory, "welcome.txt")).
+                    filter(Functions.canRead).
+                    map(IO.<String>runFileInputStream_().f(streamToString)).
+                    bind(compose(P1.<Option<String>>__1(), Callables.<String>option()));
 
-            welcomeTexts = welcomeTexts.set(event, welcomeHtml);
+            List<File> labelFiles = Option.iif(Functions.isDirectory, new File(eventDirectory, "labels")).
+                    map(Functions.listFiles).
+                    orSome(List.<File>nil()).
+                    filter(compose(Functions.String_endsWith.f(".png"), Functions.File_getName));
+
+            List<File> levelFiles = Option.iif(Functions.isDirectory, new File(eventDirectory, "levels")).
+                    map(Functions.listFiles).
+                    orSome(List.<File>nil()).
+                    filter(compose(Functions.String_endsWith.f(".png"), Functions.File_getName));
+
+            TreeMap<String, File> labelIcons = labelFiles.foldLeft(new F2<TreeMap<String, File>, File, TreeMap<String, File>>() {
+                public TreeMap<String, File> f(TreeMap<String, File> labelIcons, File file) {
+                    String name = file.getName();
+                    return labelIcons.set(name.substring(0, name.length() - 4), file);
+                }
+            }, emptyLabelIconMap);
+
+            TreeMap<Level, File> levelIcons = emptyLevelIconMap;
+
+            for (File file : levelFiles) {
+                String name = file.getName();
+                name = name.substring(0, name.length() - 4);
+
+                Option<Level> levelOption = Level.valueOf.f(name);
+
+                if (levelOption.isNone()) {
+                    continue;
+                }
+
+                levelIcons = levelIcons.set(levelOption.some(), file);
+            }
+
+            if (welcomeText.isSome()) {
+                welcomeTexts = welcomeTexts.set(event.id, welcomeText.some());
+            }
+            labelIconMaps = labelIconMaps.set(event.id, labelIcons);
+            levelIconMaps = levelIconMaps.set(event.id, levelIcons);
         }
 
-        this.configuration = new IncogitoConfiguration(baseurl, welcomeTexts);
+        this.configuration = new IncogitoConfiguration(baseurl, welcomeTexts, levelIconMaps, labelIconMaps);
     }
 
     public OperationResult<List<Event>> getEvents() {
-        F<EventId, Option<String>> getter = flip(Functions.<EventId,String>TreeMap_get()).f(configuration.welcomeTexts);
-        return OperationResult.ok(emsWrapper.listEvents().map(eventFromEms.f(getter)));
+        return OperationResult.ok(emsWrapper.listEvents().map(eventFromEms.f(configuration)));
     }
 
     public OperationResult<Event> getEventByName(String eventName) {
-        F<EventId, Option<String>> getter = flip(Functions.<EventId,String>TreeMap_get()).f(configuration.welcomeTexts);
-        return emsWrapper.findEventByName.f(eventName).
-                map(compose(OperationResult.<Event>ok_(), eventFromEms.f(getter))).
+        Option<no.java.ems.domain.Event> eventOption = emsWrapper.findEventByName.f(eventName);
+
+        if(eventOption.isNone())  {
+            return notFound("Event with name '" + eventName + "' not found.");
+        }
+
+        return eventOption.
+                map(compose(OperationResult.<Event>ok_(), eventFromEms.f(configuration))).
                 orSome(OperationResult.<Event>notFound("Event with name '" + eventName + "' not found."));
     }
 
@@ -183,7 +242,7 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
         if (userClient.removeUser(userId)) {
             return OperationResult.emptyOk();
         } else {
-            return OperationResult.notFound("User with id '" + userId + "' not found.");
+            return notFound("User with id '" + userId + "' not found.");
         }
     }
 
@@ -197,7 +256,7 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
         Option<User> user = userClient.getUser(new UserId(userId));
 
         if(user.isNone()) {
-            return OperationResult.notFound("User with id '" + userId + "' does not exist.");
+            return notFound("User with id '" + userId + "' does not exist.");
         }
 
         return getSchedule_(eventName, user);
@@ -218,9 +277,7 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
                 emsWrapper.findSessionIdsByEventId,
                 eventId);
 
-        F<EventId, Option<String>> getter = flip(Functions.<EventId,String>TreeMap_get()).f(configuration.welcomeTexts);
-
-        Option<Event> event = emsEvent.map(eventFromEms.f(getter));
+        Option<Event> event = emsEvent.map(eventFromEms.f(configuration));
         Option<List<Session>> sessions = emsEvent.map(f);
 
         return event.bind(sessions, some(user), createSchedule).
@@ -253,26 +310,32 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
     // Functions from EMS domain objects to Incogito domain objects
     // -----------------------------------------------------------------------
 
-    public F<no.java.ems.domain.Room, Room> roomFromEms = new F<no.java.ems.domain.Room, Room>() {
+    private static  F<no.java.ems.domain.Room, Room> roomFromEms = new F<no.java.ems.domain.Room, Room>() {
         public Room f(no.java.ems.domain.Room room) {
             return new Room(room.getName());
         }
     };
 
-    F<F<EventId, Option<String>>, F<no.java.ems.domain.Event, Event>> eventFromEms = curry(new F2<F<EventId, Option<String>>, no.java.ems.domain.Event, Event>() {
-        public Event f(F<EventId, Option<String>> welcomeTextGetter, no.java.ems.domain.Event event) {
-            EventId id = EventId.eventId(event.getId());
-            return new Event(id, event.getName(), welcomeTextGetter.f(id), List.iterableList(event.getRooms()).map(roomFromEms));
+    private static F<IncogitoConfiguration, F<no.java.ems.domain.Event, Event>> eventFromEms = curry(new F2<IncogitoConfiguration, no.java.ems.domain.Event, Event>() {
+        public Event f(IncogitoConfiguration configuration, no.java.ems.domain.Event event) {
+            EventId eventId = EventId.eventId(event.getId());
+
+            return new Event(eventId,
+                    event.getName(),
+                    configuration.welcomeTexts.get(eventId),
+                    List.iterableList(event.getRooms()).map(roomFromEms),
+                    configuration.getLevelIcons(eventId),
+                    configuration.getLabelIcons(eventId));
         }
     });
 
-    F<no.java.ems.domain.Speaker, Speaker> speakerFromEms = new F<no.java.ems.domain.Speaker, Speaker>() {
+    private static F<no.java.ems.domain.Speaker, Speaker> speakerFromEms = new F<no.java.ems.domain.Speaker, Speaker>() {
         public Speaker f(no.java.ems.domain.Speaker speaker) {
             return new Speaker(speaker.getName(), fromString(speaker.getDescription()).map(WikiString.constructor));
         }
     };
 
-    F<no.java.ems.domain.Session, Option<Session>> sessionFromEms = new F<no.java.ems.domain.Session, Option<Session>>() {
+    private static F<no.java.ems.domain.Session, Option<Session>> sessionFromEms = new F<no.java.ems.domain.Session, Option<Session>>() {
         public Option<Session> f(no.java.ems.domain.Session session) {
             if(session.getTitle() == null) {
                 return none();
@@ -287,9 +350,10 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
                     session.getTitle(),
                     fromString(session.getLead()).map(WikiString.constructor),
                     fromString(session.getBody()).map(WikiString.constructor),
+                    fromNull(session.getLevel()).bind(Functions.compose(Level.valueOf, Enums.<no.java.ems.domain.Session.Level>name_())),
                     fromNull(session.getTimeslot()),
                     fromNull(session.getRoom()).map(EmsFunctions.roomName),
-                    iterableList(session.getTags()),
+                    iterableList(session.getKeywords()),
                     iterableList(session.getSpeakers()).map(speakerFromEms),
                     List.<Comment>nil()));
         }

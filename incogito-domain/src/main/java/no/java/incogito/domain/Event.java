@@ -1,17 +1,25 @@
 package no.java.incogito.domain;
 
-import fj.pre.Ord;
 import fj.F;
-import fj.data.Option;
 import fj.data.List;
+import fj.data.Option;
+import fj.data.TreeMap;
+import fj.pre.Ord;
+import no.java.incogito.Enums;
+import no.java.incogito.domain.Session.Level;
 
+import java.io.File;
 import java.util.UUID;
+import java.net.URI;
 
 /**
  * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class Event {
+    public static final TreeMap<Level, File> emptyLevelIconMap = TreeMap.empty(Enums.<Level>ord());
+    public static final TreeMap<String, File> emptyLabelIconMap = TreeMap.empty(Ord.stringOrd);
+
     public final EventId id;
 
     public final String name;
@@ -20,23 +28,17 @@ public class Event {
 
     public final List<Room> rooms;
 
-    public static final F<Event, String> getName = new F<Event, String>() {
-        public String f(Event event) {
-            return event.name;
-        }
-    };
+    public final TreeMap<Level, File> levelIconFiles;
 
-    public static final F<Event, EventId> getId = new F<Event, EventId>() {
-        public EventId f(Event event) {
-            return event.id;
-        }
-    };
+    public final TreeMap<String, File> labelIconFiles;
 
-    public Event(EventId id, String name, Option<String> welcome, List<Room> rooms) {
+    public Event(EventId id, String name, Option<String> welcome, List<Room> rooms, TreeMap<Level, File> levelIconFiles, TreeMap<String, File> labelIconFiles) {
         this.id = id;
         this.name = name;
         this.welcome = welcome;
         this.rooms = rooms;
+        this.levelIconFiles = levelIconFiles;
+        this.labelIconFiles = labelIconFiles;
     }
 
     public static class EventId extends Id {

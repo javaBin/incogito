@@ -12,6 +12,7 @@ import no.java.incogito.domain.SessionRating;
 import no.java.incogito.domain.UserSessionAssociation;
 import no.java.incogito.domain.Speaker;
 import no.java.incogito.domain.WikiString;
+import no.java.incogito.domain.Session.Level;
 import no.java.incogito.dto.EventXml;
 import no.java.incogito.dto.InterestLevelXml;
 import no.java.incogito.dto.ScheduleXml;
@@ -69,9 +70,11 @@ public class XmlFunctions {
                     session.title,
                     session._abstract.map(WikiString.toHtml),
                     session.body.map(WikiString.toHtml),
+                    session.level.map(Level.show.showS_()),
                     session.room,
                     session.timeslot.map(toXmlGregorianCalendar),
-                    session.speakers.map(speakerToXml));
+                    session.speakers.map(speakerToXml),
+                    session.labels);
         }
     });
 

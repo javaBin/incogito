@@ -76,6 +76,11 @@
     <to last="true">/logout.jspx</to>
   </rule>
 
+  <rule>
+    <from>^(/images/.*\.png)$</from>
+    <to last="true">$1</to>
+  </rule>
+
   <!--
    |
    | Event

@@ -3,14 +3,21 @@ package no.java.incogito.web.resources;
 import fj.F;
 import static fj.Function.compose;
 import fj.P1;
+import fj.control.parallel.Callables;
 import fj.data.Java;
 import fj.data.List;
+import fj.data.Option;
+import static fj.data.Option.join;
+import static fj.data.Option.some;
+import no.java.incogito.IO;
 import no.java.incogito.PatternMatcher;
 import no.java.incogito.application.IncogitoApplication;
 import no.java.incogito.application.OperationResult;
 import no.java.incogito.application.OperationResult.NotFoundOperationResult;
 import no.java.incogito.application.OperationResult.OkOperationResult;
+import no.java.incogito.domain.Event;
 import no.java.incogito.domain.Session;
+import no.java.incogito.domain.Session.Level;
 import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.User;
 import no.java.incogito.domain.UserSessionAssociation.InterestLevel;
@@ -30,8 +37,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -40,6 +47,7 @@ import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
+import java.io.File;
 
 /**
  * REST-ful wrapper around IncogitoApplication.
@@ -63,15 +71,75 @@ public class IncogitoResource {
     @Path("/events")
     @GET
     public Response getEvents() {
-        System.out.println("IncogitoResource.getEvents");
         return toJsr311(incogito.getEvents().
                 ok().map(compose(eventListXml, compose(Java.<EventXml>List_ArrayList(), eventListToXml))));
+    }
+
+    @Path("/events/{eventName}/icons/levels/{level}.png")
+    @GET
+    @Produces("image/png")
+    public Response getLevelIcon(@PathParam("eventName") final String eventName,
+                                 @PathParam("level") final String level) {
+        System.out.println("level = " + level);
+
+        OperationResult<Event> eventResult = incogito.getEventByName(eventName);
+
+        if(!eventResult.isOk()) {
+            return toJsr311(eventResult);
+        }
+
+        Option<Level> levelOption = some(level).bind(Level.valueOf);
+
+        if(!levelOption.isSome()) {
+            return toJsr311(OperationResult.<Object>notFound("Level '" + level + "' not known."));
+        }
+
+        Option<File> fileOption = eventResult.value().levelIconFiles.get(levelOption.some());
+
+        if(!fileOption.isSome()) {
+            return toJsr311(OperationResult.<Object>notFound("No icon for level '" + level + "'."));
+        }
+
+        // TODO: How about some caching here?
+
+        Option<byte[]> bytes = join(fileOption.
+                map(IO.<byte[]>runFileInputStream_().f(IO.ByteArrays.streamToByteArray)).
+                map(compose(P1.<Option<byte[]>>__1(), Callables.<byte[]>option())));
+
+        return toJsr311(OperationResult.ok(bytes));
+    }
+
+    @Path("/events/{eventName}/icons/labels/{label}.png")
+    @GET
+    @Produces("image/png")
+    public Response getLabelIcon(@PathParam("eventName") final String eventName,
+                                 @PathParam("label") final String label) {
+        System.out.println("label = " + label);
+
+        OperationResult<Event> eventResult = incogito.getEventByName(eventName);
+
+        if(!eventResult.isOk()) {
+            return toJsr311(eventResult);
+        }
+
+        Option<File> fileOption = eventResult.value().labelIconFiles.get(label);
+
+        if(!fileOption.isSome()) {
+            return toJsr311(OperationResult.<Object>notFound("No icon for label '" + label + "'."));
+        }
+
+        // TODO: How about some caching here?
+
+        Option<byte[]> bytes = join(fileOption.
+                map(IO.<byte[]>runFileInputStream_().f(IO.ByteArrays.streamToByteArray)).
+                map(compose(P1.<Option<byte[]>>__1(), Callables.<byte[]>option())));
+
+        return toJsr311(OperationResult.ok(bytes));
     }
 
     @Path("/events/{eventName}")
     @GET
     public Response getEvent(@PathParam("eventName") final String eventName) {
-        System.out.println("IncogitoResource.getEvent");
         return toJsr311(incogito.getEventByName(eventName).ok().map(eventToXml));
     }
 
@@ -79,15 +147,14 @@ public class IncogitoResource {
     @GET
     public Response getSessionsForEvent(@Context final UriInfo uriInfo,
                                         @PathParam("eventName") final String eventName) {
-        System.out.println("IncogitoResource.getSessionsForEvent");
-
         P1<UriBuilder> uriBuilder = new P1<UriBuilder>() {
             public UriBuilder _1() {
                 return uriInfo.getRequestUriBuilder();
             }
         };
 
-        F<List<Session>, List<SessionXml>> sessionToXmlList = List.<Session, SessionXml>map_().f(XmlFunctions.sessionToXml.f(uriBuilder));
+        F<List<Session>, List<SessionXml>> sessionToXmlList =
+                List.<Session, SessionXml>map_().f(XmlFunctions.sessionToXml.f(uriBuilder));
 
         return toJsr311(incogito.getSessions(eventName).
                 ok().map(compose(SessionListXml.sessionListXml, sessionToXmlList)));
@@ -98,8 +165,6 @@ public class IncogitoResource {
     public Response getSessionForEvent(@Context final UriInfo uriInfo,
                                        @PathParam("eventName") final String eventName,
                                        @PathParam("sessionId") final String sessionId) {
-        System.out.println("IncogitoResource.getSessionForEvent");
-
         // TODO: Consider replacing this with the configured hostname and base url
         F<Session, SessionXml> sessionToXml = XmlFunctions.sessionToXml.f(uriBuilderClone.f(uriInfo.getRequestUriBuilder()));
 

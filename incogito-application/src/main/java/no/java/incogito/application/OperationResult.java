@@ -94,6 +94,8 @@ public abstract class OperationResult<T> {
         };
     }
 
+    // Conflict
+
     public static class ConflictOperationResult<T> extends OperationResult<T> {
         public final String message;
 
@@ -127,6 +129,8 @@ public abstract class OperationResult<T> {
             }
         };
     }
+
+    // Not Found
 
     public static class NotFoundOperationResult<T> extends OperationResult<T> {
         public final String message;

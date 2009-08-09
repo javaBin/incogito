@@ -9,7 +9,7 @@
 <jsp:useBean id="app" type="no.java.incogito.application.IncogitoApplication" scope="application"/>
 <jsp:useBean id="eventName" type="java.lang.String" scope="request"/>
 <c:set var="eventName" value="${i:urlDecode(eventName)}"/>
-<c:set var="event" value="${i:getEvent(app, eventName)}"/>
+<c:set var="event" value="${i:getEventXmlByName(app, eventName)}"/>
 
 <body>
 <ul>

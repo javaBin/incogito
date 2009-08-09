@@ -1,7 +1,12 @@
 DefaultIncogitoApplication
 o Remove filtering of sessions with titles that contain ";"
 o Add a quartz thread or something similar that load the configuration from disk
-o Sort rooms according to configuration
 o Remove duplicate sessions in the same room+timeslot combination
+o Configuration
+ o Sort rooms according to configuration
+ o Add configuration for time intervals
 
 Rename incogito-util to incogito-spring
+
+incogito-web:
+o Add top-level exception handler
