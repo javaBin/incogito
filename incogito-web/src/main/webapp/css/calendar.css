@@ -31,7 +31,6 @@ div#calendar {
 
 .day, .day .room, .room .session {
   width: 10em;
-  margin-right: 1em;
 }
 
 .day .room h2 {
@@ -70,6 +69,17 @@ div.session-header-wrapper div.labels img {
 div.session-header-wrapper div.level img {
   padding-left: 0.2em;
   padding-right: 0.2em;
+}
+
+.title {
+  font-size: smaller;
+  font-weight: bolder;
+  padding-top: 0.75em;
+}
+
+.speakers {
+  font-size: small;
+  padding-top: 0.75em;
 }
 
 /*

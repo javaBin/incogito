@@ -98,7 +98,13 @@
                   </div>
                 </div>
                 <div class="session-id">${session.id}</div>
-                <div class="session-title">${session.title}</div>
+                <div class="title">${session.title}</div>
+                <div class="speakers">
+                  <c:forEach var="speaker" varStatus="i" items="${session.speakers}">
+                    <c:if test="${not i.last}">${speaker.name}, </c:if>
+                    <c:if test="${i.last}">${speaker.name}</c:if>
+                  </c:forEach>
+                </div>
                 <div class="show-more-button">Show more</div>
               </div>
             </c:forEach>

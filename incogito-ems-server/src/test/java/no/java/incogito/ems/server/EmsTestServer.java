@@ -55,17 +55,6 @@ public class EmsTestServer {
             System.out.println(" * " + event.getName() + " has " + emsServices.getSessionDao().getSessionIdsByEventId(event.getId()).size() + " sessions");
         }
 
-        for (Event event : list) {
-            if(!"JavaZone 2009".equals(event.getName())) {
-                continue;
-            }
-
-            System.out.println("Id: " + event.getId());
-            for (Session session : emsServices.getSessionDao().getSessions(event.getId())) {
-                System.out.println("session = " + session.getTitle() + ", tags:" + StringUtils.join(session.getTags().toArray(), ", "));
-            }
-        }
-
         final AtomicBoolean shutdown = new AtomicBoolean();
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {

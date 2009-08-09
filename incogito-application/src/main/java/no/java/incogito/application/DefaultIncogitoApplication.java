@@ -28,11 +28,12 @@ import static no.java.incogito.Functions.throwLeft;
 import no.java.incogito.IO;
 import static no.java.incogito.IO.Strings.streamToString;
 import no.java.incogito.PropertiesF;
-import static no.java.incogito.application.OperationResult.notFound;
-import static no.java.incogito.application.IncogitoConfiguration.emptyLevelIconMaps;
 import static no.java.incogito.application.IncogitoConfiguration.emptyLabelIconMaps;
+import static no.java.incogito.application.IncogitoConfiguration.emptyLevelIconMaps;
 import static no.java.incogito.application.IncogitoConfiguration.emptyWelcomeTexts;
+import static no.java.incogito.application.OperationResult.notFound;
 import no.java.incogito.domain.Comment;
+import no.java.incogito.domain.CssConfiguration;
 import no.java.incogito.domain.Event;
 import no.java.incogito.domain.Event.EventId;
 import static no.java.incogito.domain.Event.emptyLabelIconMap;
@@ -58,7 +59,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.io.FileFilter;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -112,13 +112,15 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
         @SuppressWarnings({"ThrowableInstanceNeverThrown"})
         String baseurl = throwLeft(properties.get("baseurl").toEither(new Exception("Missing required property: baseurl")));
 
-        FileFilter fileFilter = new FileFilter() {
-            public boolean accept(File pathname) {
-                return pathname.canRead() && !pathname.getName().startsWith(".");
-            }
-        };
+        F<String, Option<Double>> parseDouble = compose(Functions.<NumberFormatException, Double>Either_rightToOption_(), Functions.parseDouble);
 
-        File[] eventDirectories = new File(etc, "events").listFiles(fileFilter);
+        double sessionEmStart = properties.get("sessionEmStart").bind(parseDouble).orSome(CssConfiguration.defaultCssConfiguration.sessionEmStart);
+        double emPerMinute = properties.get("emPerMinute").bind(parseDouble).orSome(CssConfiguration.defaultCssConfiguration.emPerMinute);
+        double emPerRoom = properties.get("emPerRoom").bind(parseDouble).orSome(CssConfiguration.defaultCssConfiguration.emPerRoom);
+
+        CssConfiguration cssConfiguration = new CssConfiguration(sessionEmStart, emPerMinute, emPerRoom);
+
+        List<File> eventDirectories = Functions.listFiles.f(new File(etc, "events"));
 
         TreeMap<EventId, String> welcomeTexts = emptyWelcomeTexts;
         TreeMap<EventId, TreeMap<String, File>> labelIconMaps = emptyLabelIconMaps;
@@ -149,6 +151,8 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
                     map(Functions.listFiles).
                     orSome(List.<File>nil()).
                     filter(compose(Functions.String_endsWith.f(".png"), Functions.File_getName));
+
+            Show.listShow(Functions.File_show).println(Functions.listFiles.f(new File(eventDirectory, "levels")));
 
             List<File> levelFiles = Option.iif(Functions.isDirectory, new File(eventDirectory, "levels")).
                     map(Functions.listFiles).
@@ -184,7 +188,7 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
             levelIconMaps = levelIconMaps.set(event.id, levelIcons);
         }
 
-        this.configuration = new IncogitoConfiguration(baseurl, welcomeTexts, levelIconMaps, labelIconMaps);
+        this.configuration = new IncogitoConfiguration(baseurl, welcomeTexts, levelIconMaps, labelIconMaps, cssConfiguration);
     }
 
     public OperationResult<List<Event>> getEvents() {

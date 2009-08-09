@@ -19,8 +19,8 @@ import java.util.UUID;
 public class DefaultIncogitoApplicationTest extends TestCase {
     public void testReconfigure() throws Exception {
         TestPathFactoryBean testPathFactoryBean = new TestPathFactoryBean();
-        testPathFactoryBean.setTestClass(DefaultIncogitoApplication.class);
-        testPathFactoryBean.setPath("src/test/resources/cluster-a/node-a");
+        testPathFactoryBean.setTestClass(getClass());
+        testPathFactoryBean.setPath("src/test/resources/configuration-loading");
         File incogitoHome = (File) testPathFactoryBean.getObject();
         EmsWrapper emsWrapper = new EmsWrapper(new RestEmsService(null));
         Event event = new Event();
@@ -34,7 +34,7 @@ public class DefaultIncogitoApplicationTest extends TestCase {
 
         IncogitoConfiguration configuration = application.getConfiguration();
 
-        assertEquals(8, configuration.getLabelIcons(eventId).size());
+        assertEquals(1, configuration.getLabelIcons(eventId).size());
         assertEquals(5, configuration.getLevelIcons(eventId).size());
     }
 }

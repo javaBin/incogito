@@ -17,6 +17,7 @@ import no.java.incogito.application.OperationResult;
 import no.java.incogito.application.OperationResult.NotFoundOperationResult;
 import no.java.incogito.application.OperationResult.OkOperationResult;
 import no.java.incogito.domain.Event;
+import no.java.incogito.domain.Room;
 import no.java.incogito.domain.Session;
 import no.java.incogito.domain.Session.Level;
 import no.java.incogito.domain.SessionId;
@@ -81,9 +82,11 @@ public class IncogitoResource {
     @GET
     @Produces("image/png")
     public Response getEventCalendarCss(@PathParam("eventName") final String eventName) {
+        final F<List<Room>, List<String>> generateCss = WebFunctions.generateCss.f(incogito.getConfiguration().cssConfiguration);
+
         return toJsr311(incogito.getEventByName(eventName).ok().map(new F<Event, String>() {
             public String f(Event event) {
-                return WebFunctions.generateCss.f(event).toList().foldRight(Functions.String_join.f("\n"), "");
+                return generateCss.f(event.rooms).foldRight(Functions.String_join.f("\n"), "");
             }
         }));
     }

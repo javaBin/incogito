@@ -44,7 +44,7 @@
     <property name="path" value="target/ems-home"/>
   </bean>
 
-  <bean id="emsServices" class="no.java.incogito.ems.server.EmsServicesFactoryBean">
+  <bean id="emsServices" class="no.java.incogito.ems.server.EmsServicesFactoryBean" depends-on="connectJulToSlf4j">
     <description>
       EMS Server
     </description>
@@ -53,13 +53,13 @@
     <property name="startDatabase" value="true"/>
   </bean>
 
-  <bean id="emsService" class="no.java.incogito.ems.client.RestEmsServiceFactoryBean">
+  <bean id="emsService" class="no.java.incogito.ems.client.RestEmsServiceFactoryBean" depends-on="emsServices">
     <description>
       EMS Client
     </description>
     <property name="baseurl" value="http://localhost:3300/ems"/>
   </bean>
 
-  <bean class="no.java.incogito.util.ConnectJulToSlf4j" init-method="doIt"/>
+  <bean id="connectJulToSlf4j" class="no.java.incogito.util.ConnectJulToSlf4j" init-method="doIt"/>
 
 </beans>

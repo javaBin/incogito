@@ -41,6 +41,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.codehaus.plexus.util.FileUtils;
 import voldemort.server.VoldemortServer;
 
 import java.io.File;
@@ -153,12 +154,16 @@ public class IncogitoApplicationIntegrationTest {
 
         File etc = new File(incogitoHome, "etc");
         File props = new File(etc, "incogito.properties");
-        File jz08Welcome = new File(etc, "jz08-welcome.txt");
+        File jz08File = new File(etc, "events/" + dataSet.javaZone2008.getName());
+        FileUtils.deleteDirectory(jz08File);
+        assertTrue(jz08File.mkdirs());
+        //noinspection ResultOfMethodCallIgnored
+        jz08File.mkdirs();
+        File jz08Welcome = new File(jz08File, "welcome.txt");
 
         TreeMap<String, String> properties = TreeMap.<String, String>empty(Ord.stringOrd).
                 set("baseurl", "http://poop").
-                set("events", UUID.randomUUID().toString() + ", " + dataSet.javaZone2008.getId() + ",").
-                set("event." + dataSet.javaZone2008.getId() + ".welcome", jz08Welcome.getName());
+                set("events", UUID.randomUUID().toString() + ", " + dataSet.javaZone2008.getId() + ",");
         IO.runFileOutputStream(storePropertiesMap.f(properties), props).call();
 
         IO.runFileOutputStream(stringToStream.f(text), jz08Welcome).call();

@@ -19,6 +19,8 @@ import static fj.data.Option.none;
 import static fj.data.Option.some;
 import fj.data.Stream;
 import fj.data.TreeMap;
+import static fj.data.Either.left;
+import static fj.data.Either.right;
 import fj.pre.Show;
 import static fj.pre.Show.show;
 
@@ -32,6 +34,20 @@ import java.util.NoSuchElementException;
  * @version $Id$
  */
 public class Functions {
+
+    // -----------------------------------------------------------------------
+    // java.lang.Double
+    // -----------------------------------------------------------------------
+
+    public static final F<String, Either<NumberFormatException, Double>> parseDouble = new F<String, Either<NumberFormatException, Double>>() {
+        public Either<NumberFormatException, Double> f(String s) {
+            try {
+                return right(Double.parseDouble(s));
+            } catch (NumberFormatException e) {
+                return left(e);
+            }
+        }
+    };
 
     // -----------------------------------------------------------------------
     // java.lang.Strings
@@ -142,7 +158,8 @@ public class Functions {
 
     public static final F<File, List<File>> listFiles = new F<File, List<File>>() {
         public List<File> f(File file) {
-            return list(file.listFiles());
+            File[] files = file.listFiles();
+            return files == null ? List.<File>nil() : list(files);
         }
     };
 
@@ -172,6 +189,14 @@ public class Functions {
         }
 
         return either.right().value();
+    }
+
+    public static <A, B> F<Either<A, B>, Option<B>> Either_rightToOption_() {
+        return new F<Either<A, B>, Option<B>>() {
+            public Option<B> f(Either<A, B> abEither) {
+                return abEither.right().toOption();
+            }
+        };
     }
 
     // -----------------------------------------------------------------------

@@ -108,8 +108,6 @@ public class UserClient {
 
     private static final F<Map, User> fromMap = new F<Map, User>() {
         public User f(Map map) {
-            System.out.println("fromMap: map = " + map);
-
             //noinspection unchecked
 
             List<Map> list = List.iterableList(Option.fromNull((java.util.List<Map>) map.get(SCHEMA_SESSION_ASSOCIATIONS)).orSome(Collections.<Map>emptyList()));
@@ -131,12 +129,10 @@ public class UserClient {
         public Map f(final User user) {
             final List<Map> attendanceMarkers = user.sessionAssociations.values().map(sessionAssociationToMap);
 
-            HashMap<String, Object> m = new HashMap<String, Object>() {{
+            return new HashMap<String, Object>() {{
                 put(SCHEMA_ID, user.id.value);
                 put(SCHEMA_SESSION_ASSOCIATIONS, Java.<Map>List_ArrayList().f(attendanceMarkers));
             }};
-            System.out.println("toMap: m = " + m);
-            return m;
         }
     };
 

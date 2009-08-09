@@ -1,6 +1,8 @@
 package no.java.incogito.application;
 
 import fj.data.TreeMap;
+import no.java.incogito.domain.CssConfiguration;
+import static no.java.incogito.domain.CssConfiguration.defaultCssConfiguration;
 import no.java.incogito.domain.Event.EventId;
 import static no.java.incogito.domain.Event.emptyLabelIconMap;
 import static no.java.incogito.domain.Event.emptyLevelIconMap;
@@ -22,12 +24,14 @@ public class IncogitoConfiguration {
     public final TreeMap<EventId, String> welcomeTexts;
     public final TreeMap<EventId, TreeMap<Level, File>> levelIcons;
     public final TreeMap<EventId, TreeMap<String, File>> labelIcons;
+    public final CssConfiguration cssConfiguration;
 
-    public IncogitoConfiguration(String baseurl, TreeMap<EventId, String> welcomeTexts, TreeMap<EventId, TreeMap<Level, File>> levelIcons, TreeMap<EventId, TreeMap<String, File>> labelIcons) {
+    public IncogitoConfiguration(String baseurl, TreeMap<EventId, String> welcomeTexts, TreeMap<EventId, TreeMap<Level, File>> levelIcons, TreeMap<EventId, TreeMap<String, File>> labelIcons, CssConfiguration cssConfiguration) {
         this.baseurl = baseurl;
         this.welcomeTexts = welcomeTexts;
         this.levelIcons = levelIcons;
         this.labelIcons = labelIcons;
+        this.cssConfiguration = cssConfiguration;
     }
 
     public String getBaseurl() {
@@ -43,6 +47,6 @@ public class IncogitoConfiguration {
     }
 
     public static IncogitoConfiguration unconfigured() {
-        return new IncogitoConfiguration("http://unconfigured", emptyWelcomeTexts, emptyLevelIconMaps, emptyLabelIconMaps);
+        return new IncogitoConfiguration("http://unconfigured", emptyWelcomeTexts, emptyLevelIconMaps, emptyLabelIconMaps, defaultCssConfiguration);
     }
 }
