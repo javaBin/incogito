@@ -7,6 +7,7 @@ import fj.control.parallel.Callables;
 import fj.data.Java;
 import fj.data.List;
 import fj.data.Option;
+import static fj.data.Option.fromString;
 import static fj.data.Option.join;
 import static fj.data.Option.some;
 import no.java.incogito.Functions;
@@ -55,6 +56,8 @@ import java.io.File;
 /**
  * REST-ful wrapper around IncogitoApplication.
  *
+ * TODO: Add checks on every method that uses SecurityContext to check for nulls.
+ *
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
@@ -80,7 +83,7 @@ public class IncogitoResource {
 
     @Path("/events/{eventName}/calendar.css")
     @GET
-    @Produces("image/png")
+    @Produces("text/css")
     public Response getEventCalendarCss(@PathParam("eventName") final String eventName) {
         final F<List<Room>, List<String>> generateCss = WebFunctions.generateCss.f(incogito.getConfiguration().cssConfiguration);
 
@@ -96,8 +99,6 @@ public class IncogitoResource {
     @Produces("image/png")
     public Response getLevelIcon(@PathParam("eventName") final String eventName,
                                  @PathParam("level") final String level) {
-        System.out.println("level = " + level);
-
         OperationResult<Event> eventResult = incogito.getEventByName(eventName);
 
         if(!eventResult.isOk()) {
@@ -130,8 +131,6 @@ public class IncogitoResource {
     @Produces("image/png")
     public Response getLabelIcon(@PathParam("eventName") final String eventName,
                                  @PathParam("label") final String label) {
-        System.out.println("label = " + label);
-
         OperationResult<Event> eventResult = incogito.getEventByName(eventName);
 
         if(!eventResult.isOk()) {
@@ -195,7 +194,14 @@ public class IncogitoResource {
                                        @PathParam("eventName") final String eventName,
                                        @PathParam("sessionId") final String sessionId,
                                        String payload) {
-        OperationResult<User> result = incogito.setInterestLevel(securityContext.getUserPrincipal().getName(),
+
+        Option<String> userName = getUserName.f(securityContext);
+
+        if(userName.isNone()) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
+
+        OperationResult<User> result = incogito.setInterestLevel(userName.some(),
                 eventName,
                 new SessionId(sessionId),
                 InterestLevel.valueOf(payload));
@@ -287,6 +293,12 @@ public class IncogitoResource {
                     return uriBuilder.clone();
                 }
             };
+        }
+    };
+
+    private F<SecurityContext, Option<String>> getUserName = new F<SecurityContext, Option<String>>() {
+        public Option<String> f(SecurityContext securityContext) {
+            return securityContext.getUserPrincipal() == null ? Option.<String>none() : fromString(securityContext.getUserPrincipal().getName());
         }
     };
 }

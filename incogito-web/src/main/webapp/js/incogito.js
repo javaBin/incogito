@@ -94,36 +94,40 @@ function getSchedule(eventName, userName, success) {
     })
 }
 
-function markInterest(eventName, sessionId, success) {
-    updateInterest(eventName, sessionId, InterestLevel.INTEREST, success)
+function markInterest(eventName, sessionId, success, unauthorized) {
+    updateInterest(eventName, sessionId, InterestLevel.INTEREST, success, unauthorized)
 }
 
-function markAttendance(eventName, sessionId, success) {
-    updateInterest(eventName, sessionId, InterestLevel.ATTEND, success)
+function markAttendance(eventName, sessionId, success, unauthorized) {
+    updateInterest(eventName, sessionId, InterestLevel.ATTEND, success, unauthorized)
 }
 
-function dropInterest(eventName, sessionId, success) {
-    updateInterest(eventName, sessionId, InterestLevel.NO_INTEREST, success)
+function dropInterest(eventName, sessionId, success, unauthorized) {
+    updateInterest(eventName, sessionId, InterestLevel.NO_INTEREST, success, unauthorized)
 }
 
-function updateInterest(eventName, sessionId, state, success) {
+function updateInterest(eventName, sessionId, state, success, unauthorized) {
     console.log("Setting interest level on " + sessionId + " for event " + eventName + " to " + state + "...")
 
-    var s = success
     $.ajax({
         dataType: "json",
         url: baseurl + "/rest/events/" + eventName + "/" + sessionId + "/session-interest",
         type: "POST",
         contentType: "application/json",
         data: state,
-        complete: function(xhr, textStatus) {
-
-            if(xhr.status != 201) {
-                return
+        complete: function(xhr) {
+            console.log("xhr.status: " + typeof unauthorized)
+            switch (xhr.status) {
+                case 201:
+                    console.log("Updated interest level on " + sessionId + " for event " + eventName)
+                    if (typeof success == "function")
+                        success()
+                    break;
+                case 401:
+                    if (typeof unauthorized == "function")
+                        unauthorized()
+                    break;
             }
-
-            console.log("Updated interest level on " + sessionId + " for event " + eventName)
-            if(typeof s == "function") s()
         }
     })
 }

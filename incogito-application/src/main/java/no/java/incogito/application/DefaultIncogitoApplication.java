@@ -21,7 +21,6 @@ import static fj.data.Option.join;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
 import fj.data.TreeMap;
-import fj.pre.Show;
 import no.java.incogito.Enums;
 import no.java.incogito.Functions;
 import static no.java.incogito.Functions.throwLeft;
@@ -151,8 +150,6 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
                     map(Functions.listFiles).
                     orSome(List.<File>nil()).
                     filter(compose(Functions.String_endsWith.f(".png"), Functions.File_getName));
-
-            Show.listShow(Functions.File_show).println(Functions.listFiles.f(new File(eventDirectory, "levels")));
 
             List<File> levelFiles = Option.iif(Functions.isDirectory, new File(eventDirectory, "levels")).
                     map(Functions.listFiles).
