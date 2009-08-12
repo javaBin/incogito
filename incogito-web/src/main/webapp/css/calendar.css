@@ -158,3 +158,15 @@ td#login-username input, td#login-password input {
 td#login-submit {
   text-align: right;
 }
+
+#results-below-tab {
+  color: white;
+  text-align: center;
+  background-color: #5f5f5f; 
+  width: 300; 
+  margin-left: -150;
+  z-index: 10000; 
+  bottom: 0; 
+  left: 50%;
+  position: fixed;
+}
