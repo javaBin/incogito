@@ -5,7 +5,8 @@
       xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
       xmlns:i="http://taglib.java.no/incogito"
       xmlns:icon="http://taglib.java.no/incogito-icon"
-      xmlns:security="http://www.springframework.org/security/tags">
+      xmlns:security="http://www.springframework.org/security/tags"
+      xmlns:tags="urn:jsptagdir:/WEB-INF/tags/incogito">
 <jsp:directive.page pageEncoding="utf-8" contentType="text/html;charset=utf-8"/>
 <jsp:useBean id="incogito" type="no.java.incogito.application.IncogitoConfiguration" scope="request"/>
 <jsp:useBean id="app" type="no.java.incogito.application.IncogitoApplication" scope="application"/>
@@ -22,16 +23,10 @@
     var sessionOverlay
     var sessionOverlayBg
     var sessionCloseButton
-    var loginOverlay
-    var loginOverlayBg
-    var loginCloseButton
     $(document).ready(function() {
       sessionOverlay = $("#session-overlay")
       sessionOverlayBg = $("#session-overlay-bg")
       sessionCloseButton = $("#session-close-button")
-      loginOverlay = $("#login-overlay")
-      loginOverlayBg = $("#login-overlay-bg")
-      loginCloseButton = $("#login-close-button")
 
       $(document).keypress(function(e) {
         if (e.keyCode == 27) {
@@ -46,7 +41,6 @@
       $(".add-remove-button").bind("click", toggleAttendance)
       $(".session").bind("click", showSession)
       sessionCloseButton.bind("click", closeSession)
-      loginCloseButton.bind("click", closeLogin)
     })
 
     function showSession() {
@@ -64,16 +58,6 @@
       sessionOverlayBg.hide()
     }
 
-    function showLogin() {
-      loginOverlay.show()
-      loginOverlayBg.show()
-    }
-
-    function closeLogin() {
-      loginOverlay.hide()
-      loginOverlayBg.hide()
-    }
-
     function toggleAttendance() {
       var sessionId = $(this).parent().find(".session-id").text()
       console.log(sessionId)
@@ -86,6 +70,7 @@
       spinner.stop()
     }
   </script>
+  <tags:login-overlay script="false"/>
 </head>
 
 <body>
@@ -172,41 +157,7 @@
   </div>
 </div>
 
-<!--
- |
- | Login Overlay
- |
- |-->
-
-<div style="display: none;" id="login-overlay-bg" class="overlay-bg"><!-- space --></div>
-<div style="display: none;" id="login-overlay" class="overlay">
-  <div class="overlay-close">
-    <img id="login-close-button" src="${incogito.baseurl}/images/icons/close.png" alt="Close"/>
-  </div>
-  <div class="overlay-content">
-    <h2>LOG IN</h2>
-    <table>
-      <tr>
-        <td>&amp;nbsp;</td>
-        <td>
-          Please sign in with your java.no login.
-          If you do not have a java.no user, please <a href="#">register here</a>.
-        </td>
-      </tr>
-      <tr>
-        <td>Username:</td>
-        <td id="login-username"><input name="j_username"/></td>
-      </tr>
-      <tr>
-        <td>Password:</td>
-        <td id="login-password"><input name="j_password"/></td>
-      </tr>
-      <tr>
-        <td id="login-submit" colspan="2"><input name="Login" type="submit"/></td>
-      </tr>
-    </table>
-  </div>
-</div>
+<tags:login-overlay script="true"/>
 
 </body>
 </html>

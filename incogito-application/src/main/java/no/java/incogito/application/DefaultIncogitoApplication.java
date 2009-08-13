@@ -101,7 +101,7 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
      */
     public void reloadConfiguration() throws Exception {
         File props = new File(incogitoHome, "etc/incogito.properties").getAbsoluteFile();
-        logger.info("Reloading configuration from: " + props);
+//        logger.info("Reloading configuration from: " + props);
         File etc = props.getParentFile();
 
         TreeMap<String, String> properties = IO.<TreeMap<String, String>>runFileInputStream_().
@@ -131,7 +131,7 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
         // TODO: Consider switching to reading a <event id>.xml file if it exist and use that as configuration
         for (File eventDirectory : eventDirectories) {
             String eventName = eventDirectory.getName();
-            logger.debug("Loading " + eventName + "...");
+//            logger.debug("Loading " + eventName + "...");
 
             OperationResult<Event> eventOperationResult = getEventByName(eventName);
 

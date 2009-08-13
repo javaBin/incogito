@@ -90,7 +90,7 @@ div.session-footer {
 }
 
 .title {
-  font-size: smaller;
+  font-size: 11pt;
   font-weight: bolder;
   padding-top: 0.75em;
 }
@@ -155,6 +155,13 @@ td#login-username input, td#login-password input {
   width: 100%;
 }
 
-td#login-submit {
-  text-align: right;
+/*
+td#login-submit * {
+  display: inline;
+}
+*/
+
+#login-message {
+  margin-left: 1em;
+  color: red;
 }

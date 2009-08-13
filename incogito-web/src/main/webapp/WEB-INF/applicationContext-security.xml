@@ -5,7 +5,7 @@
        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.4.xsd">
 
   <security:http auto-config="true">
-    <security:form-login login-page="/login" authentication-failure-url="/login?failure=true"/>
+    <security:form-login login-page="/login" authentication-failure-url="/login?failure=true" always-use-default-target="false"/>
     <security:anonymous/>
 
     <!--

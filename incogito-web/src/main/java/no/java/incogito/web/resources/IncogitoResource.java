@@ -28,6 +28,7 @@ import static no.java.incogito.dto.EventListXml.eventListXml;
 import no.java.incogito.dto.EventXml;
 import no.java.incogito.dto.SessionListXml;
 import no.java.incogito.dto.SessionXml;
+import no.java.incogito.dto.IncogitoXml;
 import no.java.incogito.web.WebFunctions;
 import static no.java.incogito.web.resources.XmlFunctions.eventListToXml;
 import static no.java.incogito.web.resources.XmlFunctions.eventToXml;
@@ -72,6 +73,11 @@ public class IncogitoResource {
     @Autowired
     public IncogitoResource(IncogitoApplication incogito) {
         this.incogito = incogito;
+    }
+
+    @GET
+    public Response getIncogito(@Context SecurityContext securityContext) {
+        return Response.ok(new IncogitoXml(incogito.getConfiguration().baseurl, getUserName.f(securityContext))).build();
     }
 
     @Path("/events")
