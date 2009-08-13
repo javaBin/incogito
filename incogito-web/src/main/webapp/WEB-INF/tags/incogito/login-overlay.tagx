@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<jsp:root xmlns="http://www.w3.org/1999/xhtml" version="2.0"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:i="http://taglib.java.no/incogito">
+  <jsp:directive.attribute name="script" required="true" rtexprvalue="false"/>
+  <jsp:useBean id="incogito" type="no.java.incogito.application.IncogitoConfiguration" scope="request"/>
+  <c:choose>
+  <c:when test="${script eq 'true'}">
+    <script type="text/javascript">
+      var loginOverlay
+      var loginOverlayBg
+      var loginCloseButton
+      var loginMessage
+
+      $(document).ready(function() {
+        loginOverlay = $("#login-overlay")
+        loginOverlayBg = $("#login-overlay-bg")
+        loginCloseButton = $("#login-close-button")
+        loginMessage = $("#login-message")
+
+        loginCloseButton.bind("click", closeLogin)
+      })
+
+      function showLogin() {
+        loginOverlay.show()
+        loginOverlayBg.show()
+        loginMessage.hide().text("")
+      }
+
+      function closeLogin() {
+        loginOverlay.hide()
+        loginOverlayBg.hide()
+      }
+
+      $("form").ajaxForm({
+        beforeSubmit: function() {
+          loginMessage.hide().text("")
+        },
+        complete: function() {
+          // Spring security doesn't set http codes so we have to check for the current status after trying to log in
+          $.ajax({
+            dataType: "json",
+            url: baseurl + "/rest/",
+            success: function(data) {
+              console.log("data:")
+              console.log(data)
+              console.log(data.currentUser)
+
+              if (data.currentUser != null) {
+                closeLogin()
+                return;
+              }
+
+              loginMessage.show()
+              loginMessage.text("Login failed")
+            }
+          })
+        }
+      })
+
+//      var postUrl = "${incogito.baseurl}/j_spring_security_check"
+//      $("form").submit(function() {
+//        console.log("logging in")
+//        console.log("username: " + $("#login-username > input").text())
+//        var form = {
+//          j_username: $("#login-username").text(),
+//          j_password: $("#login-password").text()
+//        }
+//         $.post(postUrl, form, function(data, textStatus){
+//           console.log("post returned")
+//           console.log(data)
+//           console.log(textStatus)
+//         })
+//        return false;
+//      });
+    </script>
+  </c:when>
+  <c:otherwise>
+  <div style="display: none;" id="login-overlay-bg" class="overlay-bg"><!-- space --></div>
+  <div style="display: none;" id="login-overlay" class="overlay">
+    <div class="overlay-close">
+      <img id="login-close-button" src="${incogito.baseurl}/images/icons/close.png" alt="Close"/>
+    </div>
+    <div class="overlay-content">
+      <h2>LOG IN</h2>
+
+      <form id="login" action="${incogito.baseurl}/j_spring_security_check">
+        <table>
+          <tr>
+            <td colspan="2">
+              <p>Please sign in with your java.no login.</p>
+              <p><a href="http://www.java.no/web/show.do?page=204">Register</a> to create a user.</p>
+            </td>
+          </tr>
+          <tr>
+            <td>Username:</td>
+            <td id="login-username"><input name="j_username"/></td>
+          </tr>
+          <tr>
+            <td>Password:</td>
+            <td id="login-password"><input name="j_password"/></td>
+          </tr>
+          <tr>
+            <td>&amp;nbsp;</td>
+            <td id="login-submit">
+              <input value="Login" type="submit"/>
+              &amp;nbsp;
+              <span style="display: none" id="login-message"><!-- space --></span>
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+  </div>
+  </c:otherwise>
+  </c:choose>
+</jsp:root>
