@@ -41,7 +41,6 @@
       $(".add-remove-button").bind("click", toggleAttendance)
       $(".session").bind("click", showSession)
       sessionCloseButton.bind("click", closeSession)
-      loginCloseButton.bind("click", closeLogin)
 
       $("#results-below-tab").corner("round top")
       $(window).scroll(updateResultsBelowTab)
