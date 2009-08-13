@@ -41,8 +41,36 @@
       $(".add-remove-button").bind("click", toggleAttendance)
       $(".session").bind("click", showSession)
       sessionCloseButton.bind("click", closeSession)
-    })
+      loginCloseButton.bind("click", closeLogin)
 
+      $("#results-below-tab").corner("round top")
+      $(window).scroll(updateResultsBelowTab)
+      updateResultsBelowTab()
+    })
+    
+    function updateResultsBelowTab() {
+        var movementMS = 100
+        var len = $(".session").filter(function () {
+            return isBelowWindow(this)
+        }).length
+        var tab = $("#results-below-tab")
+        $("#results-below-tab-text").text("&#8681; " + len + " more results &#8681;")
+        if (len == 0) {
+            tab.animate({ bottom: -tab.height() }, movementMS)
+        } else {
+            tab.animate({ bottom: 0 }, movementMS)
+        }
+    }
+    
+    function isBelowWindow(elem) {
+    	return absoluteOffsetTop(elem) + $(elem).height() > window.innerHeight + window.pageYOffset
+    }
+    
+    function absoluteOffsetTop(elem) {
+        var parent = elem.offsetParent
+        return elem.offsetTop + (parent?absoluteOffsetTop(parent):0) 
+    }
+    
     function showSession() {
       sessionOverlay.show()
       sessionOverlayBg.show()
