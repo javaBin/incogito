@@ -163,9 +163,9 @@ td#login-submit {
   color: white;
   text-align: center;
   background-color: #5f5f5f; 
-  width: 300; 
-  margin-left: -150;
-  z-index: 10000; 
+  width: 300px;
+  margin-left: -150px;
+  z-index: 10000;
   bottom: 0; 
   left: 50%;
   position: fixed;

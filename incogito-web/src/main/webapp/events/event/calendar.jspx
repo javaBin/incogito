@@ -52,30 +52,30 @@
       $(window).scroll(updateResultsBelowTab)
       updateResultsBelowTab()
     })
-    
+
     function updateResultsBelowTab() {
-        var movementMS = 100
-        var len = $(".session").filter(function () {
-            return isBelowWindow(this)
-        }).length
-        var tab = $("#results-below-tab")
-        $("#results-below-tab-text").text("&#8681; " + len + " more results &#8681;")
-        if (len == 0) {
-            tab.animate({ bottom: -tab.height() }, movementMS)
-        } else {
-            tab.animate({ bottom: 0 }, movementMS)
-        }
+      var movementMS = 100
+      var len = $(".session").filter(function () {
+        return isBelowWindow(this)
+      }).length
+      var tab = $("#results-below-tab")
+      $("#results-below-tab-text").text("&#8681; " + len + " more results &#8681;")
+      if (len == 0) {
+        tab.animate({ bottom: -tab.height() }, movementMS)
+      } else {
+        tab.animate({ bottom: 0 }, movementMS)
+      }
     }
-    
+
     function isBelowWindow(elem) {
-    	return absoluteOffsetTop(elem) + $(elem).height() > window.innerHeight + window.pageYOffset
+      return absoluteOffsetTop(elem) + $(elem).height() > window.innerHeight + window.pageYOffset
     }
-    
+
     function absoluteOffsetTop(elem) {
-        var parent = elem.offsetParent
-        return elem.offsetTop + (parent?absoluteOffsetTop(parent):0) 
+      var parent = elem.offsetParent
+      return elem.offsetTop + (parent ? absoluteOffsetTop(parent) : 0)
     }
-    
+
     function showSession() {
       sessionOverlay.show()
       sessionOverlayBg.show()
