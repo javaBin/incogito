@@ -17,7 +17,8 @@ then
   wget -O voldemort-$v.tar.gz http://cloud.github.com/downloads/voldemort/voldemort/voldemort-$v.tar.gz
 fi
 
-gtar zxf voldemort-$v.tar.gz
+gunzip voldemort-$v.tar.gz
+tar xf voldemort-$v.tar
 
 common="-Dpackaging=jar"
 
