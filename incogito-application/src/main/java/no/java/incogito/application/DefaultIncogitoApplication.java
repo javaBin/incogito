@@ -21,7 +21,6 @@ import static fj.data.Option.none;
 import static fj.data.Option.some;
 import fj.data.TreeMap;
 import fj.pre.Ord;
-import fj.pre.Show;
 import no.java.incogito.Enums;
 import no.java.incogito.Functions;
 import static no.java.incogito.Functions.throwLeft;

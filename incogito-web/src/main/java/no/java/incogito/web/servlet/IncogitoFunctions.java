@@ -5,12 +5,13 @@ import fj.P;
 import fj.data.List;
 import static fj.data.Option.fromNull;
 import no.java.incogito.application.IncogitoApplication;
+import no.java.incogito.domain.Event;
 import no.java.incogito.domain.Schedule;
 import no.java.incogito.domain.Session;
-import no.java.incogito.domain.Event;
 import no.java.incogito.dto.EventXml;
 import no.java.incogito.dto.ScheduleXml;
 import no.java.incogito.dto.SessionXml;
+import no.java.incogito.web.WebFunctions;
 import no.java.incogito.web.resources.XmlFunctions;
 
 import javax.ws.rs.core.UriBuilder;
@@ -46,6 +47,11 @@ public class IncogitoFunctions {
         return map.get(key);
     }
 
+    public static Object mapGet(Map map, Object key, Object defaultValue) {
+        Object value = map.get(key);
+        return value == null ? defaultValue : value;
+    }
+
     public static SessionXml castToSession(Object o) {
         return SessionXml.class.cast(o);
     }
@@ -57,7 +63,7 @@ public class IncogitoFunctions {
     }
 
     public static WebCalendar getCalendar(IncogitoApplication app, String eventName, String userName) {
-        return new WebCalendar(app.getSchedule(urlDecode(eventName), fromNull(userName)).value());
+        return app.getSchedule(urlDecode(eventName), fromNull(userName)).ok().map(WebFunctions.webCalendar).value();
     }
 
     public static EventXml[] getEvents(IncogitoApplication app) {

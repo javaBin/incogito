@@ -86,16 +86,49 @@
       sessionOverlayBg.hide()
     }
 
+    /**
+     * TODO: Spinner
+     */
     function toggleAttendance() {
-      var sessionId = $(this).parent().find(".session-id").text()
-      console.log(sessionId)
-      var spinner = null
-      markAttendance(eventName, sessionId, curry(onAttendanceUpdated, spinner), showLogin)
+      var sessionDiv = $(this).parent().parent();
+      var sessionIdDiv = sessionDiv.find(".session-id")
+      var interestLevelDiv = sessionDiv.find(".session-interest-level");
+      var interestLevel = interestLevelDiv.text()
+      console.log(sessionIdDiv.text())
+      if (interestLevel == InterestLevel.NO_INTEREST) {
+        interestLevel = InterestLevel.INTEREST
+      }
+      else if (interestLevel == InterestLevel.INTEREST) {
+        interestLevel = InterestLevel.ATTEND
+      }
+      else if (interestLevel == InterestLevel.ATTEND) {
+        interestLevel = InterestLevel.NO_INTEREST
+      }
+      else {
+        interestLevel = InterestLevel.INTEREST
+      }
+      updateInterest(eventName, sessionIdDiv.text(), interestLevel, curry(onAttendanceUpdated, sessionDiv, interestLevel), showLogin)
       return false
     }
 
-    function onAttendanceUpdated(spinner) {
-      spinner.stop()
+    function onAttendanceUpdated(sessionDiv, interestLevel) {
+      sessionDiv.find(".session-interest-level").text(interestLevel)
+      var icon = sessionDiv.find(".add-remove-button img")
+
+      // no interest -> interest -> attend -> ..
+      // question    -> plus     -> minus
+      if(interestLevel == InterestLevel.NO_INTEREST) {
+        icon.attr("src", "${incogito.baseurl}/images/icons/question.png")
+        icon.attr("title", "Click to add to schedule as a candiate session")
+      }
+      else if(interestLevel == InterestLevel.INTEREST) {
+        icon.attr("src", "${incogito.baseurl}/images/icons/plus.png")
+        icon.attr("title", "Click to add to schedule as a session you're attending")
+      }
+      else {
+        icon.attr("src", "${incogito.baseurl}/images/icons/minus.png")
+        icon.attr("title", "Click to add to schedule as a session you're not attending")
+      }
     }
   </script>
   <tags:login-overlay script="false"/>
@@ -129,9 +162,12 @@
               <h2>${room}</h2>
 
               <c:forEach var="session" items="${i:castToSessionList(i:mapGet(roomToSessionMap, room))}" varStatus="i">
+                <c:set var="interestLevel" value="${i:mapGetDefault(calendar.attendanceMap, session.id, 'NO_INTEREST')}"/>
                 <fmt:formatNumber var="hour" value="${session.timeslot.hour}" maxIntegerDigits="2" minIntegerDigits="2"/>
                 <fmt:formatNumber var="minute" value="${session.timeslot.minute}" maxIntegerDigits="2" minIntegerDigits="2"/>
                 <div class="session start${hour}${minute} duration60">
+                  <div class="session-id" style="display: none;">${session.id}</div>
+                  <div class="session-interest-level" style="display: none;">${interestLevel}</div>
                   <div class="session-header">
                     <div class="labels">
                       <c:forEach var="label" items="${session.labels}">
@@ -147,14 +183,11 @@
                             <img title="${session.level}" alt="${session.level}" src="${levelIcon}"/>
                           </c:if>
                         </c:when>
-                        <c:otherwise>
-                          X
-                        </c:otherwise>
+                        <c:otherwise>X</c:otherwise>
                       </c:choose>
                     </div>
                   </div>
                   <div class="session-body">
-                    <div class="session-id" style="display: none;">${session.id}</div>
                     <div class="title">${session.title}</div>
                     <div class="speakers">
                       <c:forEach var="speaker" varStatus="i" items="${session.speakers}">
@@ -163,7 +196,17 @@
                       </c:forEach>
                     </div>
                     <div class="add-remove-button">
-                      <img src="${incogito.baseurl}/images/icons/plus.png" alt="Add to schedule"/>
+                      <c:choose>
+                        <c:when test="${interestLevel eq 'NO_INTEREST'}">
+                          <img src="${incogito.baseurl}/images/icons/question.png" title="Click to add to schedule as a candidate session" alt="Click to add to schedule as a candidate session"/>
+                        </c:when>
+                        <c:when test="${interestLevel eq 'INTEREST'}">
+                          <img src="${incogito.baseurl}/images/icons/plus.png" title="Click to add to schedule as a session you're attending" alt="Click to add to schedule as a session you're attending"/>
+                        </c:when>
+                        <c:otherwise>
+                          <img src="${incogito.baseurl}/images/icons/minus.png" title="Click to add to schedule as a session you're not attending" alt="Click to add to schedule as a session you're not attending"/>
+                        </c:otherwise>
+                      </c:choose>
                     </div>
                   </div>
                   <div class="session-footer">&amp;nbsp;</div>

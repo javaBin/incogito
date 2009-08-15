@@ -3,6 +3,8 @@ package no.java.incogito.domain;
 import fj.F;
 import fj.data.List;
 import fj.data.TreeMap;
+import fj.data.Option;
+import no.java.incogito.domain.UserSessionAssociation.InterestLevel;
 
 /**
  * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
@@ -22,7 +24,9 @@ public class Schedule {
     public List<Session> getAttendingSessions() {
         return sessions.filter(new F<Session, Boolean>() {
             public Boolean f(final Session session) {
-                return sessionAssociations.contains(session.id);
+                Option<UserSessionAssociation> option = sessionAssociations.get(session.id);
+
+                return option.isSome() && option.some().interestLevel.equals(InterestLevel.ATTEND);
             }
         });
     }
