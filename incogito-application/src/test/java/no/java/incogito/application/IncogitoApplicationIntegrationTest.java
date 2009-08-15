@@ -211,7 +211,6 @@ public class IncogitoApplicationIntegrationTest {
             List<Session> sessions = sessionMap.get(event.id).some();
 
             int nSessions = sessions.length();
-            System.out.println("nSessions = " + nSessions);
 
             InterestLevel[] interestLevels = InterestLevel.values();
 

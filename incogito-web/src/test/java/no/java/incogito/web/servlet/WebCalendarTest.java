@@ -7,15 +7,16 @@ import static fj.data.Option.some;
 import fj.data.TreeMap;
 import fj.pre.Ord;
 import junit.framework.TestCase;
-import no.java.incogito.Enums;
 import no.java.incogito.domain.Comment;
 import no.java.incogito.domain.Event;
 import static no.java.incogito.domain.Event.EventId.eventId;
 import no.java.incogito.domain.IncogitoTestData;
+import no.java.incogito.domain.Label;
+import no.java.incogito.domain.Level;
+import no.java.incogito.domain.Level.LevelId;
 import no.java.incogito.domain.Room;
 import no.java.incogito.domain.Schedule;
 import no.java.incogito.domain.Session;
-import no.java.incogito.domain.Session.Level;
 import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.Speaker;
 import no.java.incogito.domain.UserSessionAssociation;
@@ -25,7 +26,6 @@ import org.joda.time.DateMidnight;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
@@ -36,12 +36,12 @@ import java.util.UUID;
  */
 public class WebCalendarTest extends TestCase {
     Event event = new Event(eventId(UUID.randomUUID().toString()), "FunZone", Option.<String>none(),
-            List.<Room>nil(), TreeMap.<Level, File>empty(Enums.<Level>ord()),
-            TreeMap.<String, File>empty(Ord.stringOrd));
+            List.<Room>nil(), TreeMap.<LevelId, Level>empty(LevelId.ord),
+            TreeMap.<String, Label>empty(Ord.stringOrd));
 
     Session templateSession = new Session(new SessionId("123"), "Session 1", Option.<WikiString>none(),
             Option.<WikiString>none(), Option.<Level>none(), Option.<Interval>none(), Option.<String>none(),
-            List.<String>nil(), List.<Speaker>nil(), List.<Comment>nil());
+            List.<Label>nil(), List.<Speaker>nil(), List.<Comment>nil());
 
     Option<String> room1 = some("Room 1");
     Option<String> room2 = some("Room 2");

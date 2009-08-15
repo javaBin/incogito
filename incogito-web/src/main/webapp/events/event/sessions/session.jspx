@@ -9,12 +9,12 @@
 <jsp:useBean id="app" type="no.java.incogito.application.IncogitoApplication" scope="application"/>
 <jsp:useBean id="eventName" type="java.lang.String" scope="request"/>
 <jsp:useBean id="sessionName" type="java.lang.String" scope="request"/>
-<c:set var="session" value="${i:getSession(app, eventName, sessionName)}"/>
+<c:set var="session" value="${i:getSessionByTitle(app, eventName, sessionName)}"/>
 <c:set var="eventName" value="${i:urlDecode(eventName)}"/>
 
 <!--
 TODO: Add level
-TODO: Add tracs
+TODO: Add labels
 TODO: Add speaker image
 TODO: Proper formatting of timeslot
 

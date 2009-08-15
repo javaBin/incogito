@@ -3,6 +3,9 @@ package no.java.incogito;
 import fj.F;
 import fj.F2;
 import static fj.Function.curry;
+import fj.data.Option;
+import static fj.data.Option.none;
+import static fj.data.Option.some;
 import fj.pre.Ord;
 import fj.pre.Ordering;
 
@@ -28,10 +31,14 @@ public class Enums {
         };
     }
 
-    public static <T extends Enum<T>> F<Class<T>, F<String, T>> valueOf() {
-        return curry(new F2<Class<T>, String, T>() {
-            public T f(Class<T> klass, String string) {
-                return Enum.valueOf(klass, string);
+    public static <T extends Enum<T>> F<Class<T>, F<String, Option<T>>> valueOf() {
+        return curry(new F2<Class<T>, String, Option<T>>() {
+            public Option<T> f(Class<T> klass, String string) {
+                try {
+                    return some(Enum.valueOf(klass, string));
+                } catch (Exception e) {
+                    return none();
+                }
             }
         });
     }

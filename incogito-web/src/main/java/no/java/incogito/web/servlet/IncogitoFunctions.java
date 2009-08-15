@@ -76,7 +76,7 @@ public class IncogitoFunctions {
         return app.getEventByName(urlDecode(eventName)).value();
     }
 
-    public static SessionXml getSession(IncogitoApplication app, String eventName, String sessionTitle) {
+    public static SessionXml getSessionByTitle(IncogitoApplication app, String eventName, String sessionTitle) {
         return sessionToXml.f(app.getSessionByTitle(urlDecode(eventName), urlDecode(sessionTitle)).value());
     }
 

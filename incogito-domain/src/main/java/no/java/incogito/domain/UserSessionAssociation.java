@@ -5,6 +5,7 @@ import fj.P1;
 import fj.F2;
 import static fj.Function.curry;
 import fj.data.Option;
+import no.java.incogito.Enums;
 
 /**
  * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
@@ -15,7 +16,9 @@ public class UserSessionAssociation {
     public enum InterestLevel {
         ATTEND,
         INTEREST,
-        NO_INTEREST
+        NO_INTEREST;
+
+        public static final F<String, Option<InterestLevel>> valueOf_ = Enums.<InterestLevel>valueOf().f(InterestLevel.class);
     }
 
     public final SessionId sessionId;

@@ -84,14 +84,19 @@ public class SessionJavaGenerator {
 
 //                System.out.println("toDateTime(session.getTimeslot().getStart()) = " + toDateTime(session.getTimeslot().getStart()));
 
+                F<String, String> addUnderscore = new F<String, String>() {
+                    public String f(String s) {
+                        return s.replace(' ', '_');
+                    }
+                };
                 System.out.println("public static final Session session" + i + " = new Session(new SessionId(\"" + session.getId() + "\"), " +
                         "\"" + session.getTitle().replaceAll("\"", "\\\\\"").replaceAll("\n", "\\\\n") + "\", " +
                         toOption("WikiString", "new WikiString(\"", session.getLead(), "\")") + ", " +
                         toOption("WikiString", "new WikiString(\"", session.getBody(), "\")") + ", " +
-                        "Option.some(Level." + session.getLevel() + "), " +
+                        "Option.some(" + session.getLevel().name() + "), " +
                         "Option.some(new Interval(" + session.getTimeslot().getStartMillis() + "L, " + session.getTimeslot().getEndMillis() + "L))," +
                         toOption("\"", fromNull(session.getRoom()).map(getName).orSome((String)null), "\"") + ", " +
-                        "List.list(" + show(fj.data.List.iterableList(session.getKeywords()).map(quote)) + "), " +
+                        "List.<Label>list(" + show(fj.data.List.iterableList(session.getKeywords()).map(addUnderscore)) + "), " +
                         "List.<Speaker>nil(), " +
                         "List.<Comment>nil()" +
                         ");");

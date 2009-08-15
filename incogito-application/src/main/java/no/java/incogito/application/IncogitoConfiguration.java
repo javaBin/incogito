@@ -1,14 +1,13 @@
 package no.java.incogito.application;
 
 import fj.data.TreeMap;
+import fj.pre.Ord;
 import no.java.incogito.domain.CssConfiguration;
 import static no.java.incogito.domain.CssConfiguration.defaultCssConfiguration;
 import no.java.incogito.domain.Event.EventId;
-import static no.java.incogito.domain.Event.emptyLabelIconMap;
-import static no.java.incogito.domain.Event.emptyLevelIconMap;
-import no.java.incogito.domain.Session.Level;
-
-import java.io.File;
+import no.java.incogito.domain.Label;
+import no.java.incogito.domain.Level;
+import no.java.incogito.domain.Level.LevelId;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -17,20 +16,23 @@ import java.io.File;
 public class IncogitoConfiguration {
 
     public static final TreeMap<EventId, String> emptyWelcomeTexts = TreeMap.empty(EventId.ord);
-    public static final TreeMap<EventId, TreeMap<String, File>> emptyLabelIconMaps = TreeMap.empty(EventId.ord);
-    public static final TreeMap<EventId, TreeMap<Level, File>> emptyLevelIconMaps = TreeMap.empty(EventId.ord);
+    public static final TreeMap<String, Label> emptyLabelMap = TreeMap.empty(Ord.stringOrd);
+    public static final TreeMap<LevelId, Level> emptyLevelMap = TreeMap.empty(LevelId.ord);
 
     public final String baseurl;
     public final TreeMap<EventId, String> welcomeTexts;
-    public final TreeMap<EventId, TreeMap<Level, File>> levelIcons;
-    public final TreeMap<EventId, TreeMap<String, File>> labelIcons;
+    public final TreeMap<EventId, TreeMap<String, Label>> labels;
+    public final TreeMap<EventId, TreeMap<LevelId, Level>> levels;
     public final CssConfiguration cssConfiguration;
 
-    public IncogitoConfiguration(String baseurl, TreeMap<EventId, String> welcomeTexts, TreeMap<EventId, TreeMap<Level, File>> levelIcons, TreeMap<EventId, TreeMap<String, File>> labelIcons, CssConfiguration cssConfiguration) {
+    public IncogitoConfiguration(String baseurl, TreeMap<EventId, String> welcomeTexts,
+                                 TreeMap<EventId, TreeMap<String, Label>> labels,
+                                 TreeMap<EventId, TreeMap<LevelId, Level>> levels,
+                                 CssConfiguration cssConfiguration) {
         this.baseurl = baseurl;
         this.welcomeTexts = welcomeTexts;
-        this.levelIcons = levelIcons;
-        this.labelIcons = labelIcons;
+        this.labels = labels;
+        this.levels = levels;
         this.cssConfiguration = cssConfiguration;
     }
 
@@ -38,15 +40,15 @@ public class IncogitoConfiguration {
         return baseurl;
     }
 
-    public TreeMap<Level, File> getLevelIcons(EventId eventId) {
-        return levelIcons.get(eventId).orSome(emptyLevelIconMap);
+    public TreeMap<String, Label> getLabels(EventId eventId) {
+        return labels.get(eventId).orSome(emptyLabelMap);
     }
 
-    public TreeMap<String, File> getLabelIcons(EventId eventId) {
-        return labelIcons.get(eventId).orSome(emptyLabelIconMap);
+    public TreeMap<LevelId, Level> getLevels(EventId eventId) {
+        return levels.get(eventId).orSome(emptyLevelMap);
     }
 
-    public static IncogitoConfiguration unconfigured() {
-        return new IncogitoConfiguration("http://unconfigured", emptyWelcomeTexts, emptyLevelIconMaps, emptyLabelIconMaps, defaultCssConfiguration);
-    }
+    public static final IncogitoConfiguration unconfigured = new IncogitoConfiguration("http://unconfigured",
+            emptyWelcomeTexts, TreeMap.<EventId, TreeMap<String, Label>>empty(EventId.ord),
+                TreeMap.<EventId, TreeMap<LevelId, Level>>empty(EventId.ord), defaultCssConfiguration);
 }

@@ -20,9 +20,11 @@ import no.java.incogito.application.OperationResult.OkOperationResult;
 import no.java.incogito.domain.Event;
 import no.java.incogito.domain.Room;
 import no.java.incogito.domain.Session;
-import no.java.incogito.domain.Session.Level;
+import no.java.incogito.domain.Level.LevelId;
 import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.User;
+import no.java.incogito.domain.Label;
+import no.java.incogito.domain.Level;
 import no.java.incogito.domain.UserSessionAssociation.InterestLevel;
 import static no.java.incogito.dto.EventListXml.eventListXml;
 import no.java.incogito.dto.EventXml;
@@ -111,13 +113,13 @@ public class IncogitoResource {
             return toJsr311(eventResult);
         }
 
-        Option<Level> levelOption = some(level).bind(Level.valueOf);
+        Option<LevelId> levelOption = some(level).bind(Level.LevelId.valueOf);
 
         if(!levelOption.isSome()) {
             return toJsr311(OperationResult.<Object>notFound("Level '" + level + "' not known."));
         }
 
-        Option<File> fileOption = eventResult.value().levelIconFiles.get(levelOption.some());
+        Option<File> fileOption = eventResult.value().levels.get(levelOption.some()).map(Level.iconFile_);
 
         if(!fileOption.isSome()) {
             return toJsr311(OperationResult.<Object>notFound("No icon for level '" + level + "'."));
@@ -143,7 +145,7 @@ public class IncogitoResource {
             return toJsr311(eventResult);
         }
 
-        Option<File> fileOption = eventResult.value().labelIconFiles.get(label);
+        Option<File> fileOption = eventResult.value().labels.get(label).map(Label.iconFile_);
 
         if(!fileOption.isSome()) {
             return toJsr311(OperationResult.<Object>notFound("No icon for label '" + label + "'."));

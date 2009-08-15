@@ -5,13 +5,13 @@
   <uri>http://taglib.java.no/incogito-icon</uri>
   <short-name>Incogito Icon Taglib</short-name>
   <function>
+    <name>label</name>
+    <function-class>no.java.incogito.web.servlet.IncogitoIconFunctions</function-class>
+    <function-signature>java.lang.String label(no.java.incogito.application.IncogitoApplication,no.java.incogito.domain.Event,no.java.incogito.dto.LabelXml)</function-signature>
+  </function>
+  <function>
     <name>level</name>
     <function-class>no.java.incogito.web.servlet.IncogitoIconFunctions</function-class>
     <function-signature>java.lang.String level(no.java.incogito.application.IncogitoApplication,no.java.incogito.domain.Event,java.lang.String)</function-signature>
-  </function>
-  <function>
-    <name>label</name>
-    <function-class>no.java.incogito.web.servlet.IncogitoIconFunctions</function-class>
-    <function-signature>java.lang.String label(no.java.incogito.application.IncogitoApplication,no.java.incogito.domain.Event,java.lang.String)</function-signature>
   </function>
 </taglib>

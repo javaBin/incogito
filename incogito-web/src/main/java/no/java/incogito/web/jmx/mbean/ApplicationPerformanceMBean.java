@@ -36,8 +36,6 @@ public class ApplicationPerformanceMBean implements DynamicMBean {
             attributeInfoList.add(new MBeanAttributeInfo(p2._1(), String.class.getName(), null, true, false, false));
         }
 
-        System.out.println("attributeInfoList.size() = " + attributeInfoList.size());
-
         MBeanAttributeInfo[] attributes = attributeInfoList.toArray(new MBeanAttributeInfo[attributeInfoList.size()]);
         this.beanInfo = new MBeanInfo("java.lang.String", "Description, yo!", attributes,
                 new MBeanConstructorInfo[0], new MBeanOperationInfo[0], new MBeanNotificationInfo[0]);

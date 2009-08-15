@@ -136,14 +136,21 @@
                     <div class="labels">
                       <c:forEach var="label" items="${session.labels}">
                         <c:set var="labelIcon" value="${icon:label(app, event, label)}"/>
-                        <img class="label" alt="${label}" src="${labelIcon}"/>
+                        <img class="label" title="${label.displayName}" alt="${label.displayName}" src="${labelIcon}"/>
                       </c:forEach>
                     </div>
                     <div class="level">
-                      <c:set var="levelIcon" value="${icon:level(app, event, session.level)}"/>
-                      <c:if test="${not(levelIcon eq null)}">
-                        <img alt="${session.level}" src="${levelIcon}"/>
-                      </c:if>
+                      <c:choose>
+                        <c:when test="${not (session.level eq null)}">
+                          <c:set var="levelIcon" value="${icon:level(app, event, session.level)}"/>
+                          <c:if test="${not(levelIcon eq null)}">
+                            <img title="${session.level}" alt="${session.level}" src="${levelIcon}"/>
+                          </c:if>
+                        </c:when>
+                        <c:otherwise>
+                          X
+                        </c:otherwise>
+                      </c:choose>
                     </div>
                   </div>
                   <div class="session-body">

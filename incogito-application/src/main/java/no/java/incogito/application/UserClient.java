@@ -12,11 +12,10 @@ import fj.pre.Ord;
 import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.SessionRating;
 import no.java.incogito.domain.User;
-import static no.java.incogito.domain.User.createPersistentUser;
 import no.java.incogito.domain.User.UserId;
+import static no.java.incogito.domain.User.createPersistentUser;
 import no.java.incogito.domain.UserSessionAssociation;
 import no.java.incogito.domain.UserSessionAssociation.InterestLevel;
-import no.java.incogito.Enums;
 import no.java.incogito.voldemort.VoldemortF;
 import voldemort.client.StoreClient;
 import voldemort.client.UpdateAction;
@@ -158,7 +157,7 @@ public class UserClient {
             Option<String> ratingComment = map.get(SCHEMA_RATING_COMMENT).bind(Option.fromString());
 
             Option<InterestLevel> interestLevel = map.get(SCHEMA_INTEREST_LEVEL).
-                    map(Enums.<InterestLevel>valueOf().f(InterestLevel.class));
+                    bind(InterestLevel.valueOf_);
 
             return sessionId.bind(interestLevel, UserSessionAssociation.constructor_).
                     map(UserSessionAssociation.rating_.f(rating)).

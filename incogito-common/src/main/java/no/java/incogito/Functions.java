@@ -138,13 +138,13 @@ public class Functions {
         }
     });
 
-    public static final F<File, Boolean> canRead = new F<File, Boolean>() {
+    public static final F<File, Boolean> File_canRead = new F<File, Boolean>() {
         public Boolean f(File file) {
             return file.canRead();
         }
     };
 
-    public static final F<File, Boolean> isDirectory = new F<File, Boolean>() {
+    public static final F<File, Boolean> File_isDirectory = new F<File, Boolean>() {
         public Boolean f(File file) {
             return file.isDirectory();
         }
@@ -156,7 +156,7 @@ public class Functions {
         }
     });
 
-    public static final F<File, List<File>> listFiles = new F<File, List<File>>() {
+    public static final F<File, List<File>> File_listFiles = new F<File, List<File>>() {
         public List<File> f(File file) {
             File[] files = file.listFiles();
             return files == null ? List.<File>nil() : list(files);

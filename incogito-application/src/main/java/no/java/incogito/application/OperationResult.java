@@ -209,4 +209,17 @@ public abstract class OperationResult<T> {
             effect.e(value());
         }
     }
+
+    // -----------------------------------------------------------------------
+    // Utilities
+    // -----------------------------------------------------------------------
+
+    public static <T> OperationResult<T> joinOk(OperationResult<OperationResult<T>> operationResult) {
+        if(operationResult.isOk()) {
+            return operationResult.value();
+        }
+
+        //noinspection unchecked
+        return (OperationResult<T>) operationResult;
+    }
 }

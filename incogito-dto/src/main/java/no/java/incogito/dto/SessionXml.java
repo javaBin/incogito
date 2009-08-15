@@ -25,14 +25,14 @@ public class SessionXml {
     public String room;
     public XMLGregorianCalendar timeslot;
     public List<SpeakerXml> speakers = new ArrayList<SpeakerXml>();
-    public List<String> labels = new ArrayList<String>();
+    public List<LabelXml> labels = new ArrayList<LabelXml>();
 
     public SessionXml() {
     }
 
     public SessionXml(String selfUri, String id, String title, Option<String> abstractHtml, Option<String> bodyHtml,
                       Option<String> level, Option<String> room, Option<XMLGregorianCalendar> timeslot,
-                      Iterable<SpeakerXml> speakers, Iterable<String> labels) {
+                      Iterable<SpeakerXml> speakers, Iterable<LabelXml> labels) {
         this.selfUri = selfUri;
         this.id = id;
         this.title = title;
@@ -77,7 +77,7 @@ public class SessionXml {
         return speakers;
     }
 
-    public List<String> getLabels() {
+    public List<LabelXml> getLabels() {
         return labels;
     }
 }

@@ -55,9 +55,10 @@
     <function-signature>no.java.incogito.dto.EventXml[] getEvents(no.java.incogito.application.IncogitoApplication)</function-signature>
   </function>
   <function>
-    <name>getSession</name>
+    <name>getSessionByTitle</name>
     <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
-    <function-signature>no.java.incogito.dto.SessionXml getSession(no.java.incogito.application.IncogitoApplication,java.lang.String,java.lang.String)</function-signature>
+    <function-signature>no.java.incogito.dto.SessionXml
+      getSessionByTitle(no.java.incogito.application.IncogitoApplication,java.lang.String,java.lang.String)</function-signature>
   </function>
   <function>
     <name>getSessions</name>
