@@ -70,6 +70,7 @@ public class EmsTestServer {
         }
 
         System.out.println("Shutting down");
+        context.stop();
     }
 
     public static File getBasedir(String[] args) {

@@ -179,6 +179,20 @@
       </snapshots>
     </repository>
   </repositories>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
   <modules>
     <module>incogito-application</module>
     <module>incogito-cli</module>

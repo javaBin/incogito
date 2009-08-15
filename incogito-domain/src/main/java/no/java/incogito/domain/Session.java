@@ -1,11 +1,11 @@
 package no.java.incogito.domain;
 
 import fj.F;
-import fj.pre.Show;
-import static fj.pre.Show.anyShow;
 import fj.control.parallel.Callables;
 import fj.data.List;
 import fj.data.Option;
+import fj.pre.Show;
+import static fj.pre.Show.anyShow;
 import org.joda.time.Interval;
 
 import java.util.concurrent.Callable;
@@ -48,7 +48,7 @@ public class Session {
 
     public Session(SessionId id, String title, Option<WikiString> _abstract, Option<WikiString> body,
                    Option<Level> level, Option<Interval> timeslot, Option<String> room, List<String> labels,
-                   List<Speaker> speakers, List<Comment> comments ) {
+                   List<Speaker> speakers, List<Comment> comments) {
         this.id = id;
         this.title = title;
         this._abstract = _abstract;
@@ -59,5 +59,13 @@ public class Session {
         this.labels = labels;
         this.speakers = speakers;
         this.comments = comments;
+    }
+
+    public Session timeslot(Option<Interval> timeslot) {
+        return new Session(id, title, _abstract, body, level, timeslot, room, labels, speakers, comments);
+    }
+
+    public Session room(Option<String> room) {
+        return new Session(id, title, _abstract, body, level, timeslot, room, labels, speakers, comments);
     }
 }

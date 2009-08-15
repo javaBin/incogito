@@ -3,6 +3,7 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:c="http://java.sun.com/jsp/jstl/core"
       xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
       xmlns:i="http://taglib.java.no/incogito"
       xmlns:icon="http://taglib.java.no/incogito-icon"
       xmlns:security="http://www.springframework.org/security/tags"
@@ -121,48 +122,50 @@
           <div class="quarter start${h}45">${h}:45</div>
         </c:forEach>
       </div>
-      <div class="day">
-        <c:forEach var="room" items="${calendar.rooms}" varStatus="i">
-          <div class="room room${i.index}">
-            <h2>${room}</h2>
+      <c:forEach var="roomToSessionMap" items="${calendar.dayToRoomToSessionMap}" varStatus="i">
+        <div class="day${i.index}">
+          <c:forEach var="room" items="${calendar.rooms}" varStatus="i">
+            <div class="room room${i.index}">
+              <h2>${room}</h2>
 
-            <c:forEach var="session" items="${i:castToSessionList(i:mapGet(calendar.roomToSessionMap, room))}" varStatus="i">
-              <fmt:formatNumber var="hour" value="${session.timeslot.hour}" maxIntegerDigits="2" minIntegerDigits="2"/>
-              <fmt:formatNumber var="minute" value="${session.timeslot.minute}" maxIntegerDigits="2" minIntegerDigits="2"/>
-              <div class="session start${hour}${minute} duration60">
-                <div class="session-header">
-                  <div class="labels">
-                    <c:forEach var="label" items="${session.labels}">
-                      <c:set var="labelIcon" value="${icon:label(app, event, label)}"/>
-                      <img class="label" alt="${label}" src="${labelIcon}"/>
-                    </c:forEach>
+              <c:forEach var="session" items="${i:castToSessionList(i:mapGet(roomToSessionMap, room))}" varStatus="i">
+                <fmt:formatNumber var="hour" value="${session.timeslot.hour}" maxIntegerDigits="2" minIntegerDigits="2"/>
+                <fmt:formatNumber var="minute" value="${session.timeslot.minute}" maxIntegerDigits="2" minIntegerDigits="2"/>
+                <div class="session start${hour}${minute} duration60">
+                  <div class="session-header">
+                    <div class="labels">
+                      <c:forEach var="label" items="${session.labels}">
+                        <c:set var="labelIcon" value="${icon:label(app, event, label)}"/>
+                        <img class="label" alt="${label}" src="${labelIcon}"/>
+                      </c:forEach>
+                    </div>
+                    <div class="level">
+                      <c:set var="levelIcon" value="${icon:level(app, event, session.level)}"/>
+                      <c:if test="${not(levelIcon eq null)}">
+                        <img alt="${session.level}" src="${levelIcon}"/>
+                      </c:if>
+                    </div>
                   </div>
-                  <div class="level">
-                    <c:set var="levelIcon" value="${icon:level(app, event, session.level)}"/>
-                    <c:if test="${not(levelIcon eq null)}">
-                      <img alt="${session.level}" src="${levelIcon}"/>
-                    </c:if>
+                  <div class="session-body">
+                    <div class="session-id" style="display: none;">${session.id}</div>
+                    <div class="title">${session.title}</div>
+                    <div class="speakers">
+                      <c:forEach var="speaker" varStatus="i" items="${session.speakers}">
+                        <c:if test="${not i.last}">${speaker.name}, </c:if>
+                        <c:if test="${i.last}">${speaker.name}</c:if>
+                      </c:forEach>
+                    </div>
+                    <div class="add-remove-button">
+                      <img src="${incogito.baseurl}/images/icons/plus.png" alt="Add to schedule"/>
+                    </div>
                   </div>
+                  <div class="session-footer">&amp;nbsp;</div>
                 </div>
-                <div class="session-body">
-                  <div class="session-id" style="display: none;">${session.id}</div>
-                  <div class="title">${session.title}</div>
-                  <div class="speakers">
-                    <c:forEach var="speaker" varStatus="i" items="${session.speakers}">
-                      <c:if test="${not i.last}">${speaker.name}, </c:if>
-                      <c:if test="${i.last}">${speaker.name}</c:if>
-                    </c:forEach>
-                  </div>
-                  <div class="add-remove-button">
-                    <img src="${incogito.baseurl}/images/icons/plus.png" alt="Add to schedule"/>
-                  </div>
-                </div>
-                <div class="session-footer">&amp;nbsp;</div>
-              </div>
-            </c:forEach>
-          </div>
-        </c:forEach>
-      </div>
+              </c:forEach>
+            </div>
+          </c:forEach>
+        </div>
+      </c:forEach>
     </div>
   </div>
 </div>

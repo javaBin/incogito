@@ -26,6 +26,12 @@
       <version>${version}</version>
     </dependency>
     <dependency>
+      <groupId>no.java.incogito</groupId>
+      <artifactId>incogito-domain</artifactId>
+      <version>${version}</version>
+      <classifier>tests</classifier>
+    </dependency>
+    <dependency>
       <groupId>org.aspectj</groupId>
       <artifactId>aspectjrt</artifactId>
       <version>1.6.2</version>
