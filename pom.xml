@@ -201,10 +201,11 @@
     <module>incogito-dto</module>
     <module>incogito-ems-client</module>
     <module>incogito-ems-server</module>
-    <module>incogito-native-pkg</module>
+    <module>incogito-pkg-munin</module>
+    <module>incogito-pkg-web09</module>
+    <module>incogito-util</module>
     <module>incogito-voldemort</module>
     <module>incogito-web</module>
-    <module>incogito-util</module>
   </modules>
   <properties>
     <version.ems>1.1.5</version.ems>

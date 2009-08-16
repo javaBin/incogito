@@ -6,7 +6,7 @@
     <artifactId>incogito</artifactId>
     <version>2009.1-SNAPSHOT</version>
   </parent>
-  <artifactId>incogito-native-pkg</artifactId>
+  <artifactId>incogito-pkg-web09</artifactId>
   <name>Incogito 2009 :: Native Package :: Web</name>
   <packaging>unix-zip</packaging>
   <dependencies>
@@ -28,20 +28,48 @@
           <contact>javaBin</contact>
           <contactEmail>incogito@java.no</contactEmail>
           <assembly>
-            <copy-directory>
+            <copyDirectory>
               <from>src/main/unix/files</from>
-            </copy-directory>
-            <copy-artifact>
+            </copyDirectory>
+            <copyDirectory>
+              <from>src/main/unix/files/opt/jb/incogito09/voldemort</from>
+              <to>/opt/jb/incogito09/voldemort</to>
+<!--
+              <fileAttributes>
+		<tags>class:template</tags>
+              </fileAttributes>
+-->
+            </copyDirectory>
+            <mkdirs>
+              <path>/opt/jb/incogito09/voldemort/data/bdb</path>
+            </mkdirs>
+            <copyArtifact>
               <artifact>no.java.incogito:incogito-web:war</artifact>
-              <toFile>/opt/jb/incogito/incogito.war</toFile>
-            </copy-artifact>
+              <toFile>/opt/jb/incogito09/incogito.war</toFile>
+            </copyArtifact>
             <setAttributes>
-              <basedir>/opt/jb/incogito</basedir>
+              <basedir>/opt/jb</basedir>
+              <directoryAttributes>
+                <user>javabin</user>
+                <group>javabin</group>
+                <mode>0755</mode>
+              </directoryAttributes>
+            </setAttributes>
+            <setAttributes>
+              <basedir>/opt/jb/incogito09</basedir>
               <fileAttributes>
                 <user>root</user>
                 <group>bin</group>
                 <mode>0755</mode>
               </fileAttributes>
+            </setAttributes>
+            <setAttributes>
+              <basedir>/opt/jb/incogito09/voldemort/data/bdb</basedir>
+              <directoryAttributes>
+                <user>jetty</user>
+                <group>jetty</group>
+                <mode>0755</mode>
+              </directoryAttributes>
             </setAttributes>
           </assembly>
         </configuration>

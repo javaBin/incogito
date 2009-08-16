@@ -4,12 +4,12 @@
 
 <Configure class="org.mortbay.jetty.webapp.WebAppContext">
 
-  <Set name="contextPath">/incogito</Set>
-  <Set name="war">/opt/jb/incogito/incogito.war</Set>
+  <Set name="contextPath">/incogito09</Set>
+  <Set name="war">/opt/jb/incogito09/incogito.war</Set>
 
-  <Set name="extraClasspath">/opt/jb/incogito/etc</Set>
+  <Set name="extraClasspath">/opt/jb/incogito09/etc</Set>
 
-  <Set name="extractWAR">false</Set>
+  <Set name="extractWAR">true</Set>
   <Set name="copyWebDir">false</Set>
 
 </Configure>
