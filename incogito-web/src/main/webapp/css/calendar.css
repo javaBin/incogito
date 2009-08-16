@@ -122,9 +122,10 @@ div.overlay {
   top: 50%;
   left: 50%;
 
-  width: 800px; /*height: 580px;*/
-  height: 200px;
-  margin: -290px 0 0 -400px;
+  /* Each 'implementation' has to set width, height and margin-{left,top} */
+  width: 0;
+  height: 0;
+  margin: 0;
 
   position: fixed;
   z-index: 9999;
@@ -144,11 +145,25 @@ div.overlay-content h2 {
   margin: 0;
 }
 
+/* Session */
+div#session-overlay {
+  width: 50em;
+  height: 30em;
+  margin-top: -15em;
+  margin-left: -25em;  /* width/2 */
+}
+
+div#session-overlay .overlay-content {
+  height: 28em;        /* div#session-overlay { height } - 32 * 2 */
+  overflow: auto;
+}
+
 /* Login */
 div#login-overlay {
   width: 350px;
   height: 250px;
-  margin: -290px 0 0 -175px; /* width/2 */
+  margin-top: -290px;
+  margin-left: -175px;  /* width/2 */
 }
 
 td#login-username input, td#login-password input {

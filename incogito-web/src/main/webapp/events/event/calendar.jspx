@@ -19,16 +19,10 @@
 <head>
   <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/calendar.css"/>
   <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/rest/events/${eventName}/calendar.css"/>
+  <script src="${incogito.baseurl}/js/session-overlay.js" type="text/javascript"><!-- space --></script>
   <script type="text/javascript">
     var eventName = "${eventName}"
-    var sessionOverlay
-    var sessionOverlayBg
-    var sessionCloseButton
     $(document).ready(function() {
-      sessionOverlay = $("#session-overlay")
-      sessionOverlayBg = $("#session-overlay-bg")
-      sessionCloseButton = $("#session-close-button")
-
       $(document).keypress(function(e) {
         if (e.keyCode == 27) {
           if (sessionOverlay.css("display") != "none") {
@@ -41,7 +35,6 @@
       })
       $(".add-remove-button").bind("click", toggleAttendance)
       $(".session").bind("click", showSession)
-      sessionCloseButton.bind("click", closeSession)
 
       $("#results-below-tab").corner("round top")
       $(window).scroll(updateResultsBelowTab)
@@ -71,24 +64,11 @@
       return elem.offsetTop + (parent ? absoluteOffsetTop(parent) : 0)
     }
 
-    function showSession() {
-      sessionOverlay.show()
-      sessionOverlayBg.show()
+    // -----------------------------------------------------------------------
+    // Attendance
+    // -----------------------------------------------------------------------
 
-      var sessionId = $(this).parent().find(".session-id").text()
-      getSession(eventName, sessionId, function() {
-        // TODO: Show content
-      })
-    }
-
-    function closeSession() {
-      sessionOverlay.hide()
-      sessionOverlayBg.hide()
-    }
-
-    /**
-     * TODO: Spinner
-     */
+    /* TODO: Spinner */
     function toggleAttendance() {
       var sessionDiv = $(this).parent().parent();
       var sessionIdDiv = sessionDiv.find(".session-id")
@@ -163,8 +143,8 @@
 
               <c:forEach var="session" items="${i:castToSessionList(i:mapGet(roomToSessionMap, room))}" varStatus="i">
                 <c:set var="interestLevel" value="${i:mapGetDefault(calendar.attendanceMap, session.id, 'NO_INTEREST')}"/>
-                <fmt:formatNumber var="hour" value="${session.timeslot.hour}" maxIntegerDigits="2" minIntegerDigits="2"/>
-                <fmt:formatNumber var="minute" value="${session.timeslot.minute}" maxIntegerDigits="2" minIntegerDigits="2"/>
+                <fmt:formatNumber var="hour" value="${session.start.hour}" maxIntegerDigits="2" minIntegerDigits="2"/>
+                <fmt:formatNumber var="minute" value="${session.start.minute}" maxIntegerDigits="2" minIntegerDigits="2"/>
                 <div class="session start${hour}${minute} duration60">
                   <div class="session-id" style="display: none;">${session.id}</div>
                   <div class="session-interest-level" style="display: none;">${interestLevel}</div>
@@ -221,22 +201,7 @@
 </div>
 </div>
 
-<!--
- |
- | Session Overlay
- |
- |-->
-
-<div style="display: none;" id="session-overlay-bg" class="overlay-bg"><!-- space --></div>
-<div style="display: none;" id="session-overlay" class="overlay">
-  <div class="overlay-content">
-    <div class="spinner">Loading</div>
-  </div>
-  <div class="overlay-close">
-    <a id="session-close-button" title="Close session">Close</a>
-  </div>
-</div>
-
+<tags:session-overlay/>
 <tags:login-overlay script="true"/>
 
 </body>

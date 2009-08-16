@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<jsp:root xmlns="http://www.w3.org/1999/xhtml" version="2.0"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:i="http://taglib.java.no/incogito">
+  <jsp:useBean id="incogito" type="no.java.incogito.application.IncogitoConfiguration" scope="request"/>
+  <div id="session-overlay-bg" class="overlay-bg" style="display: none;"><!-- space --></div>
+  <div id="session-overlay" class="overlay" style="display: none;">
+    <div class="overlay-close">
+      <img id="session-close-button" src="${incogito.baseurl}/images/icons/close.png" alt="Close"/>
+    </div>
+    <div class="overlay-content">
+      <div class="spinner">Loading</div>
+    </div>
+  </div>
+
+  <div id="template-session-details" class="template session-details">
+    <div class="session-details-title"><!-- space --></div>
+    <div class="session-details-labels">
+      <ul><!-- space --></ul>
+    </div>
+    <div class="session-details-level"><!-- space --></div>
+    <div class="session-details-room">Room: <span class="text"><!-- space --></span></div>
+    <div class="session-details-timeslot"><!-- space --></div>
+    <div class="session-details-abstract"><!-- space --></div>
+    <div class="session-details-body"><!-- space --></div>
+    <div class="session-details-speakers"><!-- space --></div>
+  </div>
+
+  <div id="template-details-session-speaker" class="template session-details-speaker">
+    <img class="session-details-speaker-image" src="#" alt=""/>
+    <div class="session-details-speaker-name"><!-- space --></div>
+    <div class="session-details-speaker-bio"><!-- space --></div>
+  </div>
+</jsp:root>
