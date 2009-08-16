@@ -44,11 +44,6 @@
               </fileAttributes>
             </setAttributes>
           </assembly>
-          <packages>
-            <package>
-                <name>JBincogito-web</name>
-            </package>
-          </packages>
         </configuration>
       </plugin>
     </plugins>

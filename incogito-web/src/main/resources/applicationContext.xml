@@ -11,10 +11,16 @@
   <context:component-scan base-package="no.java.incogito.web.resources"/>
   <context:component-scan base-package="no.java.incogito.web.servlet"/>
 
+  <context:property-placeholder location="classpath*:incogito.properties"/>
+
   <!-- Incogito -->
 
   <bean id="userClient" class="no.java.incogito.application.UserClient">
     <constructor-arg ref="userStoreClient"/>
+  </bean>
+
+  <bean id="incogitoHome" class="java.io.File">
+    <constructor-arg value="${incogito.home}"/>
   </bean>
 
   <!-- Voldemort -->
@@ -22,6 +28,10 @@
   <bean id="voldemortServer" class="no.java.incogito.voldemort.VoldemortHomeServerFactoryBean">
     <description>Voldemort Server</description>
     <property name="voldemortHome" ref="voldemortHome"/>
+  </bean>
+
+  <bean id="voldemortHome" class="java.io.File">
+    <constructor-arg value="${voldemort.home}"/>
   </bean>
 
   <bean id="storeClientFactory" class="no.java.incogito.application.SocketStoreClientFactoryFactoryBean" depends-on="voldemortServer">
