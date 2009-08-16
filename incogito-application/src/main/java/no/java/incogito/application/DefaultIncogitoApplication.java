@@ -85,6 +85,7 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
         reloadConfiguration();
 
         logger.info("Configuration: ");
+        logger.info("Incogito Home: " + incogitoHome);
         OperationResult<List<Event>> result = getEvents();
 
         if (!result.isOk()) {

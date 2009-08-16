@@ -43,6 +43,12 @@
     <property name="name" value="user"/>
   </bean>
 
+  <!-- EMS -->
+
+  <bean id="emsService" class="no.java.incogito.ems.client.RestEmsServiceFactoryBean">
+    <property name="baseurl" value="${ems.url}"/>
+  </bean>
+
   <!-- Performance -->
 
   <bean id="incogitoApplicationPerformanceRecorder" class="no.java.incogito.web.jmx.ApplicationPerformanceRecorderFactoryBean">
