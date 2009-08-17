@@ -13,7 +13,7 @@ import no.java.incogito.util.ConnectJulToSlf4j;
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
-public class JulLoggingFixerFilter implements ServletContextListener {
+public class JulLoggingToSlf4jContextListener implements ServletContextListener {
 
     public void contextInitialized(ServletContextEvent sce) {
         ConnectJulToSlf4j.doIt();
