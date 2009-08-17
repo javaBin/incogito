@@ -28,6 +28,9 @@
     var baseurl = "${incogito.baseurl}"
   </script>
   <script src="${incogito.baseurl}/js/incogito.js" type="text/javascript"><!-- space --></script>
+
+  <tags:login-overlay script="false"/>
+
   <script type="text/javascript">
     var eventName = "${eventName}"
     var sessionOverlay
@@ -106,25 +109,119 @@
     function onAttendanceUpdated(spinner) {
       spinner.stop()
     }
-  </script>
-  <tags:login-overlay script="false"/>
+    </script>
+    <script type="text/javascript">
+	<![CDATA[
+	var inactive = [];
+	
+	$(document).ready(function() {
+		//Register click event for labels
+		labelClick();
+	});
+	
+	function filters(){
+		inactive = [];
+		$("#filters ul li.inactive").each(function(){
+			var classes = $(this).attr("class");
+			inactive.push(classes.split(" ")[0]);
+		});
+	}
+	
+	function labelClick(){
+		$("#filters ul li").each(function(){
+			$(this).click(function(){
+				$(this).toggleClass("active");
+				$(this).toggleClass("inactive");
+				filters();
+				checkSessions();
+			});
+		});
+	}
+	
+	function checkSessions(){
+		$(".room .session").each(function(){
+			// Get all labels for current session
+			var labels = $(".session-header .labels .label",this);
+			
+			var inactiveCount = 0;
+			$(labels).each(function(){
+				var label = $(this).attr("alt").toLowerCase();
+				if($.inArray(label,inactive)>-1){
+					inactiveCount++;
+				}
+			});
+			
+			// if found the right amount of labels, hide
+			if(inactiveCount == labels.size()){
+				$(this).addClass("hidden");
+			} else {
+				$(this).removeClass("hidden");
+			}
+		});
+	}
+	]]>
+	</script>
 </head>
 
 <body>
 <h2>${eventName}</h2>
-
+<div id="hd">
+	<div id="legends">
+		<div id="title" style="background: silver;width:4em;">
+			-
+		</div>
+		<div id="filters">
+			<ul class="labels">
+				<li class=" active">CORE JAVA</li>
+				<li class=" active">USABILITY</li>
+				<li class=" active">GREEN IT</li>
+			</ul>
+			<ul class="labels">
+				<li class=" active">INNOVATIVE USE OF IT</li>
+				<li class="web active">WEB AS A PLATFORM</li>
+				<li class=" active">JAVA FRAMEWORKS</li>
+			</ul>
+			<ul class="labels">
+				<li class=" active">FRONTEND TECHNOLOGIES</li>
+				<li class=" active">TOOLS AND TECHNIQUES</li>
+				<li class=" active">EXPERIENCE REPORTS</li>
+			</ul>
+			<ul class="labels">
+				<li class=" active">EMBEDDED, MOBILE AND GAMING</li>
+				<li class=" active">ARCHITECTURE AND DESIGN</li>
+				<li class=" active">ALTERNATIVE LANGUAGES</li>
+			</ul>
+			<ul class="labels">
+				<li class=" active">ENTERPRISE ARCHITECTURE AND INTEGRATION</li>
+				<li class="method active">AGILE AND SOFTWARE ENGINEERING</li>
+			</ul>
+		</div>
+		<div id="complexity">
+			<div> Complexity Legend </div>
+			<ul class="nav lev">
+				<li>1</li>
+				<li>2</li>
+				<li>3</li>
+				<li>4</li>
+				<li>5</li>
+			</ul>
+			<ul class="nav expl">
+				<li><span>Novice</span></li>
+				<li><span>Expert</span></li>
+			</ul>
+		</div>
+	</div> <!-- legends ends -->
+	<div id="menu">
+		<ul class="nav">
+			<li>INFO</li>
+			<li>MY PROFILE</li>
+			<li>MY AGENDA</li>
+		</ul>
+	</div>
+</div> <!-- hd ends -->
 <div id="calendar">
       <c:forEach var="roomToSessionMap" items="${calendar.dayToRoomToSessionMap}" varStatus="i">
         <div class="day day${i.index}">
-<!--      <div class="times">
-        <c:forEach var="hour" items="${calendar.timeslotHours}">
-          <fmt:formatNumber var="h" value="${hour}" maxIntegerDigits="2" minIntegerDigits="2"/>
-          <div class="hour">${h}:00</div>
-          <div class="quarter">${h}:15</div>
-          <div class="quarter">${h}:30</div>
-          <div class="quarter">${h}:45</div>
-        </c:forEach>
-      </div> -->
 <div class="times">
     <div class="hour">09:00</div>
     <div class="quarter">09:15</div>
