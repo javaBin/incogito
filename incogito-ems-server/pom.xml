@@ -15,6 +15,11 @@
       <version>${version.ems}</version>
     </dependency>
     <dependency>
+      <groupId>no.java.ems</groupId>
+      <artifactId>ems-swing-client</artifactId>
+      <version>${version.ems}</version>
+    </dependency>
+    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
       <version>2.5</version>
@@ -62,11 +67,22 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.1.1</version>
         <configuration>
-          <mainClass>no.java.incogito.ems.server.EmsTestServer</mainClass>
+          <mainClass>${mainClass}</mainClass>
           <commandlineArgs>${basedir}</commandlineArgs>
           <classpathScope>test</classpathScope>
         </configuration>
       </plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>client</id>
+      <properties>
+        <mainClass>no.java.incogito.ems.server.EmsTestClient</mainClass>
+      </properties>
+    </profile>
+  </profiles>
+  <properties>
+    <mainClass>no.java.incogito.ems.server.EmsTestServer</mainClass>
+  </properties>
 </project>

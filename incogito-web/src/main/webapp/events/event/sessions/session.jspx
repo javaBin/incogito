@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
       xmlns:fn="http://java.sun.com/jsp/jstl/functions"
       xmlns:i="http://taglib.java.no/incogito">
 <jsp:directive.page pageEncoding="utf-8" contentType="text/html;charset=utf-8"/>
@@ -37,7 +38,11 @@ http://javazone.no/incogito/session/Agility+at+Scale+-+Using+Team+Concert+in+a+G
   </li>
   <li>Time:
     <c:choose>
-      <c:when test="${not(session.timeslot eq null)}">${session.timeslot}</c:when>
+      <c:when test="${not(session.start eq null) and not(session.end eq null)}">
+        <fmt:formatNumber minIntegerDigits="2" maxIntegerDigits="2" value="${session.start.hour}"/>:<fmt:formatNumber minIntegerDigits="2" maxIntegerDigits="2" value="${session.start.minute}"/>
+        -
+        <fmt:formatNumber minIntegerDigits="2" maxIntegerDigits="2" value="${session.end.hour}"/>:<fmt:formatNumber minIntegerDigits="2" maxIntegerDigits="2" value="${session.end.minute}"/>
+      </c:when>
       <c:otherwise>not assigned</c:otherwise>
     </c:choose>
   </li>
