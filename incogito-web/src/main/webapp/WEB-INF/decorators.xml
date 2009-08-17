@@ -6,6 +6,7 @@
     <pattern>/css/*</pattern>
     <pattern>/iframe/*</pattern>
     <pattern>/js/*</pattern>
+    <pattern>*/calendar*</pattern>
   </excludes>
 
   <!--

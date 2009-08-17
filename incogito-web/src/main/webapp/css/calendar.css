@@ -1,158 +1,172 @@
 div#calendar {
-  overflow: hidden;
-  width: 80em;
+    overflow: hidden;
+    width: 76em;
 }
 
-#times {
-  position: absolute;
-  left: -3em;
+.times {
+    margin-top: 2.5em;
+    width: 3em;
+    float: left;
 }
 
-#times div {
-  position: absolute;
-  height: 1em;
-  overflow: hidden;
+.cb {
+    clear:both;
 }
 
-#paneContainer {
-  float: left;
-  padding-left: 3em;
-  width: 77em;
+.times div {
+    height: 2.5em;
+    overflow: hidden;
 }
 
-#view {
-  position: absolute;
-  width: 77em;
+
+.rooms {
+    width:73em;
+    position:absolute;
+    margin-left:3em;
 }
 
-#pane {
-  width: 154em;
+.day {
+    width:76em;
 }
 
-.day, .day .room, .room .session {
-  width: 10em;
+.day .room {
+    width: 9.5em;
+    border-left: 0.1em solid #787878;
+    padding: 0 0.25em 0 0.25em;
+    float: left;
 }
 
-.day .room h2 {
-  position: absolute;
-  font-size: inherit;
-}
-
-.session {
-  position: absolute;
+.room h2 {
+    padding:0;
+    margin:0;
 }
 
 /*
  * Session Cell
- */
-
-div.session-header {
-  width: 100%;
-  text-align: right;
-  vertical-align: middle;
-  border: thin solid silver;
+*/
+div.session-header div {
+    display: inline;
+    font-size: 1.1em;
 }
 
-div.session-header div {
-  display: inline;
-  font-size: 1.5em;
+.room .session {
+    width: 9.25em;
+    position: absolute;
+}
+
+.level img, .labels img {
+    border:0;
+    margin:0;
+    padding:0;
+}
+
+.session-body .title,.session-body .speakers {
+    font-size: 0.75em;
+}
+
+.session-body .title {
+    font-weight: bolder;
+    padding-top: 0.75em;
+}
+
+.session-header, session-header div {
+    overflow:hidden;
+    height: 1em;
+    font-size: 1em;
+    line-height:1em;
+}
+
+div.session-header {
+    width: 100%;
+    text-align: right;
+    vertical-align: middle;
+    border: thin solid silver;
 }
 
 div.session-header div.level {
-  border-left: thin silver solid;
+    border-left: thin #787878 solid;
 }
 
 div.session-header div.labels img {
-  padding-right: 0.2em;
+    padding-right: 0.2em;
 }
 
 div.session-header div.level img {
-  padding-left: 0.2em;
-  padding-right: 0.2em;
+    padding-left: 0.2em;
+    padding-right: 0.2em;
 }
 
 div.session-body {
-  margin-left: 0.5em;
-  margin-right: 0.5em;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
 }
 
 div.session-body div.add-remove-button {
-  position: absolute;
-  bottom: 1.5em;
-  left: 0;
+    position: absolute;
+    bottom: 1.5em;
+    left: 0;
 }
 
 div.session-footer {
-  background-color: #d4d4d4;
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-}
-
-.title {
-  font-size: 11pt;
-  font-weight: bolder;
-  padding-top: 0.75em;
-}
-
-.speakers {
-  font-size: small;
-  padding-top: 0.75em;
+    background-color: #d4d4d4;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }
 
 /*
  * Overlays
- */
+*/
 
 div.overlay-bg {
-  background: black none repeat scroll 0 0;
-  top: 0;
-  left: 0;
-  height: 100%;
-  opacity: 0.8;
-  position: fixed;
-  width: 100%;
-  z-index: 4999;
+    background: black none repeat scroll 0 0;
+    top: 0;
+    left: 0;
+    height: 100%;
+    opacity: 0.8;
+    position: fixed;
+    width: 100%;
+    z-index: 4999;
 }
 
 div.overlay {
-  background: white none repeat scroll 0 0;
-  border: 0 none;
+    background: white none repeat scroll 0 0;
+    border: 0 none;
 
-  top: 50%;
-  left: 50%;
+    top: 50%;
+    left: 50%;
 
-  width: 800px; /*height: 580px;*/
-  height: 200px;
-  margin: -290px 0 0 -400px;
+    width: 800px; /*height: 580px;*/
+    height: 200px;
+    margin: -290px 0 0 -400px;
 
-  position: fixed;
-  z-index: 9999;
+    position: fixed;
+    z-index: 9999;
 }
 
 div.overlay-close {
-  position: absolute;
-  top: 0.5em;
-  left: 0.5em;
+    position: absolute;
+    top: 0.5em;
+    left: 0.5em;
 }
 
 div.overlay-content {
-  margin: 2em;
+    margin: 2em;
 }
 
 div.overlay-content h2 {
-  margin: 0;
+    margin: 0;
 }
 
 /* Login */
 div#login-overlay {
-  width: 350px;
-  height: 250px;
-  margin: -290px 0 0 -175px; /* width/2 */
+    width: 350px;
+    height: 250px;
+    margin: -290px 0 0 -175px; /* width/2 */
 }
 
 td#login-username input, td#login-password input {
-  width: 100%;
+    width: 100%;
 }
 
 /*
@@ -162,18 +176,18 @@ td#login-submit * {
 */
 
 #login-message {
-  margin-left: 1em;
-  color: red;
+    margin-left: 1em;
+    color: red;
 }
 
 #results-below-tab {
-  color: white;
-  text-align: center;
-  background-color: #5f5f5f; 
-  width: 300px;
-  margin-left: -150px;
-  z-index: 10000;
-  bottom: 0; 
-  left: 50%;
-  position: fixed;
+    color: white;
+    text-align: center;
+    background-color: #5f5f5f;
+    width: 300px;
+    margin-left: -150px;
+    z-index: 10000;
+    bottom: 0;
+    left: 50%;
+    position: fixed;
 }
