@@ -90,6 +90,7 @@ public class SessionJavaGenerator {
                     }
                 };
                 System.out.println("public static final Session session" + i + " = new Session(new SessionId(\"" + session.getId() + "\"), " +
+                        "Format." + session.getFormat().name() + ", " +
                         "\"" + session.getTitle().replaceAll("\"", "\\\\\"").replaceAll("\n", "\\\\n") + "\", " +
                         toOption("WikiString", "new WikiString(\"", session.getLead(), "\")") + ", " +
                         toOption("WikiString", "new WikiString(\"", session.getBody(), "\")") + ", " +

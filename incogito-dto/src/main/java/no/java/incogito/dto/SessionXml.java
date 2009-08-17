@@ -3,7 +3,9 @@ package no.java.incogito.dto;
 import fj.data.Option;
 import static no.java.incogito.dto.DtoUtil.toList;
 
+import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +16,18 @@ import java.util.List;
  */
 @XmlRootElement(name = "session")
 public class SessionXml {
+
+    @XmlType(name = "type")
+    @XmlEnum(String.class)
+    public enum FormatXml {
+        Presentation,
+        Lightning_talk,
+        BoF
+    }
+
     public String selfUri;
     public String id;
+    public FormatXml format;
     public String title;
     public String abstractHtml;
     public String bodyHtml;
@@ -29,11 +41,12 @@ public class SessionXml {
     public SessionXml() {
     }
 
-    public SessionXml(String selfUri, String id, String title, Option<String> abstractHtml, Option<String> bodyHtml,
-                      Option<String> level, Option<String> room, Option<XMLGregorianCalendar> start,
+    public SessionXml(String selfUri, FormatXml format, String id, String title, Option<String> abstractHtml,
+                      Option<String> bodyHtml, Option<String> level, Option<String> room, Option<XMLGregorianCalendar> start,
                       Option<XMLGregorianCalendar> end, Iterable<SpeakerXml> speakers, Iterable<LabelXml> labels) {
         this.selfUri = selfUri;
         this.id = id;
+        this.format = format;
         this.title = title;
         this.abstractHtml = abstractHtml.orSome((String) null);
         this.bodyHtml = bodyHtml.orSome((String) null);
@@ -47,6 +60,10 @@ public class SessionXml {
 
     public String getId() {
         return id;
+    }
+
+    public FormatXml getFormat() {
+        return format;
     }
 
     public String getTitle() {

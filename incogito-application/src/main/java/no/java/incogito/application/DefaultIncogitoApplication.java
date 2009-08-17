@@ -21,6 +21,7 @@ import static fj.data.Option.none;
 import static fj.data.Option.some;
 import fj.data.TreeMap;
 import fj.pre.Ord;
+import fj.pre.Show;
 import no.java.incogito.Enums;
 import no.java.incogito.Functions;
 import static no.java.incogito.Functions.throwLeft;
@@ -388,6 +389,7 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
             F<String, Option<Label>> getLabel = flip(Functions.<String, Label>TreeMap_get()).f(event.labels);
 
             return some(new Session(new SessionId(session.getId()),
+                    fromNull(session.getFormat()).bind(compose(Session.Format.valueOf_, Show.<no.java.ems.domain.Session.Format>anyShow().showS_())).orSome(Session.Format.Presentation),
                     session.getTitle(),
                     fromString(session.getLead()).map(WikiString.constructor),
                     fromString(session.getBody()).map(WikiString.constructor),
