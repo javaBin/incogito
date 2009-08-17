@@ -13,6 +13,11 @@
 <c:set var="session" value="${i:getSessionByTitle(app, eventName, sessionName)}"/>
 <c:set var="eventName" value="${i:urlDecode(eventName)}"/>
 
+<head>
+  <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/session.css"/>
+  <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/rest/events/${eventName}/session.css"/>
+</head>
+
 <!--
 TODO: Add level
 TODO: Add labels
@@ -30,22 +35,34 @@ http://javazone.no/incogito/session/Agility+at+Scale+-+Using+Team+Concert+in+a+G
 <h2>${eventName} - ${session.title}</h2>
 
 <ul>
+  <c:forEach var="label" items="${session.labels}">
+    <li class="session-detail-label label-${label.id}">
+      ${label.displayName}
+    </li>
+  </c:forEach>
+  <li class="session-detail-level level-${session.level}">
+    <c:choose>
+      <c:when test="${not(session.level eq null)}">${session.level}</c:when>
+      <c:otherwise>TBA</c:otherwise>
+    </c:choose>
+  </li>
   <li>Room:
     <c:choose>
       <c:when test="${not(session.room eq null)}">${session.room}</c:when>
-      <c:otherwise>not assigned</c:otherwise>
+      <c:otherwise>TBA</c:otherwise>
     </c:choose>
   </li>
-  <li>Time:
+  <li class="session-detail-time format-${session.format}">
     <c:choose>
       <c:when test="${not(session.start eq null) and not(session.end eq null)}">
         <fmt:formatNumber minIntegerDigits="2" maxIntegerDigits="2" value="${session.start.hour}"/>:<fmt:formatNumber minIntegerDigits="2" maxIntegerDigits="2" value="${session.start.minute}"/>
         -
         <fmt:formatNumber minIntegerDigits="2" maxIntegerDigits="2" value="${session.end.hour}"/>:<fmt:formatNumber minIntegerDigits="2" maxIntegerDigits="2" value="${session.end.minute}"/>
       </c:when>
-      <c:otherwise>not assigned</c:otherwise>
+      <c:otherwise>TBA</c:otherwise>
     </c:choose>
   </li>
+<!--
   <li>
     <c:choose>
       <c:when test="${fn:length(session.speakers) eq 1}">
@@ -60,6 +77,7 @@ http://javazone.no/incogito/session/Agility+at+Scale+-+Using+Team+Concert+in+a+G
       <c:if test="${i.last}">${speaker.name}</c:if>
     </c:forEach>
   </li>
+-->
 </ul>
 
 <h2>Description</h2>

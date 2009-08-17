@@ -18,6 +18,7 @@
 
 <head>
   <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/calendar.css"/>
+  <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/session.css"/>
   <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/rest/events/${eventName}/calendar.css"/>
   <script src="${incogito.baseurl}/js/session-overlay.js" type="text/javascript"><!-- space --></script>
   <script type="text/javascript">

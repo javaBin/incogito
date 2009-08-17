@@ -16,6 +16,7 @@ import fj.data.TreeMap;
 import static fj.data.Set.empty;
 import static fj.data.Stream.stream;
 import no.java.incogito.Functions;
+import no.java.incogito.application.IncogitoConfiguration;
 import no.java.incogito.web.resources.XmlFunctions;
 import no.java.incogito.web.servlet.WebCalendar;
 import no.java.incogito.dto.SessionXml;
@@ -25,6 +26,8 @@ import no.java.incogito.domain.Session;
 import no.java.incogito.domain.Schedule;
 import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.UserSessionAssociation;
+import no.java.incogito.domain.Event;
+import no.java.incogito.domain.Level;
 
 import javax.ws.rs.core.UriBuilder;
 import java.text.NumberFormat;
@@ -49,10 +52,10 @@ public class WebFunctions {
     }
 
     // -----------------------------------------------------------------------
-    // CSS
+    // Calendar CSS
     // -----------------------------------------------------------------------
 
-    public static final F<CssConfiguration, F<List<Room>, List<String>>> generateCss = curry(new F2<CssConfiguration, List<Room>, List<String>>() {
+    public static final F<CssConfiguration, F<List<Room>, List<String>>> generateCalendarCss = curry(new F2<CssConfiguration, List<Room>, List<String>>() {
         public List<String> f(CssConfiguration cssConfiguration, List<Room> roomList) {
             List<String> rooms = roomList.zipIndex().map(P2.tuple(roomToCss.f(cssConfiguration)));
 
@@ -88,6 +91,32 @@ public class WebFunctions {
         public String f(CssConfiguration cssConfiguration, P2<P2<String, String>, Integer> p) {
             double em = cssConfiguration.sessionEmStart + (cssConfiguration.getHeightInEm(p._2() * 15));
             return ".start" + prepend.f(p._1()) + " { top: " + oneDigitFormat.format(em) + "em; }";
+        }
+    });
+
+    // -----------------------------------------------------------------------
+    // Session CSS
+    // -----------------------------------------------------------------------
+
+    public static F<IncogitoConfiguration, F<Event, List<String>>> generateSessionCss = curry( new F2<IncogitoConfiguration, Event, List<String>>() {
+        public List<String> f(final IncogitoConfiguration configuration, final Event event) {
+            List<String> formats = list(Session.Format.values()).
+                map(Session.Format.toString).
+                map(new F<String, String>() {
+                    public String f(String format) {
+                        return ".format-" + format + " { list-style-image: url('" + configuration.baseurl + "/images/icons/session-format-" + format.toLowerCase() + "-small.png'); }";
+                    }
+                });
+
+            List<String> levels = configuration.getLevels(event.id).values().
+                map(Level.showId.showS_()).
+                map(new F<String, String>() {
+                    public String f(String level) {
+                        return ".level-" + level + " { list-style-image: url('" + configuration.baseurl + "/rest/events/" + event.name + "/icons/levels/" + level + ".png'); }";
+                    }
+                });
+
+            return formats.append(levels);
         }
     });
 
