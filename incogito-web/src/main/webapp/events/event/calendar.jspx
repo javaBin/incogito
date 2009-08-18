@@ -18,6 +18,7 @@
 
 <head>
   <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/calendar.css"/>
+  <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/session.css"/>
   <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/rest/events/${eventName}/calendar.css"/>
   <script src="${incogito.baseurl}/js/jquery-1.3.2.js" type="text/javascript"><!-- space --></script>
   <script src="${incogito.baseurl}/js/jquery.json-1.0.js" type="text/javascript"><!-- space --></script>
@@ -83,9 +84,7 @@
     function toggleAttendance() {
       var sessionDiv = $(this).parent().parent();
       var sessionIdDiv = sessionDiv.find(".session-id")
-      var interestLevelDiv = sessionDiv.find(".session-interest-level");
-      var interestLevel = interestLevelDiv.text()
-      console.log(sessionIdDiv.text())
+      var interestLevel = sessionDiv.find(".session-interest-level").text()
       if (interestLevel == InterestLevel.NO_INTEREST) {
         interestLevel = InterestLevel.INTEREST
       }
@@ -98,7 +97,7 @@
       else {
         interestLevel = InterestLevel.INTEREST
       }
-      updateInterest(eventName, sessionIdDiv.text(), interestLevel, curry(onAttendanceUpdated, sessionDiv, interestLevel), showLogin)
+      updateInterest(eventName, sessionIdDiv.text(), interestLevel, onAttendanceUpdated.curry(sessionDiv, interestLevel), showLogin)
       return false
     }
 

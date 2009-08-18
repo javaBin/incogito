@@ -25,7 +25,7 @@ public class ScheduleXml {
     @XmlElement(name = "session")
     public List<SessionXml> sessions = new ArrayList<SessionXml>();
 
-    @XmlElementWrapper(name = "sessionAssociations", nillable = false, required = true)
+    @XmlElementWrapper(name = "sessionAssociations", nillable = false)
     @XmlElement(name = "attendanceMarker")
     public List<UserSessionAssociationXml> sessionAssociations = new ArrayList<UserSessionAssociationXml>();
 

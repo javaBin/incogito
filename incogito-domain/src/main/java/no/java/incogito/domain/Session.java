@@ -1,7 +1,9 @@
 package no.java.incogito.domain;
 
+import fj.F;
 import fj.data.List;
 import fj.data.Option;
+import no.java.incogito.Enums;
 import org.joda.time.Interval;
 
 /**
@@ -9,7 +11,17 @@ import org.joda.time.Interval;
  * @version $Id$
  */
 public class Session {
+    public enum Format {
+        Presentation,
+        Lightning_talk,
+        BoF;
+
+        public static F<String, Option<Format>> valueOf_ = Enums.<Format>valueOf().f(Format.class);
+        public static F<Format, String> toString = Enums.toString_();
+    }
+
     public final SessionId id;
+    public final Format format;
     public final String title;
     public final Option<WikiString> _abstract;
     public final Option<WikiString> body;
@@ -20,10 +32,11 @@ public class Session {
     public final List<Speaker> speakers;
     public final List<Comment> comments;
 
-    public Session(SessionId id, String title, Option<WikiString> _abstract, Option<WikiString> body,
+    public Session(SessionId id, Format format, String title, Option<WikiString> _abstract, Option<WikiString> body,
                    Option<Level> level, Option<Interval> timeslot, Option<String> room, List<Label> labels,
-                   List<Speaker> speakers, List<Comment> comments ) {
+                   List<Speaker> speakers, List<Comment> comments) {
         this.id = id;
+        this.format = format;
         this.title = title;
         this._abstract = _abstract;
         this.body = body;
@@ -36,10 +49,10 @@ public class Session {
     }
 
     public Session timeslot(Option<Interval> timeslot) {
-        return new Session(id, title, _abstract, body, level, timeslot, room, labels, speakers, comments);
+        return new Session(id, format, title, _abstract, body, level, timeslot, room, labels, speakers, comments);
     }
 
     public Session room(Option<String> room) {
-        return new Session(id, title, _abstract, body, level, timeslot, room, labels, speakers, comments);
+        return new Session(id, format, title, _abstract, body, level, timeslot, room, labels, speakers, comments);
     }
 }

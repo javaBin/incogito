@@ -93,11 +93,24 @@ public class IncogitoResource {
     @GET
     @Produces("text/css")
     public Response getEventCalendarCss(@PathParam("eventName") final String eventName) {
-        final F<List<Room>, List<String>> generateCss = WebFunctions.generateCss.f(incogito.getConfiguration().cssConfiguration);
+        final F<List<Room>, List<String>> generateCss = WebFunctions.generateCalendarCss.f(incogito.getConfiguration().cssConfiguration);
 
         return toJsr311(incogito.getEventByName(eventName).ok().map(new F<Event, String>() {
             public String f(Event event) {
                 return generateCss.f(event.rooms).foldRight(Functions.String_join.f("\n"), "");
+            }
+        }));
+    }
+
+    @Path("/events/{eventName}/session.css")
+    @GET
+    @Produces("text/css")
+    public Response getEventSessionCss(@PathParam("eventName") final String eventName) {
+        final F<Event, List<String>> generateSessionCss = WebFunctions.generateSessionCss.f(incogito.getConfiguration());
+
+        return toJsr311(incogito.getEventByName(eventName).ok().map(new F<Event, String>() {
+            public String f(Event event) {
+                return generateSessionCss.f(event).foldRight(Functions.String_join.f("\n"), "");
             }
         }));
     }

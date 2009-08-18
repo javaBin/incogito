@@ -43,6 +43,7 @@ public class EmsTestServer {
 
         File emsHome = new File(basedir, "target/ems-home");
 
+        System.setProperty("java.security.auth.login.config", new File(basedir, "src/test/resources/login.conf").getAbsolutePath());
         System.setProperty("ems.home", emsHome.getAbsolutePath());
 
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:incogito-ems-server-applicationContext-test.xml");

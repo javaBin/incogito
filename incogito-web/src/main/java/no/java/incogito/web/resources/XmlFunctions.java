@@ -86,6 +86,7 @@ public class XmlFunctions {
     public static final F<P1<UriBuilder>, F<Session, SessionXml>> sessionToXml = curry(new F2<P1<UriBuilder>, Session, SessionXml>() {
         public SessionXml f(P1<UriBuilder> uriBuilder, Session session) {
             return new SessionXml(uriBuilder._1().segment(session.title).build().toString(),
+                    SessionXml.FormatXml.valueOf(session.format.name()), 
                     session.id.value,
                     session.title,
                     session._abstract.map(WikiString.toHtml),
