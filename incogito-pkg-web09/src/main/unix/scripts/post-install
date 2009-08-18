@@ -1,0 +1,20 @@
+#!/bin/sh
+
+set -e
+
+find /opt/jb/incogito09 -name \*.TEMPLATE | while read t
+do
+  f=`echo $t | sed 's,\(.*\).TEMPLATE,\1,'`
+
+  if [ -r $f ]
+  then
+    echo "Leaving existing file: $f"
+    if [ `diff $t $f | wc -l` -gt 0 ]
+    then
+      echo "NOTE: The template and the installed file differ."
+    fi
+  else
+    echo "Installing file from template: $f"
+    cp $t $f
+  fi
+done

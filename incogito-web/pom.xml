@@ -68,11 +68,6 @@
       <version>${version.jersey}</version>
     </dependency>
     <dependency>
-      <groupId>com.sun.jersey</groupId>
-      <artifactId>jersey-json</artifactId>
-      <version>${version.jersey}</version>
-    </dependency>
-    <dependency>
       <groupId>com.sun.jersey.contribs</groupId>
       <artifactId>jersey-spring</artifactId>
       <version>${version.jersey}</version>
@@ -82,6 +77,11 @@
           <artifactId>spring</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-jaxrs</artifactId>
+      <version>1.2.0</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
@@ -159,6 +159,15 @@
               <key>ems.url</key>
               <value>${ems.url}</value>
             </systemProperty>
+            <systemProperty>
+              <key>incogito.home</key>
+              <value>${basedir}/src/test/resources/cluster-${voldemort.clusterId}/node-${voldemort.nodeId}</value>
+            </systemProperty>
+            <systemProperty>
+              <key>voldemort.home</key>
+              <value>${basedir}/src/test/resources/cluster-${voldemort.clusterId}/node-${voldemort.nodeId}/voldemort</value>
+            </systemProperty>
+<!--
              <systemProperty>
               <key>voldemort.nodeId</key>
               <value>${voldemort.nodeId}</value>
@@ -167,6 +176,7 @@
               <key>voldemort.clusterId</key>
               <value>${voldemort.clusterId}</value>
             </systemProperty>
+-->
           </systemProperties>
           <connectors>
             <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">

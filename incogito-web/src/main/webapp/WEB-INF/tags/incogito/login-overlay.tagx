@@ -77,8 +77,8 @@
     </script>
   </c:when>
   <c:otherwise>
-  <div style="display: none;" id="login-overlay-bg" class="overlay-bg"><!-- space --></div>
-  <div style="display: none;" id="login-overlay" class="overlay">
+  <div id="login-overlay-bg" class="overlay-bg" style="display: none;"><!-- space --></div>
+  <div id="login-overlay" class="overlay" style="display: none;">
     <div class="overlay-close">
       <img id="login-close-button" src="${incogito.baseurl}/images/icons/close.png" alt="Close"/>
     </div>

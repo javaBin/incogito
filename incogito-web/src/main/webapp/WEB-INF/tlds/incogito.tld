@@ -23,6 +23,12 @@
   </function>
 
   <function>
+    <name>mapGetDefault</name>
+    <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
+    <function-signature>java.lang.Object mapGet(java.util.Map,java.lang.Object,java.lang.Object)</function-signature>
+  </function>
+
+  <function>
     <name>castToSession</name>
     <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
     <function-signature>no.java.incogito.dto.SessionXml castToSession(java.lang.Object)</function-signature>

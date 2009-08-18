@@ -94,18 +94,6 @@ function getSchedule(eventName, userName, success) {
     })
 }
 
-function markInterest(eventName, sessionId, success, unauthorized) {
-    updateInterest(eventName, sessionId, InterestLevel.INTEREST, success, unauthorized)
-}
-
-function markAttendance(eventName, sessionId, success, unauthorized) {
-    updateInterest(eventName, sessionId, InterestLevel.ATTEND, success, unauthorized)
-}
-
-function dropInterest(eventName, sessionId, success, unauthorized) {
-    updateInterest(eventName, sessionId, InterestLevel.NO_INTEREST, success, unauthorized)
-}
-
 function updateInterest(eventName, sessionId, state, success, unauthorized) {
     console.log("Setting interest level on " + sessionId + " for event " + eventName + " to " + state + "...")
 
@@ -116,7 +104,6 @@ function updateInterest(eventName, sessionId, state, success, unauthorized) {
         contentType: "application/json",
         data: state,
         complete: function(xhr) {
-            console.log("xhr.status: " + typeof unauthorized)
             switch (xhr.status) {
                 case 201:
                     console.log("Updated interest level on " + sessionId + " for event " + eventName)
@@ -124,6 +111,7 @@ function updateInterest(eventName, sessionId, state, success, unauthorized) {
                         success()
                     break;
                 case 401:
+                    console.log("Unauthorized")
                     if (typeof unauthorized == "function")
                         unauthorized()
                     break;

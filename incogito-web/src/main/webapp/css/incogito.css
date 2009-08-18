@@ -1,3 +1,8 @@
 body {
   font-family: arial, sans-serif;
 }
+
+/* Some elements are templates only (elements that are cloned() before used and should be hidden */
+.template {
+  display: none;
+}

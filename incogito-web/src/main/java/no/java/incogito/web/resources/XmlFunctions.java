@@ -23,6 +23,7 @@ import no.java.incogito.dto.UserSessionAssociationXml;
 import no.java.incogito.dto.SpeakerXml;
 import no.java.incogito.dto.LabelXml;
 import no.java.incogito.Enums;
+import static no.java.incogito.Functions.compose;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -47,14 +48,25 @@ public class XmlFunctions {
         }
     }
 
-    private static F<Interval, XMLGregorianCalendar> toXmlGregorianCalendar = new F<Interval, XMLGregorianCalendar>() {
-        public XMLGregorianCalendar f(Interval interval) {
+    public static F<Interval, DateTime> Interval_start = new F<Interval, DateTime>() {
+        public DateTime f(Interval interval) {
+            return interval.getStart();
+        }
+    };
+
+    public static F<Interval, DateTime> Interval_end = new F<Interval, DateTime>() {
+        public DateTime f(Interval interval) {
+            return interval.getEnd();
+        }
+    };
+
+    private static F<DateTime, XMLGregorianCalendar> toXmlGregorianCalendar = new F<DateTime, XMLGregorianCalendar>() {
+        public XMLGregorianCalendar f(DateTime dateTime) {
             XMLGregorianCalendar gregorianCalendar = datatypeFactory.newXMLGregorianCalendar();
-            DateTime start = interval.getStart();
-            gregorianCalendar.setTime(start.getHourOfDay(),start.getMinuteOfHour(), start.getSecondOfMinute());
-            gregorianCalendar.setYear(start.getYear());
-            gregorianCalendar.setMonth(start.getMonthOfYear());
-            gregorianCalendar.setDay(start.getDayOfMonth());
+            gregorianCalendar.setTime(dateTime.getHourOfDay(),dateTime.getMinuteOfHour(), dateTime.getSecondOfMinute());
+            gregorianCalendar.setYear(dateTime.getYear());
+            gregorianCalendar.setMonth(dateTime.getMonthOfYear());
+            gregorianCalendar.setDay(dateTime.getDayOfMonth());
             return gregorianCalendar;
         }
     };
@@ -80,7 +92,8 @@ public class XmlFunctions {
                     session.body.map(WikiString.toHtml),
                     session.level.map(Level.showId.showS_()),
                     session.room,
-                    session.timeslot.map(toXmlGregorianCalendar),
+                    session.timeslot.map(compose(toXmlGregorianCalendar, Interval_start)),
+                    session.timeslot.map(compose(toXmlGregorianCalendar, Interval_end)),
                     session.speakers.map(speakerToXml),
                     session.labels.map(labelToXml));
         }

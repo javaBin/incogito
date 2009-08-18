@@ -28,19 +28,12 @@
     var baseurl = "${incogito.baseurl}"
   </script>
   <script src="${incogito.baseurl}/js/incogito.js" type="text/javascript"><!-- space --></script>
-
+<script src="${incogito.baseurl}/js/session-overlay.js" type="text/javascript"><!-- space --></script>
   <tags:login-overlay script="false"/>
 
   <script type="text/javascript">
     var eventName = "${eventName}"
-    var sessionOverlay
-    var sessionOverlayBg
-    var sessionCloseButton
     $(document).ready(function() {
-      sessionOverlay = $("#session-overlay")
-      sessionOverlayBg = $("#session-overlay-bg")
-      sessionCloseButton = $("#session-close-button")
-
       $(document).keypress(function(e) {
         if (e.keyCode == 27) {
           if (sessionOverlay.css("display") != "none") {
@@ -53,7 +46,6 @@
       })
       $(".add-remove-button").bind("click", toggleAttendance)
       $(".session").bind("click", showSession)
-      sessionCloseButton.bind("click", closeSession)
 
       $("#results-below-tab").corner("round top")
       $(window).scroll(updateResultsBelowTab)
@@ -83,31 +75,51 @@
       return elem.offsetTop + (parent ? absoluteOffsetTop(parent) : 0)
     }
 
-    function showSession() {
-      sessionOverlay.show()
-      sessionOverlayBg.show()
+    // -----------------------------------------------------------------------
+    // Attendance
+    // -----------------------------------------------------------------------
 
-      var sessionId = $(this).parent().find(".session-id").text()
-      getSession(eventName, sessionId, function() {
-        // TODO: Show content
-      })
-    }
-
-    function closeSession() {
-      sessionOverlay.hide()
-      sessionOverlayBg.hide()
-    }
-
+    /* TODO: Spinner */
     function toggleAttendance() {
-      var sessionId = $(this).parent().find(".session-id").text()
-      console.log(sessionId)
-      var spinner = null
-      markAttendance(eventName, sessionId, curry(onAttendanceUpdated, spinner), showLogin)
+      var sessionDiv = $(this).parent().parent();
+      var sessionIdDiv = sessionDiv.find(".session-id")
+      var interestLevelDiv = sessionDiv.find(".session-interest-level");
+      var interestLevel = interestLevelDiv.text()
+      console.log(sessionIdDiv.text())
+      if (interestLevel == InterestLevel.NO_INTEREST) {
+        interestLevel = InterestLevel.INTEREST
+      }
+      else if (interestLevel == InterestLevel.INTEREST) {
+        interestLevel = InterestLevel.ATTEND
+      }
+      else if (interestLevel == InterestLevel.ATTEND) {
+        interestLevel = InterestLevel.NO_INTEREST
+      }
+      else {
+        interestLevel = InterestLevel.INTEREST
+      }
+      updateInterest(eventName, sessionIdDiv.text(), interestLevel, curry(onAttendanceUpdated, sessionDiv, interestLevel), showLogin)
       return false
     }
 
-    function onAttendanceUpdated(spinner) {
-      spinner.stop()
+    function onAttendanceUpdated(sessionDiv, interestLevel) {
+      sessionDiv.find(".session-interest-level").text(interestLevel)
+      var icon = sessionDiv.find(".add-remove-button img")
+
+      // no interest -> interest -> attend -> ..
+      // question    -> plus     -> minus
+      if(interestLevel == InterestLevel.NO_INTEREST) {
+        icon.attr("src", "${incogito.baseurl}/images/icons/question.png")
+        icon.attr("title", "Click to add to schedule as a candiate session")
+      }
+      else if(interestLevel == InterestLevel.INTEREST) {
+        icon.attr("src", "${incogito.baseurl}/images/icons/plus.png")
+        icon.attr("title", "Click to add to schedule as a session you're attending")
+      }
+      else {
+        icon.attr("src", "${incogito.baseurl}/images/icons/minus.png")
+        icon.attr("title", "Click to add to schedule as a session you're not attending")
+      }
     }
     </script>
     <script type="text/javascript">
@@ -278,9 +290,12 @@
             <div class="room">
               <h2>${room}</h2>
               <c:forEach var="session" items="${i:castToSessionList(i:mapGet(roomToSessionMap, room))}" varStatus="i">
-                <fmt:formatNumber var="hour" value="${session.timeslot.hour}" maxIntegerDigits="2" minIntegerDigits="2"/>
-                <fmt:formatNumber var="minute" value="${session.timeslot.minute}" maxIntegerDigits="2" minIntegerDigits="2"/>
+                <c:set var="interestLevel" value="${i:mapGetDefault(calendar.attendanceMap, session.id, 'NO_INTEREST')}"/>
+                <fmt:formatNumber var="hour" value="${session.start.hour}" maxIntegerDigits="2" minIntegerDigits="2"/>
+                <fmt:formatNumber var="minute" value="${session.start.minute}" maxIntegerDigits="2" minIntegerDigits="2"/>
                 <div class="session start${hour}${minute} duration60">
+                  <div class="session-id" style="display: none;">${session.id}</div>
+                  <div class="session-interest-level" style="display: none;">${interestLevel}</div>
                   <div class="session-header">
                     <div class="labels">
                       <c:forEach var="label" items="${session.labels}">
@@ -296,17 +311,24 @@
                             <img title="${session.level}" alt="${session.level}" src="${levelIcon}"/>
                           </c:if>
                         </c:when>
-                        <c:otherwise>
-                          X
-                        </c:otherwise>
+                        <c:otherwise>X</c:otherwise>
                       </c:choose>
                     </div>
                   </div>
                   <div class="session-body">
-                    <div class="session-id" style="display: none;">${session.id}</div>
                     <div class="title">${session.title}</div>
                     <div class="add-remove-button">
-                      <img src="${incogito.baseurl}/images/icons/plus.png" alt="Add to schedule"/>
+                      <c:choose>
+                        <c:when test="${interestLevel eq 'NO_INTEREST'}">
+                          <img src="${incogito.baseurl}/images/icons/question.png" title="Click to add to schedule as a candidate session" alt="Click to add to schedule as a candidate session"/>
+                        </c:when>
+                        <c:when test="${interestLevel eq 'INTEREST'}">
+                          <img src="${incogito.baseurl}/images/icons/plus.png" title="Click to add to schedule as a session you're attending" alt="Click to add to schedule as a session you're attending"/>
+                        </c:when>
+                        <c:otherwise>
+                          <img src="${incogito.baseurl}/images/icons/minus.png" title="Click to add to schedule as a session you're not attending" alt="Click to add to schedule as a session you're not attending"/>
+                        </c:otherwise>
+                      </c:choose>
                     </div>
                   </div>
                   <div class="session-footer">&amp;nbsp; <!-- space --></div>
@@ -320,22 +342,7 @@
       </c:forEach>
 </div>
 
-<!--
- |
- | Session Overlay
- |
- |-->
-
-<div style="display: none;" id="session-overlay-bg" class="overlay-bg"><!-- space --></div>
-<div style="display: none;" id="session-overlay" class="overlay">
-  <div class="overlay-content">
-    <div class="spinner">Loading</div>
-  </div>
-  <div class="overlay-close">
-    <a id="session-close-button" title="Close session">Close</a>
-  </div>
-</div>
-
+<tags:session-overlay/>
 <tags:login-overlay script="true"/>
 
 </body>

@@ -6,15 +6,33 @@ import fj.F3;
 import static fj.Function.curry;
 import fj.P;
 import fj.P2;
+import fj.P1;
+import fj.pre.Ord;
 import fj.data.List;
 import static fj.data.List.list;
 import fj.data.Stream;
+import fj.data.Set;
+import fj.data.TreeMap;
+import static fj.data.Set.empty;
 import static fj.data.Stream.stream;
 import no.java.incogito.Functions;
+import no.java.incogito.web.resources.XmlFunctions;
+import no.java.incogito.web.servlet.WebCalendar;
+import no.java.incogito.dto.SessionXml;
 import no.java.incogito.domain.CssConfiguration;
 import no.java.incogito.domain.Room;
+import no.java.incogito.domain.Session;
+import no.java.incogito.domain.Schedule;
+import no.java.incogito.domain.SessionId;
+import no.java.incogito.domain.UserSessionAssociation;
 
+import javax.ws.rs.core.UriBuilder;
 import java.text.NumberFormat;
+import java.util.Map;
+import java.util.Collection;
+import java.util.HashMap;
+
+import org.joda.time.LocalDate;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -29,6 +47,10 @@ public class WebFunctions {
         oneDigitFormat.setMaximumFractionDigits(1);
         oneDigitFormat.setMinimumFractionDigits(1);
     }
+
+    // -----------------------------------------------------------------------
+    // CSS
+    // -----------------------------------------------------------------------
 
     public static final F<CssConfiguration, F<List<Room>, List<String>>> generateCss = curry(new F2<CssConfiguration, List<Room>, List<String>>() {
         public List<String> f(CssConfiguration cssConfiguration, List<Room> roomList) {
@@ -52,12 +74,6 @@ public class WebFunctions {
         }
     });
 
-//    public static final F<CssConfiguration, F<Double, String>> hourToSessionCss = Function.curry(new F2<String, Double, String>() {
-//        public String f(String id, Double em) {
-//            return ".start" + id + " { top: " + oneDigitFormat.format(em) + "em; }";
-//        }
-//    });
-
     public static final F<CssConfiguration, F<P2<P2<String, String>, Integer>, String>> hourToSessionCss = curry(new F2<CssConfiguration, P2<P2<String, String>, Integer>, String>() {
         F<P2<String, String>, String> prepend = P2.tuple(Functions.prepend);
 
@@ -66,4 +82,91 @@ public class WebFunctions {
             return ".start" + prepend.f(p._1()) + " { top: " + oneDigitFormat.format(em) + "em; }";
         }
     });
+
+    // -----------------------------------------------------------------------
+    // Calendar
+    // -----------------------------------------------------------------------
+
+    public static final F<Schedule, WebCalendar> webCalendar = new F<Schedule, WebCalendar>() {
+        public WebCalendar f(Schedule schedule) {
+            Collection<Integer> timeslotHours = schedule.sessions.foldLeft(timeslotFold, Set.<Integer>empty(Ord.intOrd)).toList().reverse().toCollection();
+            List<String> rooms = schedule.sessions.foldLeft(roomFolder, Set.<String>empty(Ord.stringOrd)).toList().reverse();
+
+            Map<String, String> attendanceMap = new HashMap<String, String>();
+
+            for (P2<SessionId, UserSessionAssociation> sessionAssociation : schedule.sessionAssociations) {
+                attendanceMap.put(sessionAssociation._1().value, sessionAssociation._2().interestLevel.name());
+            }
+
+            Collection<Map<String, List<SessionXml>>> dayToRoomToSessionMap = getDayToRoomToSessionMap(schedule, rooms);
+
+            return new WebCalendar(rooms.toCollection(), timeslotHours, attendanceMap, dayToRoomToSessionMap);
+        }
+    };
+
+    public static Collection<Map<String, List<SessionXml>>> getDayToRoomToSessionMap(Schedule schedule, List<String> rooms) {
+        P1<UriBuilder> uriBuilder = P.p(UriBuilder.fromUri("http://poop"));
+
+        F<Session,SessionXml> sessionToXml = XmlFunctions.sessionToXml.f(uriBuilder);
+
+        List<Session> sessions = schedule.sessions.filter(new F<Session, Boolean>() {
+            public Boolean f(Session session) {
+                return session.timeslot.isSome() && session.room.isSome();
+            }
+        });
+
+        F2<Set<LocalDate>, Session, Set<LocalDate>> folder = new F2<Set<LocalDate>, Session, Set<LocalDate>>() {
+            public Set<LocalDate> f(Set<LocalDate> dateTimeSet, Session session) {
+                return dateTimeSet.insert(session.timeslot.some().getStart().toLocalDate());
+            }
+        };
+
+        Ord<LocalDate> ord = Ord.comparableOrd();
+        Set<LocalDate> days = sessions.foldLeft(folder, empty(ord));
+
+        final List<SessionXml> emptyList = List.nil();
+        List<Map<String, List<SessionXml>>> list = List.nil();
+
+        for (final LocalDate day : days) {
+            F<Session, Boolean> dayFilter = new F<Session, Boolean>() {
+                public Boolean f(Session session) {
+                    return session.timeslot.some().getStart().toLocalDate().equals(day);
+                }
+            };
+
+            TreeMap<String, List<SessionXml>> map = rooms.foldLeft(new F2<TreeMap<String, List<SessionXml>>, String, TreeMap<String, List<SessionXml>>>() {
+                public TreeMap<String, List<SessionXml>> f(TreeMap<String, List<SessionXml>> stringListTreeMap, String room) {
+                    return stringListTreeMap.set(room, emptyList);
+                }
+            }, TreeMap.<String, List<SessionXml>>empty(Ord.stringOrd));
+
+            for (SessionXml session : sessions.filter(dayFilter).map(sessionToXml)) {
+                map = map.set(session.room, map.get(session.room).some().cons(session));
+            }
+
+            list = list.cons(map.toMutableMap());
+        }
+
+        return list.toCollection();
+    }
+
+    private static final F2<Set<Integer>, Session, Set<Integer>> timeslotFold = new F2<Set<Integer>, Session, Set<Integer>>() {
+        public Set<Integer> f(Set<Integer> hours, Session session) {
+            if (session.timeslot.isNone()) {
+                return hours;
+            }
+
+            return hours.insert(session.timeslot.some().getStart().getHourOfDay());
+        }
+    };
+
+    private static final F2<Set<String>, Session, Set<String>> roomFolder = new F2<Set<String>, Session, Set<String>>() {
+        public Set<String> f(Set<String> hours, Session session) {
+            if (session.room.isNone()) {
+                return hours;
+            }
+
+            return hours.insert(session.room.some());
+        }
+    };
 }

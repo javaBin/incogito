@@ -7,6 +7,7 @@ import fj.data.Java;
 import fj.data.List;
 import fj.data.Option;
 import static fj.data.Option.fromNull;
+import static fj.data.Option.some;
 import fj.data.TreeMap;
 import fj.pre.Ord;
 import no.java.incogito.domain.SessionId;
@@ -156,10 +157,10 @@ public class UserClient {
             Option<SessionRating> rating = map.get(SCHEMA_RATING).bind(Option.fromString()).map(sessionRatingFromString);
             Option<String> ratingComment = map.get(SCHEMA_RATING_COMMENT).bind(Option.fromString());
 
-            Option<InterestLevel> interestLevel = map.get(SCHEMA_INTEREST_LEVEL).
-                    bind(InterestLevel.valueOf_);
+            InterestLevel interestLevel = map.get(SCHEMA_INTEREST_LEVEL).
+                    bind(InterestLevel.valueOf_).orSome(InterestLevel.NO_INTEREST);
 
-            return sessionId.bind(interestLevel, UserSessionAssociation.constructor_).
+            return sessionId.bind(some(interestLevel), UserSessionAssociation.constructor_).
                     map(UserSessionAssociation.rating_.f(rating)).
                     map(UserSessionAssociation.ratingComment_.f(ratingComment));
         }

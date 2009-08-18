@@ -4,7 +4,6 @@ import fj.data.Option;
 import static no.java.incogito.dto.DtoUtil.toList;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,12 +17,12 @@ public class SessionXml {
     public String selfUri;
     public String id;
     public String title;
-    @XmlElement(name = "abstract")
     public String abstractHtml;
     public String bodyHtml;
     public String level;
     public String room;
-    public XMLGregorianCalendar timeslot;
+    public XMLGregorianCalendar start;
+    public XMLGregorianCalendar end;
     public List<SpeakerXml> speakers = new ArrayList<SpeakerXml>();
     public List<LabelXml> labels = new ArrayList<LabelXml>();
 
@@ -31,8 +30,8 @@ public class SessionXml {
     }
 
     public SessionXml(String selfUri, String id, String title, Option<String> abstractHtml, Option<String> bodyHtml,
-                      Option<String> level, Option<String> room, Option<XMLGregorianCalendar> timeslot,
-                      Iterable<SpeakerXml> speakers, Iterable<LabelXml> labels) {
+                      Option<String> level, Option<String> room, Option<XMLGregorianCalendar> start,
+                      Option<XMLGregorianCalendar> end, Iterable<SpeakerXml> speakers, Iterable<LabelXml> labels) {
         this.selfUri = selfUri;
         this.id = id;
         this.title = title;
@@ -40,7 +39,8 @@ public class SessionXml {
         this.bodyHtml = bodyHtml.orSome((String) null);
         this.level = level.orSome((String) null);
         this.room = room.orSome((String) null);
-        this.timeslot = timeslot.orSome((XMLGregorianCalendar) null);
+        this.start = start.orSome((XMLGregorianCalendar) null);
+        this.end = end.orSome((XMLGregorianCalendar) null);
         this.speakers = toList(speakers);
         this.labels = toList(labels);
     }
@@ -69,8 +69,12 @@ public class SessionXml {
         return room;
     }
 
-    public XMLGregorianCalendar getTimeslot() {
-        return timeslot;
+    public XMLGregorianCalendar getStart() {
+        return start;
+    }
+
+    public XMLGregorianCalendar getEnd() {
+        return end;
     }
 
     public List<SpeakerXml> getSpeakers() {
