@@ -208,7 +208,7 @@
     <module>incogito-web</module>
   </modules>
   <properties>
-    <version.ems>1.1.5</version.ems>
+    <version.ems>1.1.6</version.ems>
     <version.jersey>1.0.3</version.jersey>
     <version.jetty>6.1.14</version.jetty>
     <version.slf4j>1.5.8</version.slf4j>
