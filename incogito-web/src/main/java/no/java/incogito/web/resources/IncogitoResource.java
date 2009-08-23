@@ -18,21 +18,22 @@ import no.java.incogito.application.OperationResult;
 import no.java.incogito.application.OperationResult.NotFoundOperationResult;
 import no.java.incogito.application.OperationResult.OkOperationResult;
 import no.java.incogito.domain.Event;
-import no.java.incogito.domain.Room;
-import no.java.incogito.domain.Session;
-import no.java.incogito.domain.Level.LevelId;
-import no.java.incogito.domain.SessionId;
-import no.java.incogito.domain.User;
+import no.java.incogito.domain.IncogitoUri;
+import no.java.incogito.domain.IncogitoUri.IncogitoEventsUri.IncogitoEventUri.IncogitoSessionsUri;
 import no.java.incogito.domain.Label;
 import no.java.incogito.domain.Level;
+import no.java.incogito.domain.Level.LevelId;
+import no.java.incogito.domain.Room;
+import no.java.incogito.domain.Session;
+import no.java.incogito.domain.SessionId;
+import no.java.incogito.domain.User;
 import no.java.incogito.domain.UserSessionAssociation.InterestLevel;
 import static no.java.incogito.dto.EventListXml.eventListXml;
 import no.java.incogito.dto.EventXml;
+import no.java.incogito.dto.IncogitoXml;
 import no.java.incogito.dto.SessionListXml;
 import no.java.incogito.dto.SessionXml;
-import no.java.incogito.dto.IncogitoXml;
 import no.java.incogito.web.WebFunctions;
-import static no.java.incogito.web.resources.XmlFunctions.eventListToXml;
 import static no.java.incogito.web.resources.XmlFunctions.eventToXml;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -52,7 +53,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import javax.ws.rs.core.SecurityContext;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import java.io.File;
 
@@ -84,7 +84,9 @@ public class IncogitoResource {
 
     @Path("/events")
     @GET
-    public Response getEvents() {
+    public Response getEvents(@Context UriInfo uriInfo) {
+        F<List<Event>, List<EventXml>> eventListToXml = XmlFunctions.eventListToXml.f(new IncogitoUri(uriInfo.getRequestUriBuilder()));
+
         return toJsr311(incogito.getEvents().
                 ok().map(compose(eventListXml, compose(Java.<EventXml>List_ArrayList(), eventListToXml))));
     }
@@ -175,22 +177,19 @@ public class IncogitoResource {
 
     @Path("/events/{eventName}")
     @GET
-    public Response getEvent(@PathParam("eventName") final String eventName) {
-        return toJsr311(incogito.getEventByName(eventName).ok().map(eventToXml));
+    public Response getEvent(@Context final UriInfo uriInfo,
+                             @PathParam("eventName") final String eventName) {
+        return toJsr311(incogito.getEventByName(eventName).ok().map(eventToXml.f(new IncogitoUri(uriInfo.getRequestUriBuilder()).events())));
     }
 
     @Path("/events/{eventName}/sessions")
     @GET
     public Response getSessionsForEvent(@Context final UriInfo uriInfo,
                                         @PathParam("eventName") final String eventName) {
-        P1<UriBuilder> uriBuilder = new P1<UriBuilder>() {
-            public UriBuilder _1() {
-                return uriInfo.getRequestUriBuilder();
-            }
-        };
+        IncogitoSessionsUri uri = new IncogitoUri(uriInfo.getRequestUriBuilder()).events().eventUri(eventName).sessions();
 
         F<List<Session>, List<SessionXml>> sessionToXmlList =
-                List.<Session, SessionXml>map_().f(XmlFunctions.sessionToXml.f(uriBuilder));
+                List.<Session, SessionXml>map_().f(XmlFunctions.sessionToXml.f(uri));
 
         return toJsr311(incogito.getSessions(eventName).
                 ok().map(compose(SessionListXml.sessionListXml, sessionToXmlList)));
@@ -201,8 +200,10 @@ public class IncogitoResource {
     public Response getSessionForEvent(@Context final UriInfo uriInfo,
                                        @PathParam("eventName") final String eventName,
                                        @PathParam("sessionId") final String sessionId) {
+        IncogitoSessionsUri uri = new IncogitoUri(uriInfo.getRequestUriBuilder()).events().eventUri(eventName).sessions();
+
         // TODO: Consider replacing this with the configured hostname and base url
-        F<Session, SessionXml> sessionToXml = XmlFunctions.sessionToXml.f(uriBuilderClone.f(uriInfo.getRequestUriBuilder()));
+        F<Session, SessionXml> sessionToXml = XmlFunctions.sessionToXml.f(uri);
 
         return toJsr311(incogito.getSession(eventName, new SessionId(sessionId)).
                 ok().map(sessionToXml));
@@ -252,10 +253,10 @@ public class IncogitoResource {
                                        @Context final SecurityContext securityContext,
                                        @PathParam("eventName") final String eventName,
                                        @PathParam("userName") final String userName) {
-        UriBuilder uriBuilder = uriInfo.getBaseUriBuilder().segment("events", eventName, "sessions");
+        IncogitoSessionsUri uri = new IncogitoUri(uriInfo.getRequestUriBuilder()).events().eventUri(eventName).sessions();
 
         return toJsr311(incogito.getSchedule(eventName, userName).ok().
-                map(XmlFunctions.scheduleToXml.f(uriBuilderClone.f(uriBuilder))));
+                map(XmlFunctions.scheduleToXml.f(uri)));
     }
 
     // -----------------------------------------------------------------------
@@ -305,17 +306,6 @@ public class IncogitoResource {
                 add(OkOperationResult.class, this.<OperationResult<T>>ok()).
                 match(result);
     }
-
-    private F<UriBuilder, P1<UriBuilder>> uriBuilderClone = new F<UriBuilder, P1<UriBuilder>>() {
-        public P1<UriBuilder> f(final UriBuilder uriBuilder) {
-            return new P1<UriBuilder>() {
-                @Override
-                public UriBuilder _1() {
-                    return uriBuilder.clone();
-                }
-            };
-        }
-    };
 
     private F<SecurityContext, Option<String>> getUserName = new F<SecurityContext, Option<String>>() {
         public Option<String> f(SecurityContext securityContext) {

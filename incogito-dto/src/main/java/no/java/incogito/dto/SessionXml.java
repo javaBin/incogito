@@ -31,7 +31,7 @@ public class SessionXml {
     public String title;
     public String abstractHtml;
     public String bodyHtml;
-    public String level;
+    public LevelXml level;
     public String room;
     public XMLGregorianCalendar start;
     public XMLGregorianCalendar end;
@@ -42,7 +42,7 @@ public class SessionXml {
     }
 
     public SessionXml(String selfUri, FormatXml format, String id, String title, Option<String> abstractHtml,
-                      Option<String> bodyHtml, Option<String> level, Option<String> room, Option<XMLGregorianCalendar> start,
+                      Option<String> bodyHtml, Option<LevelXml> level, Option<String> room, Option<XMLGregorianCalendar> start,
                       Option<XMLGregorianCalendar> end, Iterable<SpeakerXml> speakers, Iterable<LabelXml> labels) {
         this.selfUri = selfUri;
         this.id = id;
@@ -50,7 +50,7 @@ public class SessionXml {
         this.title = title;
         this.abstractHtml = abstractHtml.orSome((String) null);
         this.bodyHtml = bodyHtml.orSome((String) null);
-        this.level = level.orSome((String) null);
+        this.level = level.orSome((LevelXml) null);
         this.room = room.orSome((String) null);
         this.start = start.orSome((XMLGregorianCalendar) null);
         this.end = end.orSome((XMLGregorianCalendar) null);
@@ -78,7 +78,7 @@ public class SessionXml {
         return bodyHtml;
     }
 
-    public String getLevel() {
+    public LevelXml getLevel() {
         return level;
     }
 

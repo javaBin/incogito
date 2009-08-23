@@ -2,40 +2,37 @@ package no.java.incogito.web;
 
 import fj.F;
 import fj.F2;
-import fj.F3;
 import static fj.Function.curry;
 import fj.P;
 import fj.P2;
-import fj.P1;
-import fj.pre.Ord;
 import fj.data.List;
 import static fj.data.List.list;
-import fj.data.Stream;
 import fj.data.Set;
-import fj.data.TreeMap;
 import static fj.data.Set.empty;
+import fj.data.Stream;
 import static fj.data.Stream.stream;
+import fj.data.TreeMap;
+import fj.pre.Ord;
 import no.java.incogito.Functions;
 import no.java.incogito.application.IncogitoConfiguration;
-import no.java.incogito.web.resources.XmlFunctions;
-import no.java.incogito.web.servlet.WebCalendar;
-import no.java.incogito.dto.SessionXml;
 import no.java.incogito.domain.CssConfiguration;
+import no.java.incogito.domain.Event;
+import no.java.incogito.domain.IncogitoUri.IncogitoEventsUri.IncogitoEventUri.IncogitoSessionsUri;
+import no.java.incogito.domain.Level;
 import no.java.incogito.domain.Room;
-import no.java.incogito.domain.Session;
 import no.java.incogito.domain.Schedule;
+import no.java.incogito.domain.Session;
 import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.UserSessionAssociation;
-import no.java.incogito.domain.Event;
-import no.java.incogito.domain.Level;
+import no.java.incogito.dto.SessionXml;
+import no.java.incogito.web.resources.XmlFunctions;
+import no.java.incogito.web.servlet.WebCalendar;
+import org.joda.time.LocalDate;
 
-import javax.ws.rs.core.UriBuilder;
 import java.text.NumberFormat;
-import java.util.Map;
 import java.util.Collection;
 import java.util.HashMap;
-
-import org.joda.time.LocalDate;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -116,8 +113,8 @@ public class WebFunctions {
     // Calendar
     // -----------------------------------------------------------------------
 
-    public static final F<Schedule, WebCalendar> webCalendar = new F<Schedule, WebCalendar>() {
-        public WebCalendar f(Schedule schedule) {
+    public static final F<IncogitoSessionsUri, F<Schedule, WebCalendar>> webCalendar = curry(new F2<IncogitoSessionsUri, Schedule, WebCalendar>() {
+        public WebCalendar f(IncogitoSessionsUri sessionsUri, Schedule schedule) {
             Collection<Integer> timeslotHours = schedule.sessions.foldLeft(timeslotFold, Set.<Integer>empty(Ord.intOrd)).toList().reverse().toCollection();
             List<String> rooms = schedule.sessions.foldLeft(roomFolder, Set.<String>empty(Ord.stringOrd)).toList().reverse();
 
@@ -127,16 +124,14 @@ public class WebFunctions {
                 attendanceMap.put(sessionAssociation._1().value, sessionAssociation._2().interestLevel.name());
             }
 
-            Collection<Map<String, List<SessionXml>>> dayToRoomToSessionMap = getDayToRoomToSessionMap(schedule, rooms);
+            Collection<Map<String, List<SessionXml>>> dayToRoomToSessionMap = getDayToRoomToSessionMap(sessionsUri, schedule, rooms);
 
             return new WebCalendar(rooms.toCollection(), timeslotHours, attendanceMap, dayToRoomToSessionMap);
         }
-    };
+    });
 
-    public static Collection<Map<String, List<SessionXml>>> getDayToRoomToSessionMap(Schedule schedule, List<String> rooms) {
-        P1<UriBuilder> uriBuilder = P.p(UriBuilder.fromUri("http://poop"));
-
-        F<Session,SessionXml> sessionToXml = XmlFunctions.sessionToXml.f(uriBuilder);
+    public static Collection<Map<String, List<SessionXml>>> getDayToRoomToSessionMap(IncogitoSessionsUri sessionsUri, Schedule schedule, List<String> rooms) {
+        F<Session,SessionXml> sessionToXml = XmlFunctions.sessionToXml.f(sessionsUri);
 
         List<Session> sessions = schedule.sessions.filter(new F<Session, Boolean>() {
             public Boolean f(Session session) {

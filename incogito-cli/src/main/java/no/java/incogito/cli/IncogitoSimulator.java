@@ -48,15 +48,15 @@ public class IncogitoSimulator {
         eventList = baseurl.path("events").get(EventListXml.class);
 
         for (EventXml eventXml : eventList.getEvents()) {
-            System.out.println("eventXml.getName() = " + eventXml.getName());
+            System.out.println("eventXml.getName() = " + eventXml.name);
 
-            SessionListXml xml = baseurl.path("events").path(eventXml.getName()).path("sessions").
+            SessionListXml xml = baseurl.path("events").path(eventXml.name).path("sessions").
                     get(SessionListXml.class);
 
             List<SessionXml> list = iterableList(xml.getSessions()).
                     foldLeft(flip(List.<SessionXml>cons()), List.<SessionXml>nil());
 
-            events = events.set(eventXml.getName(), list.toArray(SessionXml[].class));
+            events = events.set(eventXml.name, list.toArray(SessionXml[].class));
         }
 
         ExecutorService threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());

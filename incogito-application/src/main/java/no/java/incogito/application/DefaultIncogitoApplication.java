@@ -101,13 +101,13 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
             TreeMap<String, Label> labels = configuration.getLabels(event.id);
             logger.info(" Labels: (" + labels.size() + ")");
             for (P2<String, Label> label : labels) {
-                logger.info("  " + label._2().displayName + ", icon: " + label._2().iconFile.getName());
+                logger.info("  " + label._2().displayName + " (" + label._2().id + "), icon: " + label._2().iconFile.getName());
             }
 
             TreeMap<LevelId, Level> levels = configuration.getLevels(event.id);
             logger.info(" Levels: (" + levels.size() + ")");
             for (P2<LevelId, Level> level : levels) {
-                logger.info("  " + level._2().displayName + ", icon: " + level._2().iconFile.getName());
+                logger.info("  " + level._2().displayName + " (" +  level._2().id + "), icon: " + level._2().iconFile.getName());
             }
         }
     }

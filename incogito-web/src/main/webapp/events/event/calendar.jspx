@@ -5,7 +5,6 @@
       xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
       xmlns:fn="http://java.sun.com/jsp/jstl/functions"
       xmlns:i="http://taglib.java.no/incogito"
-      xmlns:icon="http://taglib.java.no/incogito-icon"
       xmlns:security="http://www.springframework.org/security/tags"
       xmlns:tags="urn:jsptagdir:/WEB-INF/tags/incogito">
 <jsp:directive.page pageEncoding="utf-8" contentType="text/html;charset=utf-8"/>
@@ -17,19 +16,21 @@
 <c:set var="event" value="${i:getEventByName(app, eventName)}"/>
 
 <head>
+  <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/incogito.css"/>
   <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/calendar.css"/>
   <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/session.css"/>
   <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/rest/events/${eventName}/calendar.css"/>
+  <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/rest/events/${eventName}/session.css"/>
   <script src="${incogito.baseurl}/js/jquery-1.3.2.js" type="text/javascript"><!-- space --></script>
   <script src="${incogito.baseurl}/js/jquery.json-1.0.js" type="text/javascript"><!-- space --></script>
   <script src="${incogito.baseurl}/js/jquery.corner.js" type="text/javascript"><!-- space --></script>
   <script src="${incogito.baseurl}/js/jquery.form-2.28.js" type="text/javascript"><!-- space --></script>
-  <script src="${incogito.baseurl}/js/functional.min.js" type="text/javascript"><!-- space --></script>
+  <script src="${incogito.baseurl}/js/functional-1.0.2-min.js" type="text/javascript"><!-- space --></script>
+  <script src="${incogito.baseurl}/js/incogito.js" type="text/javascript"><!-- space --></script>
+  <script src="${incogito.baseurl}/js/session-overlay.js" type="text/javascript"><!-- space --></script>
   <script type="text/javascript">
     var baseurl = "${incogito.baseurl}"
   </script>
-  <script src="${incogito.baseurl}/js/incogito.js" type="text/javascript"><!-- space --></script>
-<script src="${incogito.baseurl}/js/session-overlay.js" type="text/javascript"><!-- space --></script>
   <tags:login-overlay script="false"/>
 
   <script type="text/javascript">
@@ -208,18 +209,16 @@
 			</ul>
 		</div>
 		<div id="complexity">
-			<div> Complexity Legend </div>
-			<ul class="nav lev">
-				<li>1</li>
-				<li>2</li>
-				<li>3</li>
-				<li>4</li>
-				<li>5</li>
-			</ul>
-			<ul class="nav expl">
-				<li><span>Novice</span></li>
-				<li><span>Expert</span></li>
-			</ul>
+			<div>Complexity Legend</div>
+			<div class="nav levels">
+        <c:forEach var="level" items="${event.levels}" varStatus="i">
+          <img src="${level.iconUrl}" alt="${level.displayName}"/>
+        </c:forEach>
+			</div>
+			<div class="nav explanation">
+				<span>Novice</span>
+				<span>Expert</span>
+			</div>
 		</div>
 	</div> <!-- legends ends -->
 	<div id="menu">
@@ -231,60 +230,60 @@
 	</div>
 </div> <!-- hd ends -->
 <div id="calendar">
-      <c:forEach var="roomToSessionMap" items="${calendar.dayToRoomToSessionMap}" varStatus="i">
-        <div class="day day${i.index}">
-<div class="times">
-    <div class="hour">09:00</div>
-    <div class="quarter">09:15</div>
-    <div class="quarter">09:30</div>
-    <div class="quarter">09:45</div>
-    <div class="hour">10:00</div>
-    <div class="quarter">10:15</div>
-    <div class="quarter">10:30</div>
-    <div class="quarter">10:45</div>
-    <div class="hour">11:00</div>
-    <div class="quarter">11:15</div>
-    <div class="quarter">11:30</div>
-    <div class="quarter">11:45</div>
-    <div class="hour">12:00</div>    
-    <div class="quarter">12:15</div>
-    <div class="quarter">12:30</div>
-    <div class="quarter">12:45</div>
-    <div class="hour">13:00</div>
-    <div class="quarter">13:15</div>
-    <div class="quarter">13:30</div>
-    <div class="quarter">13:45</div>
-    <div class="hour">14:00</div>
-    <div class="quarter">14:15</div>
-    <div class="quarter">14:30</div>
-    <div class="quarter">14:45</div>
-    <div class="hour">15:00</div>
-    <div class="quarter">15:15</div>
-    <div class="quarter">15:30</div>
-    <div class="quarter">15:45</div>
-    <div class="hour">16:00</div>
-    <div class="quarter">16:15</div>
-    <div class="quarter">16:30</div>
-    <div class="quarter">16:45</div>
-    <div class="hour">17:00</div>
-    <div class="quarter">17:15</div>
-    <div class="quarter">17:30</div>
-    <div class="quarter">17:45</div>
-    <div class="hour">18:00</div>
-    <div class="quarter">18:15</div>
-    <div class="quarter">18:30</div>
-    <div class="quarter">18:45</div>
-    <div class="hour">19:00</div>
-    <div class="quarter">19:15</div>
-    <div class="quarter">19:30</div>
-    <div class="quarter">19:45</div>
-    <div class="hour">20:00</div>
-    <div class="quarter">20:15</div>
-    <div class="quarter">20:30</div>
-    <div class="quarter">20:45</div>
-    <div class="hour">21:00</div>
-</div>
-       <div class="rooms">
+  <c:forEach var="roomToSessionMap" items="${calendar.dayToRoomToSessionMap}" varStatus="i">
+    <div class="day day${i.index}">
+      <div class="times">
+        <div class="hour">09:00</div>
+        <div class="quarter">09:15</div>
+        <div class="quarter">09:30</div>
+        <div class="quarter">09:45</div>
+        <div class="hour">10:00</div>
+        <div class="quarter">10:15</div>
+        <div class="quarter">10:30</div>
+        <div class="quarter">10:45</div>
+        <div class="hour">11:00</div>
+        <div class="quarter">11:15</div>
+        <div class="quarter">11:30</div>
+        <div class="quarter">11:45</div>
+        <div class="hour">12:00</div>
+        <div class="quarter">12:15</div>
+        <div class="quarter">12:30</div>
+        <div class="quarter">12:45</div>
+        <div class="hour">13:00</div>
+        <div class="quarter">13:15</div>
+        <div class="quarter">13:30</div>
+        <div class="quarter">13:45</div>
+        <div class="hour">14:00</div>
+        <div class="quarter">14:15</div>
+        <div class="quarter">14:30</div>
+        <div class="quarter">14:45</div>
+        <div class="hour">15:00</div>
+        <div class="quarter">15:15</div>
+        <div class="quarter">15:30</div>
+        <div class="quarter">15:45</div>
+        <div class="hour">16:00</div>
+        <div class="quarter">16:15</div>
+        <div class="quarter">16:30</div>
+        <div class="quarter">16:45</div>
+        <div class="hour">17:00</div>
+        <div class="quarter">17:15</div>
+        <div class="quarter">17:30</div>
+        <div class="quarter">17:45</div>
+        <div class="hour">18:00</div>
+        <div class="quarter">18:15</div>
+        <div class="quarter">18:30</div>
+        <div class="quarter">18:45</div>
+        <div class="hour">19:00</div>
+        <div class="quarter">19:15</div>
+        <div class="quarter">19:30</div>
+        <div class="quarter">19:45</div>
+        <div class="hour">20:00</div>
+        <div class="quarter">20:15</div>
+        <div class="quarter">20:30</div>
+        <div class="quarter">20:45</div>
+        <div class="hour">21:00</div>
+      </div>
+      <div class="rooms">
         <c:forEach var="room" items="${calendar.rooms}" varStatus="i">
             <div class="room">
               <h2>${room}</h2>
@@ -298,17 +297,13 @@
                   <div class="session-header">
                     <div class="labels">
                       <c:forEach var="label" items="${session.labels}">
-                        <c:set var="labelIcon" value="${icon:label(app, event, label)}"/>
-                        <img class="label" title="${label.displayName}" alt="${label.displayName}" src="${labelIcon}"/>
+                        <img class="label" title="${label.displayName}" alt="${label.displayName}" src="${label.  iconUrl}"/>
                       </c:forEach>
                     </div>
                     <div class="level">
                       <c:choose>
                         <c:when test="${not (session.level eq null)}">
-                          <c:set var="levelIcon" value="${icon:level(app, event, session.level)}"/>
-                          <c:if test="${not(levelIcon eq null)}">
-                            <img title="${session.level}" alt="${session.level}" src="${levelIcon}"/>
-                          </c:if>
+                          <img title="${session.level.displayName}" alt="${session.level.displayName}" src="${session.level.iconUrl}"/>
                         </c:when>
                         <c:otherwise>X</c:otherwise>
                       </c:choose>
@@ -337,8 +332,8 @@
           </c:forEach>
         </div>
       <div class="cb"><!--space-->.</div>
-   </div>
-      </c:forEach>
+    </div>
+  </c:forEach>
 </div>
 
 <tags:session-overlay/>

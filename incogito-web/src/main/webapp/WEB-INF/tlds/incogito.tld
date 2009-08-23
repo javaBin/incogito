@@ -21,6 +21,11 @@
     <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
     <function-signature>java.lang.Object mapGet(java.util.Map,java.lang.Object)</function-signature>
   </function>
+  <function>
+    <name>treeMapGet</name>
+    <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
+    <function-signature>java.lang.Object treeMapGet(fj.data.TreeMap,java.lang.Object)</function-signature>
+  </function>
 
   <function>
     <name>mapGetDefault</name>
@@ -46,14 +51,9 @@
   </function>
 
   <function>
-    <name>getEventXmlByName</name>
-    <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
-    <function-signature>no.java.incogito.dto.EventXml getEventXmlByName(no.java.incogito.application.IncogitoApplication,java.lang.String)</function-signature>
-  </function>
-  <function>
     <name>getEventByName</name>
     <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
-    <function-signature>no.java.incogito.domain.Event getEventByName(no.java.incogito.application.IncogitoApplication,java.lang.String)</function-signature>
+    <function-signature>no.java.incogito.dto.EventXml getEventByName(no.java.incogito.application.IncogitoApplication,java.lang.String)</function-signature>
   </function>
   <function>
     <name>getEventList</name>
@@ -63,8 +63,7 @@
   <function>
     <name>getSessionByTitle</name>
     <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
-    <function-signature>no.java.incogito.dto.SessionXml
-      getSessionByTitle(no.java.incogito.application.IncogitoApplication,java.lang.String,java.lang.String)</function-signature>
+    <function-signature>no.java.incogito.dto.SessionXml getSessionByTitle(no.java.incogito.application.IncogitoApplication,java.lang.String,java.lang.String)</function-signature>
   </function>
   <function>
     <name>getSessions</name>

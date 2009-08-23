@@ -10,6 +10,11 @@
   <name>Incogito 2009 :: Domain</name>
   <dependencies>
     <dependency>
+      <groupId>javax.ws.rs</groupId>
+      <artifactId>jsr311-api</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
       <groupId>org.codehaus.mojo.unix</groupId>
       <artifactId>unix-common</artifactId>
       <version>1.0-alpha-4</version>

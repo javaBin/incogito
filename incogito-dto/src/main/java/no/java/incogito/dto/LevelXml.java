@@ -7,17 +7,17 @@ import javax.xml.bind.annotation.XmlType;
  * @version $Id$
  */
 @XmlType(name = "label")
-public class LabelXml {
+public class LevelXml {
     public String id;
 
     public String displayName;
 
     public String iconUrl;
 
-    public LabelXml() {
+    public LevelXml() {
     }
 
-    public LabelXml(String id, String displayName, String iconUrl) {
+    public LevelXml(String id, String displayName, String iconUrl) {
         this.id = id;
         this.displayName = displayName;
         this.iconUrl = iconUrl;

@@ -2,7 +2,6 @@ div#calendar {
   width: 78em;
 }
 
-
 .times {
     margin-top: 2.5em;
     width: 3em;
@@ -17,7 +16,6 @@ div#calendar {
     height: 2.5em;
     overflow: hidden;
 }
-
 
 .rooms {
     width:73em;
@@ -245,6 +243,7 @@ td#login-submit * {
 	padding:1em 0.8em 1em 0.8em;
 }
 
+/* Complexity */
 #legends #complexity {
 	width: 10em;
 	height: 4em;
@@ -260,28 +259,28 @@ td#login-submit * {
 	line-height: 1em;
 }
 
-#complexity .lev {
+#complexity .levels {
 	height: 1.5em;
-	width: 5em;
-	padding-left:2.5em;
+	width: 100%;
 }
 
-#complexity .lev li {
-	padding-top: 0.35em;
+#complexity .levels img {
+	margin-right: 5%;
+}
+
+#complexity .levels img:last-child {
+	margin-right: 0;
+}
+
+#complexity .explanation {
 	height: 1em;
-	width: 1em;
+  text-align: center;
 }
 
-#complexity .expl {
-	height: 1em;
-}
-#complexity .expl li {
-	width: 5em;
-	text-align: center;
-}
-
-#complexity .expl li span {
+#complexity .explanation span {
 	font-size: 0.75em;
+  width: 50%;
+  float: left;
 }
 
 /* navigation */

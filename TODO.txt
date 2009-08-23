@@ -14,3 +14,5 @@ o Move all Incogito JavaScript functions to a Incogito object
 o Concider using a trick to get spring security to set http response codes on login failures
  o http://dima-vp.livejournal.com/573.html
 o Make the JavaScript library more REST-ful
+o Remove icon tag library.
+  - All JSPs should use the *Xml objects which all should have the necessary icon URLs.
