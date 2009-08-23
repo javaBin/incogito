@@ -159,6 +159,16 @@
       </snapshots>
     </repository>
     <repository>
+      <id>javabin-third-party</id>
+      <url>http://smia.java.no/maven/repo/third-party</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
       <id>fj-repository</id>
       <url>http://functionaljava.googlecode.com/svn/maven</url>
       <releases>
