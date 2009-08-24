@@ -13,7 +13,7 @@ nbactions.xml
 nbproject
 private
 target
-voldemort-*.tar.gz
+*.tar.gz
 
 incogito-application/src/test/resources/cluster-it/node-it/etc/
 jmeter/*.*
