@@ -26,18 +26,12 @@
 </head>
 
 <body>
-<!--
-<ul>
-  <li><a href="${incogito.baseurl}/events">Back to event list</a></li>
-  <li><a href="${incogito.baseurl}/events/${eventName}">Back to ${eventName}</a></li>
-</ul>
-<h2>${eventName}</h2>
--->
 <div id="main-content">
   <h1>All Sessions</h1>
-  <ul class="session-list outside">
+
+  <ul>
     <c:forEach var="session" items="${i:getSessions(app, eventName)}">
-      <li><a href="${incogito.baseurl}/events/${eventName}/sessions/${session.title}">${session.title}</a></li>
+      <li class="session-list"><a href="${incogito.baseurl}/events/${eventName}/sessions/${session.title}">${session.title}</a></li>
     </c:forEach>
   </ul>
 </div>

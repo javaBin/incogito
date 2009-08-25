@@ -1,21 +1,86 @@
-body {
-  font-family: arial, sans-serif;
+/* CSS-reset start
+
+http://www.siolon.com/blog/browser-reset-css/
+
+<span class="searchterm2">Reset</span> Default <span class="searchterm1">Browser</span> Styles
+- Place first in the listing of external style sheets for cascading.
+- Be sure to explicitly set margin/padding styles.
+- Styles are not reset that have to do with display (block, inline) are not <span class="searchterm2">reset</span>.
+
+By: Chris Poteet & various influences
+
+*/
+
+* {
+  vertical-align: baseline;
+  font-family: inherit;
+  font-style: inherit;
+  font-size: 100%;
+  border: none;
+  padding: 0;
   margin: 0;
 }
 
+body {
+  padding: 5px;
+}
+
+h1, h2, h3, h4, h5, h6, p, pre, blockquote, form, ul, ol, dl {
+  margin: 20px 0;
+}
+
+li, dd, blockquote {
+  margin-left: 40px;
+}
+
+dt {
+  font-weight: bold;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* CSS-reset stop */
+
+
+/* General preferences */
+
 h1 {
-  font-size: 1.3em;
+  font-size: 140%;
+  font-weight: normal;
 }
 
-h2 {
-  font-size: 1.1em;
-  margin-top: 1.1em;
-  margin-bottom: 1.1em;
+body {
+  font-family: arial, sans-serif;
+  font-size: 90%;
+  font-weight: bold;
 }
 
-/*
- Wiki formatting
-*/
+a img {
+  border: 0px solid;
+}
+
+a {
+  text-decoration: none;
+  color: #333333;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:visited {
+  color: #7a7a7a;
+}
+
+body {
+  margin: 0;
+  color: #333333;
+}
+
+/* Wiki formatting */
 
 .heading-1 {
   font-weight: bold;
@@ -34,11 +99,56 @@ h2 {
   display: none;
 }
 
-#main-content {
-  margin-left: 13em;
-  font-size: 0.9em;
+/* Head tags */
+
+.head-title {
+  position: absolute;
+  top: 30px;
+  left: 360px;
 }
 
-ul.outside {
-  margin-left: -2.8em;
+.head-description {
+  position: absolute;
+  top: 95px;
+  left: 360px;
+  font-size: 80%;
+  color: #7a7a7a;
+  font-weight: normal;
+}
+
+.head-container {
+  width: 100%;
+  background: transparent url(../images/incogito-header-stripe.png) 0 0 repeat-x;
+  height: 151px;
+}
+
+.agenda-planner-link {
+  position: absolute;
+  top: 107px;
+  left: 200px;
+}
+
+.head-logo {
+  left: -183px;
+  position: absolute;
+  height: 151px;
+  width: 183px;
+}
+
+.login-link {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+/* Content */
+
+li.session-list {
+  list-style-image: url(../images/yellow-bullet.png);
+  margin-left: 0px;
+  margin-bottom: 7px;
+}
+
+#main-content {
+  margin-left: 200px;
 }

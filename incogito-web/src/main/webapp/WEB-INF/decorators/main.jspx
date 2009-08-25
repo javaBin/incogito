@@ -15,45 +15,37 @@
   <script src="${incogito.baseurl}/js/jquery.form-2.28.js" type="text/javascript"><!-- space --></script>
   <script src="${incogito.baseurl}/js/functional-1.0.2.js" type="text/javascript"><!-- space --></script>
   <script type="text/javascript">
-    var baseurl = "${incogito.baseurl}"
+    var baseurl = "${incogito.baseurl}";
+    $(document).ready(function() {
+      $(".head-logo").animate({ left: "0px" });
+    });
   </script>
   <script src="${incogito.baseurl}/js/incogito.js" type="text/javascript"><!-- space --></script>
   <decorator:head/>
 </head>
 <body>
-<!--
-<div>
-<span style="background: url(${incogito.baseurl}/images/incogito-header.png); height: 151px; width: 183px; float: right;">
-  blablabla
-</span>
-<span style="background: url(${incogito.baseurl}/images/incogito-header-stripe.png) repeat-x; height: 151px; margin-right: 183px; width: 100%; float: left;">
-  blablabla
-</span>
+
+<div class="head-container">
+  <a class="head-logo" href="${incogito.baseurl}">
+    <img src="${incogito.baseurl}/images/incogito-header.png" alt="logo"></img>
+  </a>
+  <div class="head-title"><h1>${eventName}</h1></div>
+  <div class="head-description">Bla bla bla ipsum lerum hopper over den late reven....</div>
+  <a class="agenda-planner-link" href="${incogito.baseurl}/events/Javazone 2008/calendar">
+    <img src="${incogito.baseurl}/images/agenda-planner.png" alt="Agenda Planner"></img>
+  </a>
 </div>
--->
 
-<!--
-<img src="${incogito.baseurl}/images/incogito-header.png"/>
-<img src="${incogito.baseurl}/images/incogito-header-stripe.png" width="100%" style="background-repeat: repeat-x;"/>
--->
-<!--
-<h1><a href="${incogito.baseurl}">Incogito</a></h1>
-
-<security:authorize ifAllGranted="ROLE_USER">
-  Welcome <b><security:authentication property="principal.username"/></b>. <a href="${incogito.baseurl}/logout">Log out</a>.
-</security:authorize>
-
-<security:authorize ifNotGranted="ROLE_USER">
-<a href="${incogito.baseurl}/login">Log in</a><br/>
-</security:authorize>
-
-<br/>
-Other instances (may not be up):
-<a href="http://node-a.incogito:8096/incogito">Node A</a> -
-<a href="http://node-b.incogito:8097/incogito">Node B</a> -
-<a href="http://node-c.incogito:8098/incogito">Node C</a>
--->
+<div class="login-link">
+  <security:authorize ifAllGranted="ROLE_USER">
+    Welcome <b><security:authentication property="principal.username"/></b>. <a href="${incogito.baseurl}/logout">Logout</a>.
+  </security:authorize>
+  <security:authorize ifNotGranted="ROLE_USER">
+    <a href="${incogito.baseurl}/login">Login</a><br/>
+  </security:authorize>
+</div>
 
 <decorator:body/>
+
 </body>
 </html>
