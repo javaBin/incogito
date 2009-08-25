@@ -21,6 +21,22 @@
   <decorator:head/>
 </head>
 <body>
+<!--
+<div>
+<span style="background: url(${incogito.baseurl}/images/incogito-header.png); height: 151px; width: 183px; float: right;">
+  blablabla
+</span>
+<span style="background: url(${incogito.baseurl}/images/incogito-header-stripe.png) repeat-x; height: 151px; margin-right: 183px; width: 100%; float: left;">
+  blablabla
+</span>
+</div>
+-->
+
+<!--
+<img src="${incogito.baseurl}/images/incogito-header.png"/>
+<img src="${incogito.baseurl}/images/incogito-header-stripe.png" width="100%" style="background-repeat: repeat-x;"/>
+-->
+<!--
 <h1><a href="${incogito.baseurl}">Incogito</a></h1>
 
 <security:authorize ifAllGranted="ROLE_USER">
@@ -36,6 +52,7 @@ Other instances (may not be up):
 <a href="http://node-a.incogito:8096/incogito">Node A</a> -
 <a href="http://node-b.incogito:8097/incogito">Node B</a> -
 <a href="http://node-c.incogito:8098/incogito">Node C</a>
+-->
 
 <decorator:body/>
 </body>

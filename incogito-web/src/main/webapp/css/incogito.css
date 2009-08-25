@@ -1,8 +1,44 @@
 body {
   font-family: arial, sans-serif;
+  margin: 0;
+}
+
+h1 {
+  font-size: 1.3em;
+}
+
+h2 {
+  font-size: 1.1em;
+  margin-top: 1.1em;
+  margin-bottom: 1.1em;
+}
+
+/*
+ Wiki formatting
+*/
+
+.heading-1 {
+  font-weight: bold;
+  font-size: 1.1em;
+  margin-top: 1.1em;
+  margin-bottom: 1.1em;
+}
+
+.paragraph {
+  margin-top: 1.0em;
+  margin-bottom: 1.0em;
 }
 
 /* Some elements are templates only (elements that are cloned() before used and should be hidden */
 .template {
   display: none;
+}
+
+#main-content {
+  margin-left: 13em;
+  font-size: 0.9em;
+}
+
+ul.outside {
+  margin-left: -2.8em;
 }

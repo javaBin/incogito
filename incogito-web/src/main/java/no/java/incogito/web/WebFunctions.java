@@ -24,6 +24,7 @@ import no.java.incogito.domain.Schedule;
 import no.java.incogito.domain.Session;
 import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.UserSessionAssociation;
+import no.java.incogito.domain.Label;
 import no.java.incogito.dto.SessionXml;
 import no.java.incogito.web.resources.XmlFunctions;
 import no.java.incogito.web.servlet.WebCalendar;
@@ -105,7 +106,14 @@ public class WebFunctions {
                     }
                 });
 
-            return formats.append(levels);
+            List<String> labels = configuration.getLabels(event.id).values().
+                map(new F<Label, String>() {
+                    public String f(Label label) {
+                        return ".label-" + label.id + " { list-style-image: url('" + configuration.baseurl + "/rest/events/" + event.name + "/icons/labels/" + label.id + ".png'); }";
+                    }
+                });
+
+            return formats.append(levels).append(labels);
         }
     });
 

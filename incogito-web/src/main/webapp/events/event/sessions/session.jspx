@@ -32,17 +32,23 @@ http://javazone.no/incogito/session/Agility+at+Scale+-+Using+Team+Concert+in+a+G
   <li><a href="${incogito.baseurl}/events">Back to event list</a></li>
   <li><a href="${incogito.baseurl}/events/${eventName}">Back to ${eventName}</a></li>
 </ul>
+<div id="main-content">
 <h2>${eventName} - ${session.title}</h2>
 
-<ul>
+<ul class="outside session-metadata">
   <c:forEach var="label" items="${session.labels}">
     <li class="session-detail-label label-${label.id}">
       ${label.displayName}
     </li>
   </c:forEach>
-  <li class="session-detail-level level-${session.level}">
+  <li class="session-detail-level level-${session.level.id}">
     <c:choose>
-      <c:when test="${not(session.level eq null)}">${session.level}</c:when>
+      <c:when test="${not(session.level eq null)}">
+        <!-- For some reason the design doesn't show the level name, only the icon
+        ${session.level.displayName}
+        -->
+        &amp;nbsp;
+      </c:when>
       <c:otherwise>TBA</c:otherwise>
     </c:choose>
   </li>
@@ -62,7 +68,6 @@ http://javazone.no/incogito/session/Agility+at+Scale+-+Using+Team+Concert+in+a+G
       <c:otherwise>TBA</c:otherwise>
     </c:choose>
   </li>
-<!--
   <li>
     <c:choose>
       <c:when test="${fn:length(session.speakers) eq 1}">
@@ -77,10 +82,11 @@ http://javazone.no/incogito/session/Agility+at+Scale+-+Using+Team+Concert+in+a+G
       <c:if test="${i.last}">${speaker.name}</c:if>
     </c:forEach>
   </li>
--->
 </ul>
 
+<!--
 <h2>Description</h2>
+-->
 
 <c:if test="${not (session.abstractHtml eq null)}">
   <div class="abstract">
@@ -94,16 +100,16 @@ http://javazone.no/incogito/session/Agility+at+Scale+-+Using+Team+Concert+in+a+G
   </div>
 </c:if>
 
-<ul class="speaker-bioses">
+<div class="speaker-bioses">
   <c:forEach var="speaker" varStatus="i" items="${session.speakers}">
-    <li>
-      <div class="speaker-name">${speaker.name}</div>
+    <div class="speaker">
+      <h2 class="speaker-name">${speaker.name}</h2>
       <div class="speaker-bio">
         ${speaker.bioHtml}
       </div>
-    </li>
+    </div>
   </c:forEach>
-</ul>
-
+</div>
+</div>
 </body>
 </html>

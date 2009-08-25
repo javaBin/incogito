@@ -50,9 +50,11 @@ public class WebFunctionsTest extends TestCase {
 
     Level intermediate = new Level(LevelId.Intermediate, "Intermediate", new File(""));
 
+    Label java = new Label("java", "Java", new File("java.png"));
+
     Event event = new Event(eventId(UUID.randomUUID().toString()), "FunZone", Option.<String>none(),
         List.<Room>nil(), TreeMap.<LevelId, Level>empty(LevelId.ord).set(intermediate.id, intermediate),
-        TreeMap.<String, Label>empty(Ord.stringOrd));
+        TreeMap.<String, Label>empty(Ord.stringOrd).set(java.id, java));
 
     Session templateSession = new Session(new SessionId("123"), Presentation, "Session 1", Option.<WikiString>none(),
         Option.<WikiString>none(), Option.<Level>none(), Option.<Interval>none(), Option.<String>none(),
