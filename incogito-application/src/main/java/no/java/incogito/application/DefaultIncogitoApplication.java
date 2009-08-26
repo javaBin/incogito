@@ -17,6 +17,7 @@ import static fj.data.List.iterableList;
 import fj.data.Option;
 import static fj.data.Option.fromNull;
 import static fj.data.Option.fromString;
+import static fj.data.Option.join;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
 import fj.data.TreeMap;
@@ -342,6 +343,13 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
                 orSome(OperationResult.<User>$notFound("User '" + userName + "' not found."));
     }
 
+    public OperationResult<byte[]> getPersonPhoto(String personId) {
+        return join(emsWrapper.getPhoto.f(personId).
+            map(compose(P1.<Option<byte[]>>__1(), Callables.<byte[]>option()))).
+            map(OperationResult.<byte[]>ok_()).
+            orSome(OperationResult.<byte[]>notFound("No such person '" + personId + "'."));
+    }
+
     // -----------------------------------------------------------------------
     // Functions from EMS domain objects to Incogito domain objects
     // -----------------------------------------------------------------------
@@ -367,7 +375,9 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
 
     private static F<no.java.ems.domain.Speaker, Speaker> speakerFromEms = new F<no.java.ems.domain.Speaker, Speaker>() {
         public Speaker f(no.java.ems.domain.Speaker speaker) {
-            return new Speaker(speaker.getName(), fromString(speaker.getDescription()).map(WikiString.constructor));
+            System.out.println("speaker.getName() = " + speaker.getName());
+            System.out.println("speaker.getPersonId() = " + speaker.getPersonId());
+            return new Speaker(speaker.getName(), speaker.getPersonId(), fromString(speaker.getDescription()).map(WikiString.constructor));
         }
     };
 

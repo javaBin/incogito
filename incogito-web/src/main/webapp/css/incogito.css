@@ -99,15 +99,34 @@ body {
   display: none;
 }
 
+.hidden {
+  display: none;
+}
+
 /* Head tags */
 
-.head-title {
+#header {
+  width: 100%;
+  background: transparent url(../images/incogito-header-stripe.png) 0 0 repeat-x;
+  height: 151px;
+}
+
+#header .event-names {
   position: absolute;
   top: 30px;
   left: 360px;
 }
 
-.head-description {
+#header .event-names h1 {
+  float: left;
+  margin-right: 1em;
+}
+
+#header .event-names h1:last-child {
+  margin-right: 0;
+}
+
+#header .head-description {
   position: absolute;
   top: 95px;
   left: 360px;
@@ -116,19 +135,13 @@ body {
   font-weight: normal;
 }
 
-.head-container {
-  width: 100%;
-  background: transparent url(../images/incogito-header-stripe.png) 0 0 repeat-x;
-  height: 151px;
-}
-
-.agenda-planner-link {
+#header .agenda-planner-link {
   position: absolute;
   top: 107px;
   left: 200px;
 }
 
-.head-logo {
+#header .logo {
   left: -183px;
   position: absolute;
   height: 151px;

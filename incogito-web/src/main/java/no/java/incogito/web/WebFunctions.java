@@ -17,7 +17,6 @@ import no.java.incogito.Functions;
 import no.java.incogito.application.IncogitoConfiguration;
 import no.java.incogito.domain.CssConfiguration;
 import no.java.incogito.domain.Event;
-import no.java.incogito.domain.IncogitoUri.IncogitoEventsUri.IncogitoEventUri.IncogitoSessionsUri;
 import no.java.incogito.domain.Level;
 import no.java.incogito.domain.Room;
 import no.java.incogito.domain.Schedule;
@@ -25,6 +24,7 @@ import no.java.incogito.domain.Session;
 import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.UserSessionAssociation;
 import no.java.incogito.domain.Label;
+import no.java.incogito.domain.IncogitoUri.IncogitoEventsUri.IncogitoEventUri;
 import no.java.incogito.dto.SessionXml;
 import no.java.incogito.web.resources.XmlFunctions;
 import no.java.incogito.web.servlet.WebCalendar;
@@ -121,8 +121,8 @@ public class WebFunctions {
     // Calendar
     // -----------------------------------------------------------------------
 
-    public static final F<IncogitoSessionsUri, F<Schedule, WebCalendar>> webCalendar = curry(new F2<IncogitoSessionsUri, Schedule, WebCalendar>() {
-        public WebCalendar f(IncogitoSessionsUri sessionsUri, Schedule schedule) {
+    public static final F<IncogitoEventUri, F<Schedule, WebCalendar>> webCalendar = curry(new F2<IncogitoEventUri, Schedule, WebCalendar>() {
+        public WebCalendar f(IncogitoEventUri eventUri, Schedule schedule) {
             Collection<Integer> timeslotHours = schedule.sessions.foldLeft(timeslotFold, Set.<Integer>empty(Ord.intOrd)).toList().reverse().toCollection();
             List<String> rooms = schedule.sessions.foldLeft(roomFolder, Set.<String>empty(Ord.stringOrd)).toList().reverse();
 
@@ -132,14 +132,15 @@ public class WebFunctions {
                 attendanceMap.put(sessionAssociation._1().value, sessionAssociation._2().interestLevel.name());
             }
 
-            Collection<Map<String, List<SessionXml>>> dayToRoomToSessionMap = getDayToRoomToSessionMap(sessionsUri, schedule, rooms);
+            Collection<Map<String, List<SessionXml>>> dayToRoomToSessionMap =
+                getDayToRoomToSessionMap(eventUri, schedule, rooms);
 
             return new WebCalendar(rooms.toCollection(), timeslotHours, attendanceMap, dayToRoomToSessionMap);
         }
     });
 
-    public static Collection<Map<String, List<SessionXml>>> getDayToRoomToSessionMap(IncogitoSessionsUri sessionsUri, Schedule schedule, List<String> rooms) {
-        F<Session,SessionXml> sessionToXml = XmlFunctions.sessionToXml.f(sessionsUri);
+    public static Collection<Map<String, List<SessionXml>>> getDayToRoomToSessionMap(IncogitoEventUri eventUri, Schedule schedule, List<String> rooms) {
+        F<Session,SessionXml> sessionToXml = XmlFunctions.sessionToXml.f(eventUri);
 
         List<Session> sessions = schedule.sessions.filter(new F<Session, Boolean>() {
             public Boolean f(Session session) {

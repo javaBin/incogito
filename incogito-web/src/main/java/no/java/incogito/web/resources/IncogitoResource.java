@@ -19,7 +19,6 @@ import no.java.incogito.application.OperationResult.NotFoundOperationResult;
 import no.java.incogito.application.OperationResult.OkOperationResult;
 import no.java.incogito.domain.Event;
 import no.java.incogito.domain.IncogitoUri;
-import no.java.incogito.domain.IncogitoUri.IncogitoEventsUri.IncogitoEventUri.IncogitoSessionsUri;
 import no.java.incogito.domain.Label;
 import no.java.incogito.domain.Level;
 import no.java.incogito.domain.Level.LevelId;
@@ -27,6 +26,7 @@ import no.java.incogito.domain.Room;
 import no.java.incogito.domain.Session;
 import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.User;
+import no.java.incogito.domain.IncogitoUri.IncogitoEventsUri.IncogitoEventUri;
 import no.java.incogito.domain.UserSessionAssociation.InterestLevel;
 import static no.java.incogito.dto.EventListXml.eventListXml;
 import no.java.incogito.dto.EventXml;
@@ -186,10 +186,10 @@ public class IncogitoResource {
     @GET
     public Response getSessionsForEvent(@Context final UriInfo uriInfo,
                                         @PathParam("eventName") final String eventName) {
-        IncogitoSessionsUri uri = new IncogitoUri(uriInfo.getRequestUriBuilder()).events().eventUri(eventName).sessions();
 
-        F<List<Session>, List<SessionXml>> sessionToXmlList =
-                List.<Session, SessionXml>map_().f(XmlFunctions.sessionToXml.f(uri));
+        F<List<Session>, List<SessionXml>> sessionToXmlList = List.<Session, SessionXml>map_().
+            f(XmlFunctions.sessionToXml.
+                f(new IncogitoUri(uriInfo.getRequestUriBuilder()).events().eventUri(eventName)));
 
         return toJsr311(incogito.getSessions(eventName).
                 ok().map(compose(SessionListXml.sessionListXml, sessionToXmlList)));
@@ -200,13 +200,23 @@ public class IncogitoResource {
     public Response getSessionForEvent(@Context final UriInfo uriInfo,
                                        @PathParam("eventName") final String eventName,
                                        @PathParam("sessionId") final String sessionId) {
-        IncogitoSessionsUri uri = new IncogitoUri(uriInfo.getRequestUriBuilder()).events().eventUri(eventName).sessions();
+        IncogitoEventUri uri = new IncogitoUri(uriInfo.getRequestUriBuilder()).events().eventUri(eventName);
 
-        // TODO: Consider replacing this with the configured hostname and base url
+        // TODO: Consider replacing this with the configured host name and base url
         F<Session, SessionXml> sessionToXml = XmlFunctions.sessionToXml.f(uri);
 
         return toJsr311(incogito.getSession(eventName, new SessionId(sessionId)).
                 ok().map(sessionToXml));
+    }
+
+    /**
+     * TODO: This should use speaker name instead of speaker id
+     */
+    @Path("/people/{personId}/photo")
+    @GET
+    public Response getPersonPhoto(@Context final UriInfo uriInfo,
+                                   @PathParam("personId") final String personId) {
+        return toJsr311(incogito.getPersonPhoto(personId));
     }
 
     @Path("/events/{eventName}/{sessionId}/session-interest")
@@ -253,7 +263,7 @@ public class IncogitoResource {
                                        @Context final SecurityContext securityContext,
                                        @PathParam("eventName") final String eventName,
                                        @PathParam("userName") final String userName) {
-        IncogitoSessionsUri uri = new IncogitoUri(uriInfo.getRequestUriBuilder()).events().eventUri(eventName).sessions();
+        IncogitoEventUri uri = new IncogitoUri(uriInfo.getRequestUriBuilder()).events().eventUri(eventName);
 
         return toJsr311(incogito.getSchedule(eventName, userName).ok().
                 map(XmlFunctions.scheduleToXml.f(uri)));

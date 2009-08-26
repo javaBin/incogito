@@ -103,6 +103,11 @@ http://javazone.no/incogito/session/Agility+at+Scale+-+Using+Team+Concert+in+a+G
 <div class="speaker-bioses">
   <c:forEach var="speaker" varStatus="i" items="${session.speakers}">
     <div class="speaker">
+      <c:if test="${not (speaker.photoUrl eq null)}">
+        <div class="speaker-image">
+          <img src="${speaker.photoUrl}" alt="${speaker.name}"/>
+        </div>
+      </c:if>
       <h2 class="speaker-name">${speaker.name}</h2>
       <div class="speaker-bio">
         ${speaker.bioHtml}

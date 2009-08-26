@@ -3,9 +3,13 @@
       xmlns:decorator="http://www.opensymphony.com/sitemesh/decorator"
       xmlns:page="http://www.opensymphony.com/sitemesh/page"
       xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:i="http://taglib.java.no/incogito"
       xmlns:security="http://www.springframework.org/security/tags">
 <jsp:directive.page pageEncoding="utf-8" contentType="text/html;charset=utf-8"/>
 <jsp:useBean id="incogito" type="no.java.incogito.application.IncogitoConfiguration" scope="request"/>
+<jsp:useBean id="app" type="no.java.incogito.application.IncogitoApplication" scope="application"/>
+<c:set var="events" value="${i:getEventList(app)}"/>
 <head>
   <title><decorator:title default="javaBin"/></title>
   <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/incogito.css"/>
@@ -17,7 +21,21 @@
   <script type="text/javascript">
     var baseurl = "${incogito.baseurl}";
     $(document).ready(function() {
-      $(".head-logo").animate({ left: "0px" });
+      $("#header .logo").animate({ left: "0px" });
+      var headDescriptionDefault = $(".head-description .default")
+      var headDescriptionText = $(".head-description .text")
+      $(".event-title").bind("click", function() {
+        var text = $(this).find(".text").text().trim();
+
+        if(text == "") {
+          headDescriptionDefault.show()
+          headDescriptionText.hide().text("")
+        }
+        else {
+          headDescriptionDefault.hide()
+          headDescriptionText.show().text(text)
+        }
+      })
     });
   </script>
   <script src="${incogito.baseurl}/js/incogito.js" type="text/javascript"><!-- space --></script>
@@ -25,17 +43,30 @@
 </head>
 <body>
 
-<div class="head-container">
-  <a class="head-logo" href="${incogito.baseurl}">
-    <img src="${incogito.baseurl}/images/incogito-header.png" alt="logo"></img>
+<div id="header">
+  <a class="logo" href="${incogito.baseurl}">
+    <img src="${incogito.baseurl}/images/incogito-header.png" alt="logo"/>
   </a>
-  <div class="head-title"><h1>${eventName}</h1></div>
-  <div class="head-description">Bla bla bla ipsum lerum hopper over den late reven....</div>
+  <div class="event-names">
+    <c:forEach var="event" items="${events}">
+      <h1 class="event-title">
+        <span class="hidden text">${event.welcomeText}</span>
+        ${event.name}
+      </h1>
+    </c:forEach>
+  </div>
+  <div class="head-description">
+    <span class="default">Please select an event</span>
+    <span class="text"><!-- space --></span>
+  </div>
+<!-- Disable agenda planner for now - trygve
   <a class="agenda-planner-link" href="${incogito.baseurl}/events/Javazone 2008/calendar">
-    <img src="${incogito.baseurl}/images/agenda-planner.png" alt="Agenda Planner"></img>
+    <img src="${incogito.baseurl}/images/agenda-planner.png" alt="Agenda Planner"/>
   </a>
+-->
 </div>
 
+<!-- Disable login for now - trygve
 <div class="login-link">
   <security:authorize ifAllGranted="ROLE_USER">
     Welcome <b><security:authentication property="principal.username"/></b>. <a href="${incogito.baseurl}/logout">Logout</a>.
@@ -44,6 +75,7 @@
     <a href="${incogito.baseurl}/login">Login</a><br/>
   </security:authorize>
 </div>
+-->
 
 <decorator:body/>
 

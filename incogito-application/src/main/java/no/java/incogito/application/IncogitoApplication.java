@@ -40,4 +40,6 @@ public interface IncogitoApplication {
     OperationResult<Schedule> getSchedule(String eventName, Option<String> userId);
 
     OperationResult<User> setInterestLevel(String userName, String eventName, SessionId sessionId, InterestLevel interestLevel);
+
+    OperationResult<byte[]> getPersonPhoto(String speakerId);
 }

@@ -2,3 +2,14 @@
   list-style: none;
   font-weight: bold;
 }
+
+.speaker-image img {
+  float: left;
+  width: 100px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
+.speaker-image img:last-child {
+  margin-bottom: 0;
+}

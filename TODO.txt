@@ -4,6 +4,7 @@ o Add a quartz thread or something similar that load the configuration from disk
 o Remove duplicate sessions in the same room+timeslot combination
 o Configuration
  o Sort rooms according to configuration
+ o Sort+filter events according to configuration
  o Add configuration for time intervals
 
 Rename incogito-util to incogito-spring
@@ -16,3 +17,6 @@ o Concider using a trick to get spring security to set http response codes on lo
 o Make the JavaScript library more REST-ful
 o Remove icon tag library.
   - All JSPs should use the *Xml objects which all should have the necessary icon URLs.
+
+Kristisk:
+o Caching

@@ -30,7 +30,7 @@ import no.java.incogito.domain.Speaker;
 import no.java.incogito.domain.UserSessionAssociation;
 import no.java.incogito.domain.WikiString;
 import no.java.incogito.domain.IncogitoUri;
-import no.java.incogito.domain.IncogitoUri.IncogitoEventsUri.IncogitoEventUri.IncogitoSessionsUri;
+import no.java.incogito.domain.IncogitoUri.IncogitoEventsUri.IncogitoEventUri;
 import no.java.incogito.dto.SessionXml;
 import no.java.incogito.web.servlet.WebCalendar;
 import org.joda.time.DateMidnight;
@@ -140,7 +140,7 @@ public class WebFunctionsTest extends TestCase {
     }
 
     private WebCalendar createCalendar(List<Session> sessions) {
-        IncogitoSessionsUri sessionsUri = new IncogitoUri("poop").events().eventUri("myevent").sessions();
-        return WebFunctions.webCalendar.f(sessionsUri).f(new Schedule(event, sessions, TreeMap.<SessionId, UserSessionAssociation>empty(SessionId.ord)));
+        IncogitoEventUri eventUri = new IncogitoUri("poop").events().eventUri("myevent");
+        return WebFunctions.webCalendar.f(eventUri).f(new Schedule(event, sessions, TreeMap.<SessionId, UserSessionAssociation>empty(SessionId.ord)));
     }
 }

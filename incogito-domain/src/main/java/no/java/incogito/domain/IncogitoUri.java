@@ -19,7 +19,11 @@ public class IncogitoUri {
     }
 
     public IncogitoEventsUri events() {
-        return new IncogitoEventsUri(uriBuilder.clone().path("events"));
+        return new IncogitoEventsUri(this, uriBuilder.clone().path("events"));
+    }
+
+    public String personImage(String personId) {
+        return uriBuilder.clone().segment("people", personId, "photo").build().toString();
     }
 
     public String toString() {
@@ -27,9 +31,11 @@ public class IncogitoUri {
     }
 
     public static class IncogitoEventsUri {
+        public final IncogitoUri incogitoUri;
         private final UriBuilder events;
 
-        private IncogitoEventsUri(UriBuilder events) {
+        public IncogitoEventsUri(IncogitoUri incogitoUri, UriBuilder events) {
+            this.incogitoUri = incogitoUri;
             this.events = events;
         }
 
@@ -38,14 +44,18 @@ public class IncogitoUri {
         }
 
         public IncogitoEventUri eventUri(String event) {
-            return new IncogitoEventUri(events.clone().segment(event));
+            return new IncogitoEventUri(this, events.clone().segment(event));
         }
 
         public static class IncogitoEventUri {
+            public final IncogitoEventsUri eventsUri;
             private final UriBuilder event;
+            private final UriBuilder sessions;
 
-            private IncogitoEventUri(UriBuilder event) {
+            private IncogitoEventUri(IncogitoEventsUri eventsUri, UriBuilder event) {
+                this.eventsUri = eventsUri;
                 this.event = event;
+                sessions = event.clone().segment("sessions");
             }
 
             public String toString() {
@@ -92,27 +102,14 @@ public class IncogitoUri {
                 }
             }
 
-            public IncogitoSessionsUri sessions() {
-                return new IncogitoSessionsUri(this, event.clone().segment("sessions"));
+            public String session(Session session) {
+                return sessions.clone().segment(session.title).toString();
             }
 
-            public static class IncogitoSessionsUri {
-                public final IncogitoEventUri eventUri;
-                private final UriBuilder sessions;
-
-                public IncogitoSessionsUri(IncogitoEventUri eventUri, UriBuilder sessions) {
-                    this.eventUri = eventUri;
-                    this.sessions = sessions;
-                }
-
-                public String toString() {
-                    return sessions.build().toString();
-                }
-
-                public String session(Session session) {
-                    return sessions.clone().segment(session.title).toString();
-                }
+            public String session(String sessionTitle) {
+                return sessions.clone().segment(sessionTitle).toString();
             }
+
         }
     }
 }

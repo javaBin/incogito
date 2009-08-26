@@ -12,13 +12,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class SpeakerXml {
     public String name;
     public String bioHtml;
+    public String photoUrl;
 
     public SpeakerXml() {
     }
 
-    public SpeakerXml(String name, Option<String> bioHtml) {
+    public SpeakerXml(String name, Option<String> bioHtml, String photoUrl) {
         this.name = name;
         this.bioHtml = bioHtml.orSome((String) null);
+        this.photoUrl = photoUrl;
     }
 
     public String getName() {
@@ -27,5 +29,9 @@ public class SpeakerXml {
 
     public String getBioHtml() {
         return bioHtml;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
     }
 }

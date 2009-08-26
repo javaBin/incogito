@@ -23,9 +23,11 @@
   <li><a href="${incogito.baseurl}/events/${eventName}/calendar">Calendar</a></li>
 </ul>
 
+<!--
 <c:if test="${not(event.welcomeHtml eq null)}">
   ${event.welcomeHtml}
 </c:if>
+-->
 
 </body>
 </html>

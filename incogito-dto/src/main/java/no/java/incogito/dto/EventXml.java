@@ -18,7 +18,7 @@ public class EventXml {
 
     public String name;
 
-    public String welcomeHtml;
+    public String welcomeText;
 
     public List<LabelXml> labels;
 
@@ -27,11 +27,11 @@ public class EventXml {
     public EventXml() {
     }
 
-    public EventXml(String selfUrl, String id, String name, Option<String> welcomeHtml, Iterable<LabelXml> labels, Iterable<LevelXml> levels) {
+    public EventXml(String selfUrl, String id, String name, Option<String> welcomeText, Iterable<LabelXml> labels, Iterable<LevelXml> levels) {
         this.selfUrl = selfUrl;
         this.id = id;
         this.name = name;
-        this.welcomeHtml = welcomeHtml.orSome((String) null);
+        this.welcomeText = welcomeText.orSome((String) null);
         this.labels = toList(labels);
         this.levels = toList(levels);
     }
@@ -40,8 +40,8 @@ public class EventXml {
         return name;
     }
 
-    public String getWelcomeHtml() {
-        return welcomeHtml;
+    public String getWelcomeText() {
+        return welcomeText;
     }
 
     public List<LevelXml> getLevels() {
