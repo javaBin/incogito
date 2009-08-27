@@ -8,10 +8,10 @@ import no.java.incogito.Enums;
 import static no.java.incogito.Functions.compose;
 import no.java.incogito.domain.Event;
 import no.java.incogito.domain.IncogitoUri;
-import no.java.incogito.domain.IncogitoUri.IncogitoEventsUri;
 import no.java.incogito.domain.IncogitoUri.IncogitoEventsUri.IncogitoEventUri;
-import no.java.incogito.domain.IncogitoUri.IncogitoEventsUri.IncogitoEventUri.IncogitoLabelsIconUri;
-import no.java.incogito.domain.IncogitoUri.IncogitoEventsUri.IncogitoEventUri.IncogitoLevelsIconUri;
+import no.java.incogito.domain.IncogitoUri.IncogitoRestEventsUri.IncogitoRestEventUri;
+import no.java.incogito.domain.IncogitoUri.IncogitoRestEventsUri.IncogitoRestEventUri.IncogitoLabelsIconUri;
+import no.java.incogito.domain.IncogitoUri.IncogitoRestEventsUri.IncogitoRestEventUri.IncogitoLevelsIconUri;
 import no.java.incogito.domain.Label;
 import no.java.incogito.domain.Level;
 import no.java.incogito.domain.Schedule;
@@ -94,8 +94,8 @@ public class XmlFunctions {
         }
     });
 
-    public static final F<IncogitoEventUri, F<Session, SessionXml>> sessionToXml = curry(new F2<IncogitoEventUri, Session, SessionXml>() {
-        public SessionXml f(IncogitoEventUri eventUri, Session session) {
+    public static final F<IncogitoRestEventUri, F<Session, SessionXml>> sessionToXml = curry(new F2<IncogitoRestEventUri, Session, SessionXml>() {
+        public SessionXml f(IncogitoRestEventUri eventUri, Session session) {
             return new SessionXml(eventUri.session(session),
                     SessionXml.FormatXml.valueOf(session.format.name()), 
                     session.id.value,
@@ -106,7 +106,7 @@ public class XmlFunctions {
                     session.room,
                     session.timeslot.map(compose(toXmlGregorianCalendar, Interval_start)),
                     session.timeslot.map(compose(toXmlGregorianCalendar, Interval_end)),
-                    session.speakers.map(speakerToXml.f(eventUri.eventsUri.incogitoUri)),
+                    session.speakers.map(speakerToXml.f(eventUri.restEventsUri.incogitoUri)),
                     session.labels.map(labelToXml.f(eventUri.labelsIcon())));
         }
     });
@@ -121,29 +121,31 @@ public class XmlFunctions {
         }
     };
 
-    public static final F<IncogitoEventUri, F<Schedule, ScheduleXml>> scheduleToXml = curry(new F2<IncogitoEventUri, Schedule, ScheduleXml>() {
-        public ScheduleXml f(IncogitoEventUri sessionsUri, Schedule schedule) {
+    public static final F<IncogitoRestEventUri, F<Schedule, ScheduleXml>> scheduleToXml = curry(new F2<IncogitoRestEventUri, Schedule, ScheduleXml>() {
+        public ScheduleXml f(IncogitoRestEventUri sessionsUri, Schedule schedule) {
             return new ScheduleXml(schedule.sessions.map(sessionToXml.f(sessionsUri)),
                     schedule.sessionAssociations.values().map(sessionAssociationToXml));
         }
     });
 
-
-    public static final F<IncogitoEventsUri, F<Event, EventXml>> eventToXml = curry(new F2<IncogitoEventsUri, Event, EventXml>() {
-        public EventXml f(IncogitoEventsUri eventsUri, final Event event) {
-            IncogitoEventUri eventUri = eventsUri.eventUri(event.name);
-            return new EventXml(eventUri.toString(),
+    public static final F<IncogitoUri, F<Event, EventXml>> eventToXml = curry(new F2<IncogitoUri, Event, EventXml>() {
+        public EventXml f(IncogitoUri incogitoUri, final Event event) {
+            IncogitoRestEventUri restEventUri = incogitoUri.restEvents().eventUri(event.name);
+            IncogitoEventUri eventUri = incogitoUri.events().eventUri(event.name);
+            return new EventXml(restEventUri.toString(),
                     event.id.toString(),
                     event.name,
                     event.welcome,
-                    event.labels.values().map(labelToXml.f(eventUri.labelsIcon())),
-                    event.levels.values().map(levelToXml.f(eventUri.levelsIcon())));
+                    eventUri.sessionListHtml(),
+                    eventUri.calendarHtml(),
+                    event.labels.values().map(labelToXml.f(restEventUri.labelsIcon())),
+                    event.levels.values().map(levelToXml.f(restEventUri.levelsIcon())));
         }
     });
 
     public static final F<IncogitoUri, F<List<Event>, List<EventXml>>> eventListToXml = new F<IncogitoUri, F<List<Event>, List<EventXml>>>() {
         public F<List<Event>, List<EventXml>> f(IncogitoUri incogitoUri) {
-            return List.<Event, EventXml>map_().f(XmlFunctions.eventToXml.f(incogitoUri.events()));
+            return List.<Event, EventXml>map_().f(XmlFunctions.eventToXml.f(incogitoUri));
         }
     };
 }

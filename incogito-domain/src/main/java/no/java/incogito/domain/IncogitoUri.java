@@ -8,33 +8,67 @@ import static javax.ws.rs.core.UriBuilder.fromUri;
  * @version $Id$
  */
 public class IncogitoUri {
-    private final UriBuilder uriBuilder;
+    private final UriBuilder rest;
+    private final UriBuilder baseurl;
 
     public IncogitoUri(UriBuilder baseurl) {
-        this.uriBuilder = baseurl.clone().segment("rest");
+        this.baseurl = baseurl.clone();
+        this.rest = baseurl.clone().segment("rest");
     }
 
     public IncogitoUri(String baseurl) {
         this(fromUri(baseurl));
     }
 
+    public IncogitoRestEventsUri restEvents() {
+        return new IncogitoRestEventsUri(this, rest.clone().path("events"));
+    }
+
     public IncogitoEventsUri events() {
-        return new IncogitoEventsUri(this, uriBuilder.clone().path("events"));
+        return new IncogitoEventsUri(baseurl.clone().path("events"));
     }
 
     public String personImage(String personId) {
-        return uriBuilder.clone().segment("people", personId, "photo").build().toString();
-    }
-
-    public String toString() {
-        return uriBuilder.build().toString();
+        return rest.clone().segment("people", personId, "photo").build().toString();
     }
 
     public static class IncogitoEventsUri {
+        private final UriBuilder events;
+
+        public IncogitoEventsUri(UriBuilder events) {
+            this.events = events;
+        }
+
+        public IncogitoEventUri eventUri(String name) {
+            return new IncogitoEventUri(events.clone().segment(name));
+        }
+
+        public static class IncogitoEventUri {
+            private final UriBuilder event;
+
+            public IncogitoEventUri(UriBuilder event) {
+                this.event = event;
+            }
+
+            public String calendarHtml() {
+                return event.clone().segment("calendar").build().toString();
+            }
+
+            public String sessionListHtml() {
+                return event.clone().segment("sessions").build().toString();
+            }
+
+            public String toString() {
+                return event.build().toString();
+            }
+        }
+    }
+
+    public static class IncogitoRestEventsUri {
         public final IncogitoUri incogitoUri;
         private final UriBuilder events;
 
-        public IncogitoEventsUri(IncogitoUri incogitoUri, UriBuilder events) {
+        public IncogitoRestEventsUri(IncogitoUri incogitoUri, UriBuilder events) {
             this.incogitoUri = incogitoUri;
             this.events = events;
         }
@@ -43,17 +77,17 @@ public class IncogitoUri {
             return events.build().toString();
         }
 
-        public IncogitoEventUri eventUri(String event) {
-            return new IncogitoEventUri(this, events.clone().segment(event));
+        public IncogitoRestEventUri eventUri(String event) {
+            return new IncogitoRestEventUri(this, events.clone().segment(event));
         }
 
-        public static class IncogitoEventUri {
-            public final IncogitoEventsUri eventsUri;
+        public static class IncogitoRestEventUri {
+            public final IncogitoRestEventsUri restEventsUri;
             private final UriBuilder event;
             private final UriBuilder sessions;
 
-            private IncogitoEventUri(IncogitoEventsUri eventsUri, UriBuilder event) {
-                this.eventsUri = eventsUri;
+            private IncogitoRestEventUri(IncogitoRestEventsUri restEventsUri, UriBuilder event) {
+                this.restEventsUri = restEventsUri;
                 this.event = event;
                 sessions = event.clone().segment("sessions");
             }

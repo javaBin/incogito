@@ -6,7 +6,7 @@ import static fj.data.Option.fromNull;
 import fj.data.TreeMap;
 import no.java.incogito.application.IncogitoApplication;
 import no.java.incogito.domain.IncogitoUri;
-import no.java.incogito.domain.IncogitoUri.IncogitoEventsUri.IncogitoEventUri;
+import no.java.incogito.domain.IncogitoUri.IncogitoRestEventsUri.IncogitoRestEventUri;
 import no.java.incogito.domain.Schedule;
 import no.java.incogito.dto.EventXml;
 import no.java.incogito.dto.ScheduleXml;
@@ -63,34 +63,34 @@ public class IncogitoFunctions {
     public static WebCalendar getCalendar(IncogitoApplication app, String eventName, String userName) {
         IncogitoUri uri = new IncogitoUri(app.getConfiguration().baseurl);
         return app.getSchedule(urlDecode(eventName), fromNull(userName)).ok().
-                map(WebFunctions.webCalendar.f(uri.events().eventUri(eventName))).value();
+                map(WebFunctions.webCalendar.f(uri.restEvents().eventUri(eventName))).value();
     }
 
     public static EventXml[] getEvents(IncogitoApplication app) {
         IncogitoUri uri = new IncogitoUri(app.getConfiguration().baseurl);
         return app.getEvents().value().
-                map(XmlFunctions.eventToXml.f(uri.events())).toArray(EventXml[].class).array();
+                map(XmlFunctions.eventToXml.f(uri)).toArray(EventXml[].class).array();
     }
 
     public static SessionXml[] getSessions(IncogitoApplication app, String eventName) {
         IncogitoUri uri = new IncogitoUri(app.getConfiguration().baseurl);
         return app.getSessions(urlDecode(eventName)).value().
-                map(sessionToXml.f(uri.events().eventUri(eventName))).toArray(SessionXml[].class).array();
+                map(sessionToXml.f(uri.restEvents().eventUri(eventName))).toArray(SessionXml[].class).array();
     }
 
     public static EventXml getEventByName(IncogitoApplication app, String eventName) {
         IncogitoUri uri = new IncogitoUri(app.getConfiguration().baseurl);
-        return app.getEventByName(urlDecode(eventName)).ok().map(XmlFunctions.eventToXml.f(uri.events())).value();
+        return app.getEventByName(urlDecode(eventName)).ok().map(XmlFunctions.eventToXml.f(uri)).value();
     }
 
     public static SessionXml getSessionByTitle(IncogitoApplication app, String eventName, String sessionTitle) {
-        IncogitoEventUri uri = new IncogitoUri(app.getConfiguration().baseurl).events().eventUri(eventName);
+        IncogitoRestEventUri uri = new IncogitoUri(app.getConfiguration().baseurl).restEvents().eventUri(eventName);
         return sessionToXml.f(uri).f(app.getSessionByTitle(urlDecode(eventName), urlDecode(sessionTitle)).value());
     }
 
     public static ScheduleXml getSchedule(IncogitoApplication app, String eventName, String userName) {
         IncogitoUri uri = new IncogitoUri(app.getConfiguration().baseurl);
-        F<Schedule, ScheduleXml> scheduleToXml = XmlFunctions.scheduleToXml.f(uri.events().eventUri(eventName));
+        F<Schedule, ScheduleXml> scheduleToXml = XmlFunctions.scheduleToXml.f(uri.restEvents().eventUri(eventName));
         return app.getSchedule(urlDecode(eventName), fromNull(userName)).ok().map(scheduleToXml).value();
     }
 }

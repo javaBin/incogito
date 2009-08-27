@@ -22,6 +22,10 @@
       color: black;
       text-decoration: none;
     }
+
+    .session-list .speaker-list {
+      font-style: italic;
+    }
   </style>
 </head>
 
@@ -31,7 +35,18 @@
 
   <ul>
     <c:forEach var="session" items="${i:getSessions(app, eventName)}">
-      <li class="session-list"><a href="${incogito.baseurl}/events/${eventName}/sessions/${session.title}">${session.title}</a></li>
+      <li class="session-list">
+        <a href="${incogito.baseurl}/events/${eventName}/sessions/${session.title}">${session.title}</a>
+        &amp;mdash;
+        <span class="speaker-list">
+          <c:forEach var="speaker" varStatus="i" items="${session.speakers}">
+            <c:choose>
+              <c:when test="${not i.last}">${speaker.name}, </c:when>
+              <c:otherwise>${speaker.name}</c:otherwise>
+            </c:choose>
+          </c:forEach>
+        </span>
+      </li>
     </c:forEach>
   </ul>
 </div>

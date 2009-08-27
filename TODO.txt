@@ -18,5 +18,9 @@ o Make the JavaScript library more REST-ful
 o Remove icon tag library.
   - All JSPs should use the *Xml objects which all should have the necessary icon URLs.
 
-Kristisk:
+Pri 1
 o Caching
+
+Pri 2:
+o iCal
+o RSS/Atom

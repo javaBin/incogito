@@ -375,8 +375,6 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
 
     private static F<no.java.ems.domain.Speaker, Speaker> speakerFromEms = new F<no.java.ems.domain.Speaker, Speaker>() {
         public Speaker f(no.java.ems.domain.Speaker speaker) {
-            System.out.println("speaker.getName() = " + speaker.getName());
-            System.out.println("speaker.getPersonId() = " + speaker.getPersonId());
             return new Speaker(speaker.getName(), speaker.getPersonId(), fromString(speaker.getDescription()).map(WikiString.constructor));
         }
     };

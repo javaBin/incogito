@@ -40,7 +40,7 @@ function showSession() {
             li.text(label.displayName)
         })
         sessionDetails.find(".session-details-room .text").text(session.room)
-        sessionDetails.find(".session-details-level").text(session.level)
+        sessionDetails.find(".session-details-level").text(session.level.displayName)
         sessionDetails.find(".session-details-timeslot").text(session.start.hour + ":" + session.start.minute + " - " + session.end.hour + ":" + session.end.minute) // TODO: Formatting
         sessionDetails.find(".session-details-abstract").html(session.abstractHtml)
         sessionDetails.find(".session-details-body").html(session.bodyHtml)

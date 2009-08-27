@@ -44,7 +44,6 @@ table {
 
 /* CSS-reset stop */
 
-
 /* General preferences */
 
 h1 {
@@ -53,13 +52,14 @@ h1 {
 }
 
 body {
+  margin: 0;
+  color: #333333;
   font-family: arial, sans-serif;
   font-size: 90%;
-  font-weight: bold;
 }
 
 a img {
-  border: 0px solid;
+  border: 0 solid;
 }
 
 a {
@@ -73,11 +73,6 @@ a:hover {
 
 a:visited {
   color: #7a7a7a;
-}
-
-body {
-  margin: 0;
-  color: #333333;
 }
 
 /* Wiki formatting */
@@ -120,6 +115,12 @@ body {
 #header .event-names h1 {
   float: left;
   margin-right: 1em;
+  color: #555555;
+  font-weight: bold;
+}
+
+#header .event-names h1.high-lighted {
+  color: #000000;
 }
 
 #header .event-names h1:last-child {
@@ -135,7 +136,23 @@ body {
   font-weight: normal;
 }
 
-#header .agenda-planner-link {
+#header .select-text {
+  position: absolute;
+  top: 30px;
+  left: 200px;
+  height: 65px;
+  width: 155px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+#header .sessions-button {
+  position: absolute;
+  top: 107px;
+  left: 200px;
+}
+
+#header .calendar-button {
   position: absolute;
   top: 107px;
   left: 200px;
@@ -158,10 +175,11 @@ body {
 
 li.session-list {
   list-style-image: url(../images/yellow-bullet.png);
-  margin-left: 0px;
+  margin-left: 0;
   margin-bottom: 7px;
 }
 
 #main-content {
   margin-left: 200px;
+  margin-right: 200px;
 }

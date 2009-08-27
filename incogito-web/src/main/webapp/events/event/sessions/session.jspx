@@ -28,10 +28,12 @@ http://javazone.no/incogito/session/Agility+at+Scale+-+Using+Team+Concert+in+a+G
 -->
 
 <body>
+<!--
 <ul>
   <li><a href="${incogito.baseurl}/events">Back to event list</a></li>
   <li><a href="${incogito.baseurl}/events/${eventName}">Back to ${eventName}</a></li>
 </ul>
+-->
 <div id="main-content">
 <h2>${eventName} - ${session.title}</h2>
 
@@ -83,10 +85,6 @@ http://javazone.no/incogito/session/Agility+at+Scale+-+Using+Team+Concert+in+a+G
     </c:forEach>
   </li>
 </ul>
-
-<!--
-<h2>Description</h2>
--->
 
 <c:if test="${not (session.abstractHtml eq null)}">
   <div class="abstract">
