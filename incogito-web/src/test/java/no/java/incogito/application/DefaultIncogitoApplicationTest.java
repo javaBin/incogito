@@ -41,12 +41,17 @@ public class DefaultIncogitoApplicationTest extends TestCase {
 
         IncogitoConfiguration configuration = application.getConfiguration();
 
-        assertEquals(1, configuration.getLabels(eventId).size());
-        assertEquals(5, configuration.getLevels(eventId).size());
+        assertEquals(2, configuration.labels.get(eventId).some().size());
+        assertEquals(5, configuration.levels.get(eventId).some().size());
 
-        assertEquals("MyLabel", configuration.getLabels(eventId).iterator().next()._1());
-        Label myLabel = configuration.getLabels(eventId).iterator().next()._2();
-        assertEquals("My label", myLabel.displayName);
-        assertEquals("MyLabel", myLabel.id);
+        Label actualMyLabel = configuration.labels.get(eventId).some().get("MyLabel").some();
+        assertEquals("My label", actualMyLabel.displayName);
+        assertEquals("MyLabel", actualMyLabel.id);
+        assertEquals("MyLabel", actualMyLabel.emsId);
+
+        Label actualRenamedLabel = configuration.labels.get(eventId).some().get("renamed-label").some();
+        assertEquals("Renamed Label", actualRenamedLabel.displayName);
+        assertEquals("renamed-label", actualRenamedLabel.id);
+        assertEquals("Renamed label", actualRenamedLabel.emsId);
     }
 }

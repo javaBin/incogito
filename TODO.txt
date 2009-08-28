@@ -20,7 +20,14 @@ o Remove icon tag library.
 
 Pri 1
 o Caching
+o Timeslots are wrong, ems or incogito?
+o Missing label colors: domain-driven design, gaming and mobile
+o Cookie for current event
 
 Pri 2:
+o Give 404 on not found events and sessions
 o iCal
 o RSS/Atom
+o Fix the link for
+  - Dokumentasjon uten pistol - går det an?
+  - EDR-MDS "a less is more approach to SOA Master Data Management"

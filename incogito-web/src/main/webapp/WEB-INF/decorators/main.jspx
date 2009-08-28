@@ -24,7 +24,7 @@
     var baseurl = "${incogito.baseurl}";
     $(document).ready(function() {
       var x = Math.round(Math.random() * 10);
-      if(x % 10 == 0){
+      if (x % 10 == 0) {
         $("#header .logo").animate({ left: "0px" });
       }
       else {
@@ -34,32 +34,29 @@
       var calendarButton = $(".calendar-button")
       var headDescriptionDefault = $(".head-description .default")
       var headDescriptionText = $(".head-description .text")
-      $(".event-title").bind("click", function() {
-        var text = $(this).find(".text").text();
-        var sessionsUrl = $(this).find(".sessions-url").text();
-        var calendarUrl = $(this).find(".calendar-url").text();
+      $(".event-title").bind("click", eventHeaderClicked)
 
-         $(this).parent().children().removeClass("high-lighted")
-         $(this).addClass("high-lighted")
+      function eventHeaderClicked(target) {
+          var text = $(target).find(".text").text();
+          var sessionsUrl = $(target).find(".sessions-url").text();
+          var calendarUrl = $(target).find(".calendar-url").text();
 
-        if(text == "") {
-          headDescriptionDefault.show()
-          headDescriptionText.hide().text("")
+          $(target).parent().children().removeClass("high-lighted")
+          $(target).addClass("high-lighted")
+
+          if (text == "") {
+            headDescriptionDefault.show()
+            headDescriptionText.hide().text("")
+          }
+          else {
+            headDescriptionDefault.hide()
+            headDescriptionText.show().text(text)
+          }
+          sessionsButton.attr("href", sessionsUrl)
+          calendarButton.attr("href", calendarUrl)
         }
-        else {
-          headDescriptionDefault.hide()
-          headDescriptionText.show().text(text)
-        }
-        sessionsButton.attr("href", sessionsUrl)
-        calendarButton.attr("href", calendarUrl)
-      })
-//              .bind("mouseout", function() {
-//        $(this).removeClass("high-lighted")
-//        headDescriptionDefault.hide()
-//        headDescriptionText.hide()
-//      })
     });
-  </script>
+      </script>
   <decorator:head/>
 </head>
 <body>
@@ -68,23 +65,14 @@
   <a class="logo" href="${incogito.baseurl}">
     <img src="${incogito.baseurl}/images/incogito-header.png" alt="logo"/>
   </a>
-<!-- TODO: This need to be centered/middle before enabling. Not sure if it is useful anyway
-  <div class="select-text">
-    Select conference
-  </div>
--->
+  <!-- TODO: This need to be centered/middle before enabling. Not sure if it is useful anyway
+    <div class="select-text">
+      Select conference
+    </div>
+  -->
   <div class="event-names">
     <c:forEach var="event" items="${events}" varStatus="index">
-      <c:choose>
-        <c:when test="${index.index == 0}">
-          <c:set var="firstEvent" value="${event}"/>
-          <c:set var="extraCss">high-lighted</c:set>
-        </c:when>
-        <c:otherwise>
-          <c:set var="extraCss" value=""/>
-        </c:otherwise>
-      </c:choose>
-      <h1 class="event-title ${extraCss}">
+      <h1 class="event-title">
         <span class="hidden text">${event.welcomeText}</span>
         <span class="hidden calendar-url">${event.calendarUrlHtml}</span>
         <span class="hidden sessions-url">${event.allSessionsUrlHtml}</span>
@@ -99,20 +87,20 @@
   <c:forEach var="event" items="${events}" varStatus="index">
   </c:forEach>
 
-  <a class="sessions-button" href="${firstEvent.allSessionsUrlHtml}">
+  <a class="sessions-button" href="#">
     <img src="${incogito.baseurl}/images/sessions-button.png" alt="All Sessions"/>
   </a>
 
-<!--
-  <a class="calendar-button" href="${firstEvent.calendarUrlHtml}">
-    <img src="${incogito.baseurl}/images/calendar-button.png" alt="Calendar"/>
-  </a>
--->
-<!-- Disable agenda planner for now - trygve
-  <a class="agenda-planner-link" href="${incogito.baseurl}/events/Javazone 2008/calendar">
-    <img src="${incogito.baseurl}/images/agenda-planner.png" alt="Agenda Planner"/>
-  </a>
--->
+  <!--
+    <a class="calendar-button" href="${firstEvent.calendarUrlHtml}">
+      <img src="${incogito.baseurl}/images/calendar-button.png" alt="Calendar"/>
+    </a>
+  -->
+  <!-- Disable agenda planner for now - trygve
+    <a class="agenda-planner-link" href="${incogito.baseurl}/events/Javazone 2008/calendar">
+      <img src="${incogito.baseurl}/images/agenda-planner.png" alt="Agenda Planner"/>
+    </a>
+  -->
 </div>
 
 <!-- Disable login for now - trygve

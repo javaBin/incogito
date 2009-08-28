@@ -2,9 +2,10 @@ For the full documentation on Incogito, please go here:
 
   http://wiki.github.com/javaBin/incogito
 
-To run the EMS server:
 
-$ mvn -f incogito-ems-server/pom.xml exec:java
+= EMS Server =
+
+== Using an EMS Backup ==
 
 To use an existing EMS database (do this before starting incognito-ems-server):
 
@@ -12,6 +13,19 @@ $ cd incogito-ems-server
 $ rm -rf target/ems-home
 $ tar zxvf ..
 $ cp -r database target/ems-home
+
+== Connecting to an EMS Database ==
+
+This assumes you already have unpacked a backup
+
+start ij
+> connect 'jdbc:derby:target/ems-home/database/ems';
+
+== To run the EMS server ==
+
+$ mvn -f incogito-ems-server/pom.xml exec:java
+
+= Web Application =
 
 To run the Incogito web application:
 

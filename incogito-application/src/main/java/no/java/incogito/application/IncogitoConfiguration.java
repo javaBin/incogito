@@ -40,14 +40,6 @@ public class IncogitoConfiguration {
         return baseurl;
     }
 
-    public TreeMap<String, Label> getLabels(EventId eventId) {
-        return labels.get(eventId).orSome(emptyLabelMap);
-    }
-
-    public TreeMap<LevelId, Level> getLevels(EventId eventId) {
-        return levels.get(eventId).orSome(emptyLevelMap);
-    }
-
     public static final IncogitoConfiguration unconfigured = new IncogitoConfiguration("http://unconfigured",
             emptyWelcomeTexts, TreeMap.<EventId, TreeMap<String, Label>>empty(EventId.ord),
                 TreeMap.<EventId, TreeMap<LevelId, Level>>empty(EventId.ord), defaultCssConfiguration);
