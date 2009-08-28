@@ -35,9 +35,9 @@
       var headDescriptionDefault = $(".head-description .default")
       var headDescriptionText = $(".head-description .text")
       $(".event-title").bind("click", function() {
-        var text = $(this).find(".text").text().trim();
-        var sessionsUrl = $(this).find(".sessions-url").text().trim();
-        var calendarUrl = $(this).find(".calendar-url").text().trim();
+        var text = $(this).find(".text").text();
+        var sessionsUrl = $(this).find(".sessions-url").text();
+        var calendarUrl = $(this).find(".calendar-url").text();
 
          $(this).parent().children().removeClass("high-lighted")
          $(this).addClass("high-lighted")
