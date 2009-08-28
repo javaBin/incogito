@@ -46,10 +46,7 @@ http://javazone.no/incogito/session/Agility+at+Scale+-+Using+Team+Concert+in+a+G
   <li class="session-detail-level level-${session.level.id}">
     <c:choose>
       <c:when test="${not(session.level eq null)}">
-        <!-- For some reason the design doesn't show the level name, only the icon
         ${session.level.displayName}
-        -->
-        &amp;nbsp;
       </c:when>
       <c:otherwise>TBA</c:otherwise>
     </c:choose>

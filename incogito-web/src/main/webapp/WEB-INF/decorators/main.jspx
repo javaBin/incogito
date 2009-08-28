@@ -68,9 +68,11 @@
   <a class="logo" href="${incogito.baseurl}">
     <img src="${incogito.baseurl}/images/incogito-header.png" alt="logo"/>
   </a>
+<!-- TODO: This need to be centered/middle before enabling. Not sure if it is useful anyway
   <div class="select-text">
     Select conference
   </div>
+-->
   <div class="event-names">
     <c:forEach var="event" items="${events}" varStatus="index">
       <c:choose>
