@@ -159,7 +159,7 @@ public class IncogitoApplicationIntegrationTest {
         assertTrue(jz08File.mkdirs());
         //noinspection ResultOfMethodCallIgnored
         jz08File.mkdirs();
-        File jz08Welcome = new File(jz08File, "welcome.txt");
+        File jz08Welcome = new File(jz08File, "blurb.txt");
 
         TreeMap<String, String> properties = TreeMap.<String, String>empty(Ord.stringOrd).
                 set("baseurl", "http://poop").
@@ -174,8 +174,8 @@ public class IncogitoApplicationIntegrationTest {
         assertTrue(operationResult.isOk());
         Event jz08 = operationResult.value();
 
-        assertTrue(jz08.welcome.isSome());
-        assertEquals(text, jz08.welcome.some());
+        assertTrue(jz08.blurb.isSome());
+        assertEquals(text, jz08.blurb.some());
     }
 
     @Test

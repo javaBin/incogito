@@ -34,27 +34,29 @@
       var calendarButton = $(".calendar-button")
       var headDescriptionDefault = $(".head-description .default")
       var headDescriptionText = $(".head-description .text")
-      $(".event-title").bind("click", eventHeaderClicked)
+      $(".event-title").bind("mouseover", eventHeaderClicked)
 
-      function eventHeaderClicked(target) {
-          var text = $(target).find(".text").text();
-          var sessionsUrl = $(target).find(".sessions-url").text();
-          var calendarUrl = $(target).find(".calendar-url").text();
+      // Find the currently selected event and 
 
-          $(target).parent().children().removeClass("high-lighted")
-          $(target).addClass("high-lighted")
+      function eventHeaderClicked() {
+        var text = $(this).find(".text").text();
+        var sessionsUrl = $(this).find(".sessions-url").text();
+        var calendarUrl = $(this).find(".calendar-url").text();
 
-          if (text == "") {
-            headDescriptionDefault.show()
-            headDescriptionText.hide().text("")
-          }
-          else {
-            headDescriptionDefault.hide()
-            headDescriptionText.show().text(text)
-          }
-          sessionsButton.attr("href", sessionsUrl)
-          calendarButton.attr("href", calendarUrl)
+        $(this).parent().children().removeClass("high-lighted")
+        $(this).addClass("high-lighted")
+
+        if (text == "") {
+          headDescriptionDefault.show()
+          headDescriptionText.hide().text("")
         }
+        else {
+          headDescriptionDefault.hide()
+          headDescriptionText.show().text(text)
+        }
+        sessionsButton.attr("href", sessionsUrl)
+        calendarButton.attr("href", calendarUrl)
+      }
     });
       </script>
   <decorator:head/>
@@ -73,10 +75,10 @@
   <div class="event-names">
     <c:forEach var="event" items="${events}" varStatus="index">
       <h1 class="event-title">
-        <span class="hidden text">${event.welcomeText}</span>
+        <span class="hidden text">${event.blurb}</span>
         <span class="hidden calendar-url">${event.calendarUrlHtml}</span>
         <span class="hidden sessions-url">${event.allSessionsUrlHtml}</span>
-        ${event.name}
+        <a href="${event.eventUrlHtml}">${event.name}</a>
       </h1>
     </c:forEach>
   </div>
@@ -92,14 +94,14 @@
   </a>
 
   <!--
-    <a class="calendar-button" href="${firstEvent.calendarUrlHtml}">
-      <img src="${incogito.baseurl}/images/calendar-button.png" alt="Calendar"/>
-    </a>
+  <a class="calendar-button" href="${firstEvent.calendarUrlHtml}">
+    <img src="${incogito.baseurl}/images/calendar-button.png" alt="Calendar"/>
+  </a>
   -->
   <!-- Disable agenda planner for now - trygve
-    <a class="agenda-planner-link" href="${incogito.baseurl}/events/Javazone 2008/calendar">
-      <img src="${incogito.baseurl}/images/agenda-planner.png" alt="Agenda Planner"/>
-    </a>
+  <a class="agenda-planner-link" href="${incogito.baseurl}/events/Javazone 2008/calendar">
+    <img src="${incogito.baseurl}/images/agenda-planner.png" alt="Agenda Planner"/>
+  </a>
   -->
 </div>
 

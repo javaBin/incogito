@@ -52,7 +52,7 @@ public class WebFunctionsTest extends TestCase {
 
     Label java = new Label("java", "Java", "Java", new File("java.png"));
 
-    Event event = new Event(eventId(UUID.randomUUID().toString()), "FunZone", Option.<String>none(),
+    Event event = new Event(eventId(UUID.randomUUID().toString()), "FunZone", Option.<String>none(), Option.<String>none(),
         List.<Room>nil(), TreeMap.<LevelId, Level>empty(LevelId.ord).set(intermediate.id, intermediate),
         TreeMap.<String, Label>empty(Ord.stringOrd).set(java.id, java));
 
@@ -69,7 +69,8 @@ public class WebFunctionsTest extends TestCase {
     CssConfiguration cssConfiguration = new CssConfiguration(2.5, 20.0 / 60.0, 11);
 
     IncogitoConfiguration configuration = new IncogitoConfiguration(unconfigured.baseurl,
-        unconfigured.welcomeTexts,
+        unconfigured.blurbs,
+        unconfigured.frontPageTexts,
         unconfigured.labels.set(event.id, event.labels),
         unconfigured.levels.set(event.id, event.levels),
         cssConfiguration);
