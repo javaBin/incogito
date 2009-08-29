@@ -223,12 +223,36 @@
 	</div> <!-- legends ends -->
 	<div id="menu">
 		<ul class="nav">
-			<li>INFO</li>
-			<li>MY PROFILE</li>
-			<li>MY AGENDA</li>
+			<li><a href="">INFO</a></li>
+			<li><a href="">MY PROFILE</a></li>
+			<li><a href="">MY AGENDA</a></li>
+			<li><a href="">LOGOUT</a></li>
 		</ul>
+                <div class="cb"><!--space--></div>
+                <ul class="nav subnav">
+                    <li class="subday">
+                        DAY 1:
+                    </li>
+                    <li>
+                        <a href="#">sessions</a>
+                    </li>
+                    <li>
+                        <a href="#">lightning talks</a>
+                    </li>
+                    <li class="subday">
+                        DAY 2:
+                    </li>
+                    <li>
+                        <a href="#">sessions</a>
+                    </li>
+                    <li>
+                        <a href="#">lightning talks</a>
+                    </li>
+                </ul>
 	</div>
 </div> <!-- hd ends -->
+
+                <div class="cb"><!--space--></div>
 <div id="calendar">
   <c:forEach var="roomToSessionMap" items="${calendar.dayToRoomToSessionMap}" varStatus="i">
     <div class="day day${i.index}">

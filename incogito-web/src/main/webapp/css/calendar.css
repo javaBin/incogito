@@ -1,5 +1,6 @@
 div#calendar {
-  width: 78em;
+  width: 70em;
+  margin: 2em auto;;
 }
 
 .times {
@@ -18,17 +19,17 @@ div#calendar {
 }
 
 .rooms {
-    width:73em;
+    width:67em;
     position:absolute;
     margin-left:3em;
 }
 
 .day {
-    width:76em;
+    width:70em;
 }
 
 .day .room {
-    width: 9.5em;
+    width: 9em;
     border-left: 0.1em solid #787878;
     padding: 0 0.25em 0 0.25em;
     float: left;
@@ -48,7 +49,7 @@ div.session-header div {
 }
 
 .room .session {
-    width: 9.25em;
+    width: 8.75em;
     position: absolute;
 }
 
@@ -212,25 +213,27 @@ td#login-submit * {
 /* hd */
 #hd {
 	border-top: 0.3em solid #333333;
+        width: 70em;
+        margin: 0 auto;
 }
 
 /* legend */
 #legends {
 	width: 100%;
-	height: 4em;
+	height: 5em;
 }
 
 #legends #title {
 	width: 6em;
 	float: left;
-	height: 4em;
+	height: 5em;
 	background: #EAEAEA;
 }
 
 #legends #filters {
 	float: left;
 	height: 4em;	
-	width: 63.9em;
+	width: 55em;
 	color: #787878;
 }
 
@@ -243,10 +246,15 @@ td#login-submit * {
 	padding:1em 0.8em 1em 0.8em;
 }
 
+#filters ul li {
+    margin: 0.2em 0 0 1em;
+    font-size: 0.80em;
+}
+
 /* Complexity */
 #legends #complexity {
 	width: 10em;
-	height: 4em;
+	height: 5em;
 	float: left;
 	border-left: 0.1em solid #EAEAEA;
 }
@@ -306,17 +314,50 @@ ul.nav li {
 	background: #333333;
 }
 
-
-#menu ul.nav {
-	padding: 0 3em 0 3em;
-	margin: 0;
+#menu ul.nav li {
+    padding:0;
+    margin:0;
 }
 
-#menu ul.nav li {
-	padding: 0.6em 0.8em 0.4em 0.8em
+#menu ul.nav li a {
+    display: block;
+    color: #EAEAEA;
+    text-decoration: none;
+    padding: 0.5em 1.8em 0.4em 1.8em
+}
+
+#menu ul.nav li a:hover {
+    color: #333333;
+    background: #EAEAEA;
 }
 
 .hidden {
 	visibility: hidden;
 	display: none;
 }
+
+#menu ul.subnav {
+	color: #333333;
+	height: 2em;
+        font-size: 0.75em;
+	background: #FFFFFF;
+        border-bottom: 0.068em solid #000000;
+}
+
+#menu ul.subnav li {
+    padding:0 0 0 1em;
+    margin:0.25em 0 0.75em 0;
+}
+
+#menu ul.subnav li.subday {
+    padding:0 0 0 2.4em;
+}
+
+
+#menu ul.subnav li a {
+    display: block;
+    color: #333333;
+    text-decoration: underline;
+    padding: 0;
+}
+
