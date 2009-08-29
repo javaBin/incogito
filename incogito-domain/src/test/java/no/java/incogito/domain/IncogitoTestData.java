@@ -4,6 +4,7 @@ import fj.data.List;
 import fj.data.Option;
 import static no.java.incogito.domain.Level.LevelId;
 import static no.java.incogito.domain.Session.Format;
+import no.java.incogito.domain.Event.EventId;
 import org.joda.time.Interval;
 
 import java.io.File;

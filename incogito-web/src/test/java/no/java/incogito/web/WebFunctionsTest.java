@@ -68,12 +68,8 @@ public class WebFunctionsTest extends TestCase {
 
     CssConfiguration cssConfiguration = new CssConfiguration(2.5, 20.0 / 60.0, 11);
 
-    IncogitoConfiguration configuration = new IncogitoConfiguration(unconfigured.baseurl,
-        unconfigured.blurbs,
-        unconfigured.frontPageTexts,
-        unconfigured.labels.set(event.id, event.labels),
-        unconfigured.levels.set(event.id, event.levels),
-        cssConfiguration);
+    IncogitoConfiguration configuration = new IncogitoConfiguration(unconfigured.baseurl, cssConfiguration,
+        unconfigured.eventConfigurations);
 
     public void testFunctions() {
         List<Room> rooms = List.list(new Room("Room 1"), new Room("Room 2"));

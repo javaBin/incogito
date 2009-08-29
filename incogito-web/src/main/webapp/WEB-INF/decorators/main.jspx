@@ -72,7 +72,14 @@
   -->
   <div class="event-names">
     <c:forEach var="event" items="${events}" varStatus="index">
-      <h1 class="event-title">
+      <c:set var="extraCss">
+        <c:choose>
+          <c:when test="${event.name eq eventName}">
+            high-lighted
+          </c:when>
+        </c:choose>
+      </c:set>
+      <h1 class="event-title ${extraCss}">
         <span class="hidden text">${event.blurb}</span>
         <a href="${event.eventUrlHtml}">${event.name}</a>
       </h1>
@@ -81,8 +88,6 @@
   <div class="head-description">
     <span class="text"><!-- space --></span>
   </div>
-  <c:forEach var="event" items="${events}" varStatus="index">
-  </c:forEach>
 
   <c:if test="${fn:length(eventName) gt 0}">
     <a class="sessions-button" href="${selectedEvent.allSessionsUrlHtml}">

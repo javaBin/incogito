@@ -28,6 +28,7 @@ import static no.java.incogito.domain.UserSessionAssociation.InterestLevel.INTER
 import no.java.incogito.ems.server.DataGenerator;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.codehaus.plexus.util.FileUtils;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -41,7 +42,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.codehaus.plexus.util.FileUtils;
 import voldemort.server.VoldemortServer;
 
 import java.io.File;
@@ -63,7 +63,7 @@ public class IncogitoApplicationIntegrationTest {
     IncogitoApplication incogito;
 
     @Autowired
-    EmsServices services;    
+    EmsServices services;
 
     @Autowired
     VoldemortServer voldemortServer;
@@ -99,9 +99,11 @@ public class IncogitoApplicationIntegrationTest {
         }
 
         TreeMap<String, String> properties = TreeMap.<String, String>empty(Ord.stringOrd).
-                set("baseurl", "http://");
+            set("baseurl", "http://").
+            set("events", "JavaZone 2008");
+        System.out.println("new File(etc, \"incogito.properties\").getAbsolutePath() = " + new File(etc, "incogito.properties").getAbsolutePath());
         IO.runFileOutputStream(storePropertiesMap.f(properties), new File(etc, "incogito.properties")).call();
-        System.out.println("properties = " + properties);
+//        System.out.println("properties = " + new java.util.TreeMap<String, String>(properties.toMutableMap()).toString().replace(',', '\n'));
     }
 
     @Before
@@ -113,6 +115,8 @@ public class IncogitoApplicationIntegrationTest {
         logger.info("=============================================================");
         logger.info("======================= SETUP DONE ==========================");
         logger.info("=============================================================");
+
+        incogito.reloadConfiguration();
     }
 
     @Test
@@ -124,10 +128,10 @@ public class IncogitoApplicationIntegrationTest {
 
         OperationResult<User> userOperationResult = incogito.getUser(userId);
 
-        if(userOperationResult.isNotFound()){
+        if (userOperationResult.isNotFound()) {
             User user = createPristineUser(userId).
-                    setInterestLevel(sessionA, ATTEND).
-                    setInterestLevel(sessionB, INTEREST);
+                setInterestLevel(sessionA, ATTEND).
+                setInterestLevel(sessionB, INTEREST);
             incogito.createUser(user);
         }
 
@@ -137,14 +141,13 @@ public class IncogitoApplicationIntegrationTest {
         assertEquals(userId, user.id);
         assertEquals(2, user.sessionAssociations.size());
 
-        no.java.ems.domain.Event event = services.getEventDao().getEvents().get(0);
-
-        OperationResult<Schedule> scheduleOperationResult = incogito.getSchedule(event.getName(), userId.value);
+        OperationResult<Schedule> scheduleOperationResult =
+            incogito.getSchedule(dataSet.javaZone2008.getName(), userId.value);
         assertEquals(OperationResult.Status.OK, scheduleOperationResult.status);
     }
 
     @Test
-    public void testWelcomeMessages() throws Exception {
+    public void testFrontPageTexts() throws Exception {
         // Gah .. since the events are generated dynamically, we have to create a properties file for the app to load
 
         String text = "Welcome to JavaZone 2008!";
@@ -159,11 +162,11 @@ public class IncogitoApplicationIntegrationTest {
         assertTrue(jz08File.mkdirs());
         //noinspection ResultOfMethodCallIgnored
         jz08File.mkdirs();
-        File jz08Welcome = new File(jz08File, "blurb.txt");
+        File jz08Welcome = new File(jz08File, "frontpage.txt");
 
         TreeMap<String, String> properties = TreeMap.<String, String>empty(Ord.stringOrd).
-                set("baseurl", "http://poop").
-                set("events", UUID.randomUUID().toString() + ", " + dataSet.javaZone2008.getId() + ",");
+            set("baseurl", "http://poop").
+            set("events", dataSet.javaZone2008.getName() + ",");
         IO.runFileOutputStream(storePropertiesMap.f(properties), props).call();
 
         IO.runFileOutputStream(stringToStream.f(text), jz08Welcome).call();
@@ -174,8 +177,8 @@ public class IncogitoApplicationIntegrationTest {
         assertTrue(operationResult.isOk());
         Event jz08 = operationResult.value();
 
-        assertTrue(jz08.blurb.isSome());
-        assertEquals(text, jz08.blurb.some());
+        assertTrue(jz08.frontpageContent.isSome());
+        assertEquals(text, jz08.frontpageContent.some());
     }
 
     @Test
@@ -185,7 +188,6 @@ public class IncogitoApplicationIntegrationTest {
 
         List<Event> events = List.iterableList(incogito.getEvents().value());
         int eventCount = events.length();
-        System.out.println("eventCount = " + eventCount);
 
         // Pre-load all sessions
         TreeMap<Event.EventId, List<Session>> sessionMap = TreeMap.empty(Event.EventId.ord);

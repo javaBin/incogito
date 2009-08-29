@@ -22,9 +22,9 @@ Priority 1
 o Caching
 o Timeslots are wrong, ems or incogito?
 o Missing label colors: domain-driven design, gaming and mobile
-o Sort and filter non-configured events
 o Blurbs and welcome texts for each event
 
+v Sort and filter non-configured events
 v Per event front pages
 v Show "sessions" button on events only
 
