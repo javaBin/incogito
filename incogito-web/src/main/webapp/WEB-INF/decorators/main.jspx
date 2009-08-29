@@ -11,8 +11,12 @@
 <jsp:useBean id="incogito" type="no.java.incogito.application.IncogitoConfiguration" scope="request"/>
 <jsp:useBean id="app" type="no.java.incogito.application.IncogitoApplication" scope="application"/>
 <c:set var="events" value="${i:getEventList(app)}"/>
+<c:set var="eventName">${i:urlDecode(i:mapGet(requestScope, "eventName"))}</c:set>
+<c:if test="${fn:length(eventName) gt 0}">
+  <c:set var="selectedEvent" value="${i:getEventByName(app, eventName)}"/>
+</c:if>
 <head>
-  <title><decorator:title default="javaBin"/></title>
+  <title><decorator:title default="javaBin - Incogito"/></title>
   <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/incogito.css"/>
   <script src="${incogito.baseurl}/js/jquery-1.3.2.js" type="text/javascript"><!-- space --></script>
   <script src="${incogito.baseurl}/js/jquery.json-1.0.js" type="text/javascript"><!-- space --></script>
@@ -30,8 +34,6 @@
       else {
         $("#header .logo").animate({ left: "0px" }, 0);
       }
-      var sessionsButton = $(".sessions-button")
-      var calendarButton = $(".calendar-button")
       var headDescriptionDefault = $(".head-description .default")
       var headDescriptionText = $(".head-description .text")
       $(".event-title").bind("mouseover", eventHeaderClicked)
@@ -40,8 +42,6 @@
 
       function eventHeaderClicked() {
         var text = $(this).find(".text").text();
-        var sessionsUrl = $(this).find(".sessions-url").text();
-        var calendarUrl = $(this).find(".calendar-url").text();
 
         $(this).parent().children().removeClass("high-lighted")
         $(this).addClass("high-lighted")
@@ -54,8 +54,6 @@
           headDescriptionDefault.hide()
           headDescriptionText.show().text(text)
         }
-        sessionsButton.attr("href", sessionsUrl)
-        calendarButton.attr("href", calendarUrl)
       }
     });
       </script>
@@ -76,22 +74,21 @@
     <c:forEach var="event" items="${events}" varStatus="index">
       <h1 class="event-title">
         <span class="hidden text">${event.blurb}</span>
-        <span class="hidden calendar-url">${event.calendarUrlHtml}</span>
-        <span class="hidden sessions-url">${event.allSessionsUrlHtml}</span>
         <a href="${event.eventUrlHtml}">${event.name}</a>
       </h1>
     </c:forEach>
   </div>
   <div class="head-description">
-    <span class="default">Please select an event</span>
     <span class="text"><!-- space --></span>
   </div>
   <c:forEach var="event" items="${events}" varStatus="index">
   </c:forEach>
 
-  <a class="sessions-button" href="#">
-    <img src="${incogito.baseurl}/images/sessions-button.png" alt="All Sessions"/>
-  </a>
+  <c:if test="${fn:length(eventName) gt 0}">
+    <a class="sessions-button" href="${selectedEvent.allSessionsUrlHtml}">
+      <img src="${incogito.baseurl}/images/sessions-button.png" alt="All Sessions"/>
+    </a>
+  </c:if>
 
   <!--
   <a class="calendar-button" href="${firstEvent.calendarUrlHtml}">
