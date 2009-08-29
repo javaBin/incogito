@@ -9,6 +9,8 @@ import junit.framework.TestCase;
 import no.java.ems.client.RestEmsService;
 import no.java.ems.domain.Event;
 import no.java.incogito.Functions;
+import no.java.incogito.application.IncogitoConfiguration.EventConfiguration;
+import static no.java.incogito.Functions.compose;
 import no.java.incogito.domain.Event.EventId;
 import no.java.incogito.domain.Label;
 import no.java.incogito.ems.client.EmsWrapper;
@@ -37,7 +39,6 @@ public class DefaultIncogitoApplicationTest extends TestCase {
         Event event = new Event();
         event.setId(UUID.randomUUID().toString());
         event.setName("JavaZone 2009");
-        EventId eventId = EventId.eventId(event.getId());
 
         TreeMap<String, Event> events = TreeMap.<String, Event>empty(Ord.stringOrd).set(event.getName(), event);
         emsWrapper.listEvents = P.p(events.values());
@@ -48,15 +49,15 @@ public class DefaultIncogitoApplicationTest extends TestCase {
 
         IncogitoConfiguration configuration = application.getConfiguration();
 
-        assertEquals(2, configuration.eventConfigurations.get(eventId).some().labels.size());
-        assertEquals(5, configuration.eventConfigurations.get(eventId).some().levels.size());
+        assertEquals(2, configuration.eventConfigurations.find(compose(Functions.equals.f(event.getName()), EventConfiguration.name_)).some().labels.size());
+        assertEquals(5, configuration.eventConfigurations.find(compose(Functions.equals.f(event.getName()), EventConfiguration.name_)).some().levels.size());
 
-        Label actualMyLabel = configuration.eventConfigurations.get(eventId).some().labels.get("MyLabel").some();
+        Label actualMyLabel = configuration.eventConfigurations.find(compose(Functions.equals.f(event.getName()), EventConfiguration.name_)).some().labels.get("MyLabel").some();
         assertEquals("My label", actualMyLabel.displayName);
         assertEquals("MyLabel", actualMyLabel.id);
         assertEquals("MyLabel", actualMyLabel.emsId);
 
-        Label actualRenamedLabel = configuration.eventConfigurations.get(eventId).some().labels.get("renamed-label").some();
+        Label actualRenamedLabel = configuration.eventConfigurations.find(compose(Functions.equals.f(event.getName()), EventConfiguration.name_)).some().labels.get("renamed-label").some();
         assertEquals("Renamed Label", actualRenamedLabel.displayName);
         assertEquals("renamed-label", actualRenamedLabel.id);
         assertEquals("Renamed label", actualRenamedLabel.emsId);
