@@ -1,10 +1,19 @@
+body {
+    padding:0;
+    margin:0;
+    overflow: auto;
+}
+
 div#calendar {
-  width: 70em;
-  margin: 2em auto;;
+  width: 100%;
+  overflow: auto;
+  position:absolute;
+  top: 8em;
+  margin: 2em auto;
 }
 
 .times {
-    margin-top: 2.5em;
+    margin: 2.5em 0 0 0.5em;
     width: 3em;
     float: left;
 }
@@ -19,17 +28,17 @@ div#calendar {
 }
 
 .rooms {
-    width:67em;
+    width:95.7%;
     position:absolute;
-    margin-left:3em;
+    margin-left:4.3%;
 }
 
 .day {
-    width:70em;
+    width:100%;
 }
 
 .day .room {
-    width: 9em;
+    width: 12.8%;
     border-left: 0.1em solid #787878;
     padding: 0 0.25em 0 0.25em;
     float: left;
@@ -49,7 +58,7 @@ div.session-header div {
 }
 
 .room .session {
-    width: 8.75em;
+    width: 12.5%;
     position: absolute;
 }
 
@@ -212,9 +221,14 @@ td#login-submit * {
 
 /* hd */
 #hd {
-	border-top: 0.3em solid #333333;
-        width: 70em;
-        margin: 0 auto;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    background: #FFFFFF;
+    border-top: 0.3em solid #333333;
+    width: 100%;
+    margin: 0 auto;
 }
 
 /* legend */
@@ -224,16 +238,17 @@ td#login-submit * {
 }
 
 #legends #title {
-	width: 6em;
+	width: 6%;
 	float: left;
 	height: 5em;
 	background: #EAEAEA;
 }
 
 #legends #filters {
-	float: left;
-	height: 4em;	
-	width: 55em;
+        overflow: auto;
+        float: left;
+	height: 5em;
+	width: 80%;
 	color: #787878;
 }
 
@@ -251,9 +266,19 @@ td#login-submit * {
     font-size: 0.80em;
 }
 
+#filters ul li.active a {
+    color: #333333;
+    text-decoration: none;
+}
+
+#filters ul li.inactive a:hover,#filters ul li.active a:hover  {
+    background: #333333;
+    color: #EAEAEA;
+}
+
 /* Complexity */
 #legends #complexity {
-	width: 10em;
+	width: 13%;
 	height: 5em;
 	float: left;
 	border-left: 0.1em solid #EAEAEA;
