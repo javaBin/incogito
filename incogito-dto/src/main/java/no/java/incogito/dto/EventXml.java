@@ -18,7 +18,11 @@ public class EventXml {
 
     public String name;
 
-    public String welcomeText;
+    public String blurb;
+
+    public String frontpageContent;
+
+    public String eventUrlHtml;
 
     public String allSessionsUrlHtml;
 
@@ -31,12 +35,15 @@ public class EventXml {
     public EventXml() {
     }
 
-    public EventXml(String selfUrl, String id, String name, Option<String> welcomeText, String allSessionsUrlHtml,
-                    String calendarUrlHtml, Iterable<LabelXml> labels, Iterable<LevelXml> levels) {
+    public EventXml(String selfUrl, String id, String name, Option<String> blurb, Option<String> frontpageContent,
+                    String eventUrlHtml, String allSessionsUrlHtml, String calendarUrlHtml,
+                    Iterable<LabelXml> labels, Iterable<LevelXml> levels) {
         this.selfUrl = selfUrl;
         this.id = id;
         this.name = name;
-        this.welcomeText = welcomeText.orSome((String) null);
+        this.blurb = blurb.orSome((String) null);
+        this.frontpageContent = frontpageContent.orSome((String) null);
+        this.eventUrlHtml = eventUrlHtml;
         this.allSessionsUrlHtml = allSessionsUrlHtml;
         this.calendarUrlHtml = calendarUrlHtml;
         this.labels = toList(labels);
@@ -47,8 +54,16 @@ public class EventXml {
         return name;
     }
 
-    public String getWelcomeText() {
-        return welcomeText;
+    public String getBlurb() {
+        return blurb;
+    }
+
+    public String getFrontpageContent() {
+        return frontpageContent;
+    }
+
+    public String getEventUrlHtml() {
+        return eventUrlHtml;
     }
 
     public String getAllSessionsUrlHtml() {

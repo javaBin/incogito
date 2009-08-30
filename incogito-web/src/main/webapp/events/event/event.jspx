@@ -12,22 +12,21 @@
 <c:set var="event" value="${i:getEventByName(app, eventName)}"/>
 
 <body>
-<ul>
-  <li><a href="${incogito.baseurl}/events">Back to event list</a></li>
-</ul>
-<h2>${eventName}</h2>
+<div id="main-content">
+  <!--
+  <ul>
+    <li><a href="${incogito.baseurl}/events">Back to event list</a></li>
+  </ul>
+  <h2>${eventName}</h2>
 
-<ul>
-  <li><a href="${incogito.baseurl}/events/${eventName}/sessions">Sessions</a></li>
-  <li><a href="${incogito.baseurl}/events/${eventName}/agenda">Agenda</a></li>
-  <li><a href="${incogito.baseurl}/events/${eventName}/calendar">Calendar</a></li>
-</ul>
+  <ul>
+    <li><a href="${incogito.baseurl}/events/${eventName}/sessions">Sessions</a></li>
+    <li><a href="${incogito.baseurl}/events/${eventName}/agenda">Agenda</a></li>
+    <li><a href="${incogito.baseurl}/events/${eventName}/calendar">Calendar</a></li>
+  </ul>
+  -->
 
-<!--
-<c:if test="${not(event.welcomeHtml eq null)}">
-  ${event.welcomeHtml}
-</c:if>
--->
-
+  ${event.frontpageContent}
+</div>
 </body>
 </html>

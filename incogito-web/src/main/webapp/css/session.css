@@ -1,15 +1,22 @@
+div.speaker {
+  clear: both;
+}
+
 .session-metadata {
   list-style: none;
   font-weight: bold;
 }
 
-.speaker-image img {
+.speaker-image {
   float: left;
+}
+
+.speaker-image img {
   width: 100px;
   margin-right: 20px;
   margin-bottom: 20px;
 }
 
-.speaker-image img:last-child {
+.speaker:last-child .speaker-image img {
   margin-bottom: 0;
 }

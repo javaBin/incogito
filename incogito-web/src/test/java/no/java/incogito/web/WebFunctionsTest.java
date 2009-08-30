@@ -50,9 +50,9 @@ public class WebFunctionsTest extends TestCase {
 
     Level intermediate = new Level(LevelId.Intermediate, "Intermediate", new File(""));
 
-    Label java = new Label("java", "Java", new File("java.png"));
+    Label java = new Label("java", "Java", "Java", new File("java.png"));
 
-    Event event = new Event(eventId(UUID.randomUUID().toString()), "FunZone", Option.<String>none(),
+    Event event = new Event(eventId(UUID.randomUUID().toString()), "FunZone", Option.<String>none(), Option.<String>none(),
         List.<Room>nil(), TreeMap.<LevelId, Level>empty(LevelId.ord).set(intermediate.id, intermediate),
         TreeMap.<String, Label>empty(Ord.stringOrd).set(java.id, java));
 
@@ -68,11 +68,8 @@ public class WebFunctionsTest extends TestCase {
 
     CssConfiguration cssConfiguration = new CssConfiguration(2.5, 20.0 / 60.0, 11);
 
-    IncogitoConfiguration configuration = new IncogitoConfiguration(unconfigured.baseurl,
-        unconfigured.welcomeTexts,
-        unconfigured.labels.set(event.id, event.labels),
-        unconfigured.levels.set(event.id, event.levels),
-        cssConfiguration);
+    IncogitoConfiguration configuration = new IncogitoConfiguration(unconfigured.baseurl, cssConfiguration,
+        unconfigured.eventConfigurations);
 
     public void testFunctions() {
         List<Room> rooms = List.list(new Room("Room 1"), new Room("Room 2"));

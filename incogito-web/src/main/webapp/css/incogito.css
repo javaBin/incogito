@@ -119,8 +119,9 @@ a:visited {
   font-weight: bold;
 }
 
-#header .event-names h1.high-lighted {
+#header .event-names h1.high-lighted a {
   color: #000000;
+  text-decoration: none;
 }
 
 #header .event-names h1:last-child {

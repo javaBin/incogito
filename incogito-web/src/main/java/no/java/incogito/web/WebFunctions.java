@@ -98,7 +98,7 @@ public class WebFunctions {
                     }
                 });
 
-            List<String> levels = configuration.getLevels(event.id).values().
+            List<String> levels = event.levels.values().
                 map(Level.showId.showS_()).
                 map(new F<String, String>() {
                     public String f(String level) {
@@ -106,7 +106,7 @@ public class WebFunctions {
                     }
                 });
 
-            List<String> labels = configuration.getLabels(event.id).values().
+            List<String> labels = event.labels.values().
                 map(new F<Label, String>() {
                     public String f(Label label) {
                         return ".label-" + label.id + " { list-style-image: url('" + configuration.baseurl + "/rest/events/" + event.name + "/icons/labels/" + label.id + ".png'); }";

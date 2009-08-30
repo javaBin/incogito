@@ -85,6 +85,14 @@ public abstract class OperationResult<T> {
         };
     }
 
+    public static <T> F<Option<T>, OperationResult<T>> okOption_(final String notFoundMessage) {
+        return new F<Option<T>, OperationResult<T>>() {
+            public OperationResult<T> f(Option<T> t) {
+                return t.isSome() ? ok(t) : OperationResult.<T>notFound(notFoundMessage);
+            }
+        };
+    }
+
     public static <T> P1<OperationResult<T>> $ok(final T t) {
         return new P1<OperationResult<T>>() {
             @Override

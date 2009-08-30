@@ -18,9 +18,23 @@ o Make the JavaScript library more REST-ful
 o Remove icon tag library.
   - All JSPs should use the *Xml objects which all should have the necessary icon URLs.
 
-Pri 1
+Priority 1
 o Caching
+o Timeslots are wrong, ems or incogito?
+o Missing label colors: domain-driven design, gaming and mobile
+o Blurbs and welcome texts for each event
 
-Pri 2:
+v Sort and filter non-configured events
+v Per event front pages
+v Show "sessions" button on events only
+
+Priority 2:
+o Give 404 on not found events and sessions
 o iCal
 o RSS/Atom
+o Fix the link for
+  - Dokumentasjon uten pistol - går det an?
+  - EDR-MDS "a less is more approach to SOA Master Data Management"
+
+Low priority:
+o More lazy reloading of configuration, check the timestamps on the files
