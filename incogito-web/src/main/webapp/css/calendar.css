@@ -274,7 +274,7 @@ td#login-submit * {
 
 #filters ul li a {
     display:block;
-    margin-left: 1.5em;
+    margin-left: 1.3em;
     padding-left: 0.3em;
 }
 
@@ -286,7 +286,8 @@ td#login-submit * {
 /* Complexity */
 #legends #complexity {
 	width: 13%;
-	height: 5em;
+        padding-top: 1em;
+	height: 5.5em;
 	float: left;
 	border-left: 0.1em solid #EAEAEA;
 }
@@ -313,14 +314,14 @@ td#login-submit * {
 }
 
 #complexity .explanation {
-	height: 1em;
-  text-align: center;
+    height: 1em;
+    text-align: center;
 }
 
 #complexity .explanation span {
-	font-size: 0.75em;
-  width: 50%;
-  float: left;
+    font-size: 0.75em;
+    width: 50%;
+    float: left;
 }
 
 /* navigation */
