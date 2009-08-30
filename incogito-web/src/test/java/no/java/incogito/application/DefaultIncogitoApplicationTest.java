@@ -2,16 +2,13 @@ package no.java.incogito.application;
 
 import static fj.Function.flip;
 import fj.P;
-import fj.data.TreeMap;
 import fj.data.List;
+import fj.data.TreeMap;
 import fj.pre.Ord;
 import junit.framework.TestCase;
 import no.java.ems.client.RestEmsService;
 import no.java.ems.domain.Event;
 import no.java.incogito.Functions;
-import no.java.incogito.application.IncogitoConfiguration.EventConfiguration;
-import static no.java.incogito.Functions.compose;
-import no.java.incogito.domain.Event.EventId;
 import no.java.incogito.domain.Label;
 import no.java.incogito.ems.client.EmsWrapper;
 import no.java.incogito.util.TestPathFactoryBean;
@@ -41,7 +38,7 @@ public class DefaultIncogitoApplicationTest extends TestCase {
         event.setName("JavaZone 2009");
 
         TreeMap<String, Event> events = TreeMap.<String, Event>empty(Ord.stringOrd).set(event.getName(), event);
-        emsWrapper.listEvents = P.p(events.values());
+        emsWrapper.getEvents = P.p(events.values());
         emsWrapper.findEventByName = flip(Functions.<String, Event>TreeMap_get()).f(events);
         DefaultIncogitoApplication application = new DefaultIncogitoApplication(incogitoHome, null, emsWrapper);
 
@@ -49,15 +46,15 @@ public class DefaultIncogitoApplicationTest extends TestCase {
 
         IncogitoConfiguration configuration = application.getConfiguration();
 
-        assertEquals(2, configuration.eventConfigurations.find(compose(Functions.equals.f(event.getName()), EventConfiguration.name_)).some().labels.size());
-        assertEquals(5, configuration.eventConfigurations.find(compose(Functions.equals.f(event.getName()), EventConfiguration.name_)).some().levels.size());
+        assertEquals(2, configuration.findEventConfigurationByName(event.getName()).some().labels.size());
+        assertEquals(5, configuration.findEventConfigurationByName(event.getName()).some().levels.size());
 
-        Label actualMyLabel = configuration.eventConfigurations.find(compose(Functions.equals.f(event.getName()), EventConfiguration.name_)).some().labels.get("MyLabel").some();
+        Label actualMyLabel = configuration.findEventConfigurationByName(event.getName()).some().labels.get("MyLabel").some();
         assertEquals("My label", actualMyLabel.displayName);
         assertEquals("MyLabel", actualMyLabel.id);
         assertEquals("MyLabel", actualMyLabel.emsId);
 
-        Label actualRenamedLabel = configuration.eventConfigurations.find(compose(Functions.equals.f(event.getName()), EventConfiguration.name_)).some().labels.get("renamed-label").some();
+        Label actualRenamedLabel = configuration.findEventConfigurationByName(event.getName()).some().labels.get("renamed-label").some();
         assertEquals("Renamed Label", actualRenamedLabel.displayName);
         assertEquals("renamed-label", actualRenamedLabel.id);
         assertEquals("Renamed label", actualRenamedLabel.emsId);
@@ -76,7 +73,7 @@ public class DefaultIncogitoApplicationTest extends TestCase {
         TreeMap<String, Event> emsEvents = TreeMap.<String, Event>empty(Ord.stringOrd).
             set(javaZone2008.getName(), javaZone2008).
             set(javaZone2009.getName(), javaZone2009);
-        emsWrapper.listEvents = P.p(emsEvents.values());
+        emsWrapper.getEvents = P.p(emsEvents.values());
         emsWrapper.findEventByName = flip(Functions.<String, Event>TreeMap_get()).f(emsEvents);
 
         DefaultIncogitoApplication application = new DefaultIncogitoApplication(incogitoHome, null, emsWrapper);

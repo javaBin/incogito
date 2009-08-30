@@ -12,9 +12,7 @@ import fj.data.Option;
 import static fj.data.Option.fromNull;
 import static fj.data.Option.none;
 import static fj.data.Option.some;
-import no.java.ems.client.EventsClient;
 import no.java.ems.client.PeopleClient;
-import no.java.ems.client.SessionsClient;
 import no.java.ems.domain.Binary;
 import no.java.ems.domain.Event;
 import no.java.ems.domain.Person;
@@ -35,14 +33,12 @@ import java.util.concurrent.Callable;
 @Component
 public class EmsWrapper {
 
-    private final EventsClient eventsClient;
-    private final SessionsClient sessionsClient;
+    private final EmsService emsService;
     private final PeopleClient peopleClient;
 
     @Autowired
     public EmsWrapper(EmsService emsService) {
-        this.eventsClient = emsService.getEventsClient();
-        this.sessionsClient = emsService.getSessionsClient();
+        this.emsService = emsService;
         this.peopleClient = emsService.getPeopleClient();
     }
 
@@ -50,10 +46,10 @@ public class EmsWrapper {
     // Event
     // -----------------------------------------------------------------------
 
-    public P1<List<Event>> listEvents = new P1<List<Event>>() {
+    public P1<List<Event>> getEvents = new P1<List<Event>>() {
         public List<Event> _1() {
             try {
-                return iterableList(eventsClient.listEvents());
+                return iterableList(emsService.getEvents());
             } catch (Exception e) {
                 return nil();
             }
@@ -63,7 +59,7 @@ public class EmsWrapper {
     public F<String, Option<Event>> findEventByName = new F<String, Option<Event>>() {
         public Option<Event> f(String eventName) {
             try {
-                return iterableList(eventsClient.listEvents()).
+                return iterableList(emsService.getEvents()).
                     find(compose(Functions.equals.f(eventName), EmsFunctions.eventName));
             } catch (Exception e) {
                 return none();
@@ -78,27 +74,27 @@ public class EmsWrapper {
     public F<String, Option<Session>> getSessionById = new F<String, Option<Session>>() {
         public Option<Session> f(String id) {
             try {
-                return fromNull(sessionsClient.getSession(id));
+                return fromNull(emsService.getSession(id));
             } catch (Exception e) {
                 return none();
             }
         }
     };
 
-    public F<String, List<String>> findSessionIdsByEventId = new F<String, List<String>>() {
-        public List<String> f(String eventId) {
+    public F<String, List<Session>> findSessionsByEventId = new F<String, List<Session>>() {
+        public List<Session> f(String eventId) {
             try {
-                return iterableList(sessionsClient.findSessionIdsByEvent(eventId));
+                return iterableList(emsService.getSessions(eventId));
             } catch (Exception e) {
                 return nil();
             }
         }
     };
 
-    public F<String, F<String, List<String>>> findSessionIdsByEventIdAndTitle = curry(new F2<String, String, List<String>>() {
-        public List<String> f(String eventId, String title) {
+    public F<String, F<String, List<Session>>> findSessionIdsByEventIdAndTitle = curry(new F2<String, String, List<Session>>() {
+        public List<Session> f(String eventId, String title) {
             try {
-                return iterableList(sessionsClient.findSessionsByTitle(eventId, title));
+                return iterableList(emsService.findSessionsByTitle(eventId, title));
             } catch (Exception e) {
                 return nil();
             }

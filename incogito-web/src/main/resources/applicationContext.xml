@@ -47,6 +47,7 @@
 
   <bean id="emsService" class="no.java.incogito.ems.client.RestEmsServiceFactoryBean">
     <property name="baseurl" value="${ems.url}"/>
+    <property name="cache" value="true"/>
   </bean>
 
   <!-- Performance -->

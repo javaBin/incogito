@@ -109,7 +109,7 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
      * logging output, but it will be possible to turn it on to check that the application is working.
      */
     public void reloadConfiguration() throws Exception {
-        this.configuration = new ConfigurationLoaderService(emsWrapper).loadConfiguration(incogitoHome);
+        this.configuration = new ConfigurationLoaderService(emsWrapper).loadConfiguration(incogitoHome, configuration);
     }
 
     public OperationResult<List<Event>> getEvents() {
@@ -150,7 +150,6 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
             public OperationResult<Session> f(Event event) {
                 return emsWrapper.
                     findSessionIdsByEventIdAndTitle.f(event.id.toString()).f(sessionTitle).toOption().
-                    bind(emsWrapper.getSessionById).
                     bind(sessionFromEms.f(event)).
                     map(OperationResult.<Session>ok_()).
                     orSome(OperationResult.<Session>notFound("Could not find session with title '" + sessionTitle + "' not found."));
@@ -253,8 +252,7 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
 
     F<Event, List<Session>> getSessionsForEvent = new F<Event, List<Session>>() {
         public List<Session> f(Event event) {
-            return somes(somes(emsWrapper.findSessionIdsByEventId.f(event.id.toString()).
-                map(emsWrapper.getSessionById)).
+            return somes(emsWrapper.findSessionsByEventId.f(event.id.toString()).
                 map(sessionFromEms.f(event)));
         }
     };

@@ -49,7 +49,7 @@ public class ConfigurationLoaderService {
         this.emsWrapper = emsWrapper;
     }
 
-    public IncogitoConfiguration loadConfiguration(File incogitoHome) throws Exception {
+    public IncogitoConfiguration loadConfiguration(File incogitoHome, IncogitoConfiguration existingConfiguration) throws Exception {
         File props = new File(incogitoHome, "etc/incogito.properties").getAbsoluteFile();
 //        logger.info("Reloading configuration from: " + props);
         File etc = props.getParentFile();
@@ -85,9 +85,19 @@ public class ConfigurationLoaderService {
                 logger.warn("Missing configuration for event '" + eventName + "'.");
             }
 
+            File eventPropertiesFile = new File(eventDirectory, "event.properties");
+
+            Option<EventConfiguration> existingEventConfiguration = existingConfiguration.findEventConfigurationByName(eventName);
+            if(existingEventConfiguration.isSome() && !existingEventConfiguration.some().isOutdated(eventPropertiesFile.lastModified())) {
+                events = events.cons(existingEventConfiguration.some());
+                continue;
+            }
+
+            logger.warn("Reloading configuration for event '" + eventName + "'");
+
             final TreeMap<String, String> eventProperties = Callables.option(IO.<TreeMap<String, String>>runFileInputStream_().
                 f(PropertiesF.loadPropertiesAsMap).
-                f(new File(eventDirectory, "event.properties")))._1().orSome(TreeMap.<String, String>empty(Ord.stringOrd));
+                f(eventPropertiesFile))._1().orSome(TreeMap.<String, String>empty(Ord.stringOrd));
 
             Option<String> frontPageContent = some(new File(eventDirectory, "frontpage.txt")).
                 filter(Functions.File_canRead).
@@ -144,7 +154,8 @@ public class ConfigurationLoaderService {
                 continue;
             }
 
-            events = events.cons(new EventConfiguration(eventName, blurb, frontPageContent, labelMap, levelMap));
+            events = events.cons(new EventConfiguration(eventName, blurb, frontPageContent, labelMap, levelMap,
+                    eventPropertiesFile.lastModified()));
         }
 
         return new IncogitoConfiguration(baseurl, cssConfiguration, events.reverse());
