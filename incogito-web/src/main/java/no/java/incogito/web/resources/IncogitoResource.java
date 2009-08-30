@@ -19,9 +19,11 @@ import no.java.incogito.application.IncogitoApplication;
 import no.java.incogito.application.OperationResult;
 import no.java.incogito.application.OperationResult.NotFoundOperationResult;
 import no.java.incogito.application.OperationResult.OkOperationResult;
+import static no.java.incogito.application.OperationResult.fromOption;
 import no.java.incogito.domain.Event;
 import no.java.incogito.domain.IncogitoUri;
 import no.java.incogito.domain.IncogitoUri.IncogitoRestEventsUri.IncogitoRestEventUri;
+import no.java.incogito.domain.IncogitoUri.IncogitoEventsUri.IncogitoEventUri;
 import no.java.incogito.domain.Label;
 import no.java.incogito.domain.Level;
 import no.java.incogito.domain.Level.LevelId;
@@ -155,7 +157,7 @@ public class IncogitoResource {
                 map(IO.<byte[]>runFileInputStream_().f(IO.ByteArrays.streamToByteArray)).
                 map(compose(P1.<Option<byte[]>>__1(), Callables.<byte[]>option())));
 
-        return toJsr311(OperationResult.ok(bytes), cacheForOneHourCacheControl);
+        return toJsr311(fromOption(bytes, "Unable to read level file."), cacheForOneHourCacheControl);
     }
 
     @Path("/events/{eventName}/icons/labels/{label}.png")
@@ -181,7 +183,7 @@ public class IncogitoResource {
                 map(IO.<byte[]>runFileInputStream_().f(IO.ByteArrays.streamToByteArray)).
                 map(compose(P1.<Option<byte[]>>__1(), Callables.<byte[]>option())));
 
-        return toJsr311(OperationResult.ok(bytes), cacheForOneHourCacheControl);
+        return toJsr311(fromOption(bytes, "Unable to read label file."), cacheForOneHourCacheControl);
     }
 
     @Path("/events/{eventName}")
@@ -196,8 +198,9 @@ public class IncogitoResource {
     public Response getSessionsForEvent(@Context final UriInfo uriInfo,
                                         @PathParam("eventName") final String eventName) {
 
+        IncogitoUri incogitoUri = new IncogitoUri(uriInfo.getRequestUriBuilder());
         F<List<Session>, List<SessionXml>> sessionToXmlList = List.<Session, SessionXml>map_().
-                f(XmlFunctions.sessionToXml.f(new IncogitoUri(uriInfo.getRequestUriBuilder()).restEvents().eventUri(eventName)));
+                f(XmlFunctions.sessionToXml.f(incogitoUri.restEvents().eventUri(eventName)).f(incogitoUri.events().eventUri(eventName)));
 
         return toJsr311(incogito.getSessions(eventName).
                 ok().map(compose(SessionListXml.sessionListXml, sessionToXmlList)));
@@ -208,23 +211,24 @@ public class IncogitoResource {
     public Response getSessionForEvent(@Context final UriInfo uriInfo,
                                        @PathParam("eventName") final String eventName,
                                        @PathParam("sessionId") final String sessionId) {
-        IncogitoRestEventUri uri = new IncogitoUri(uriInfo.getRequestUriBuilder()).restEvents().eventUri(eventName);
+        IncogitoUri incogitoUri = new IncogitoUri(uriInfo.getRequestUriBuilder());
+        IncogitoRestEventUri restEventUri = incogitoUri.restEvents().eventUri(eventName);
+        IncogitoEventUri eventUri = incogitoUri.events().eventUri(eventName);
 
         // TODO: Consider replacing this with the configured host name and base url
-        F<Session, SessionXml> sessionToXml = XmlFunctions.sessionToXml.f(uri);
+        F<Session, SessionXml> sessionToXml = XmlFunctions.sessionToXml.f(restEventUri).f(eventUri);
 
         return toJsr311(incogito.getSession(eventName, new SessionId(sessionId)).
                 ok().map(sessionToXml));
     }
 
-    /**
-     * TODO: This should use speaker name instead of speaker id
-     */
-    @Path("/people/{personId}/photo")
+    @Path("/events/{eventName}/sessions/{sessionId}/speaker-photos/{index}")
     @GET
     public Response getPersonPhoto(@Context final UriInfo uriInfo,
-                                   @PathParam("personId") final String personId) {
-        return toJsr311(incogito.getPersonPhoto(personId), cacheForOneHourCacheControl);
+                                   @PathParam("eventName") final String eventName,
+                                   @PathParam("sessionId") final String sessionId,
+                                   @PathParam("index") final int index) {
+        return toJsr311(incogito.getSpeakerPhotoForSession(sessionId, index), cacheForOneHourCacheControl);
     }
 
     @Path("/events/{eventName}/{sessionId}/session-interest")
@@ -271,10 +275,12 @@ public class IncogitoResource {
                                        @Context final SecurityContext securityContext,
                                        @PathParam("eventName") final String eventName,
                                        @PathParam("userName") final String userName) {
-        IncogitoRestEventUri uri = new IncogitoUri(uriInfo.getRequestUriBuilder()).restEvents().eventUri(eventName);
+        IncogitoUri incogitoUri = new IncogitoUri(uriInfo.getRequestUriBuilder());
+        IncogitoRestEventUri restEventUri = incogitoUri.restEvents().eventUri(eventName);
+        IncogitoEventUri eventUri = incogitoUri.events().eventUri(eventName);
 
         return toJsr311(incogito.getSchedule(eventName, userName).ok().
-                map(XmlFunctions.scheduleToXml.f(uri)));
+                map(XmlFunctions.scheduleToXml.f(restEventUri).f(eventUri)));
     }
 
     // -----------------------------------------------------------------------

@@ -5,22 +5,22 @@ import fj.F2;
 import static fj.Function.compose;
 import static fj.Function.curry;
 import static fj.Function.flip;
+import fj.data.Either;
+import static fj.data.Either.left;
+import static fj.data.Either.right;
 import fj.data.List;
 import static fj.data.List.iterableList;
 import fj.data.Option;
 import static fj.data.Option.fromNull;
 import static fj.data.Option.fromString;
-import static fj.data.Option.none;
-import static fj.data.Option.some;
 import static fj.data.Option.somes;
 import fj.pre.Show;
-import no.java.ems.domain.Event;
 import no.java.incogito.Enums;
 import no.java.incogito.Functions;
 import no.java.incogito.application.IncogitoConfiguration.EventConfiguration;
 import no.java.incogito.domain.Comment;
+import no.java.incogito.domain.Event;
 import no.java.incogito.domain.Event.EventId;
-import static no.java.incogito.domain.Event.EventId.eventId;
 import no.java.incogito.domain.Label;
 import no.java.incogito.domain.Level;
 import no.java.incogito.domain.Level.LevelId;
@@ -37,9 +37,9 @@ import no.java.incogito.domain.WikiString;
  * @version $Id$
  */
 public class EmsFunctions {
-    public static F<Event, EventId> eventIdFromEms = new F<no.java.ems.domain.Event, EventId>() {
+    public static F<no.java.ems.domain.Event, EventId> eventIdFromEms = new F<no.java.ems.domain.Event, EventId>() {
         public EventId f(no.java.ems.domain.Event event) {
-            return eventId(event.getId());
+            return EventId.eventId(event.getId());
         }
     };
 
@@ -49,23 +49,24 @@ public class EmsFunctions {
         }
     };
 
-    public static F<IncogitoConfiguration, F<no.java.ems.domain.Event, Option<no.java.incogito.domain.Event>>> eventFromEms = curry(new F2<IncogitoConfiguration, Event, Option<no.java.incogito.domain.Event>>() {
-        public Option<no.java.incogito.domain.Event> f(IncogitoConfiguration configuration, final no.java.ems.domain.Event event) {
+    public static F<IncogitoConfiguration, F<no.java.ems.domain.Event, Either<String, Event>>> eventFromEms = curry(new F2<IncogitoConfiguration, no.java.ems.domain.Event, Either<String, Event>>() {
+        public Either<String, Event> f(IncogitoConfiguration configuration, final no.java.ems.domain.Event event) {
             final EventId eventId = eventIdFromEms.f(event);
 
             return configuration.eventConfigurations.
-                find(compose(Functions.equals.f(event.getName()), EventConfiguration.name_)).
-                map(new F<EventConfiguration, no.java.incogito.domain.Event>() {
-                    public no.java.incogito.domain.Event f(EventConfiguration eventConfiguration) {
-                        return new no.java.incogito.domain.Event(eventId,
-                            event.getName(),
-                            eventConfiguration.blurb,
-                            eventConfiguration.frontPageText,
-                            List.iterableList(event.getRooms()).map(roomFromEms),
-                            eventConfiguration.levels,
-                            eventConfiguration.labels);
-                    }
-                });
+                    find(compose(Functions.equals.f(event.getName()), EventConfiguration.name_)).
+                    toEither("Could not find configured event '" + eventId + "'.").right().
+                    map(new F<EventConfiguration, Event>() {
+                        public Event f(EventConfiguration eventConfiguration) {
+                            return new Event(eventId,
+                                    event.getName(),
+                                    eventConfiguration.blurb,
+                                    eventConfiguration.frontPageText,
+                                    List.iterableList(event.getRooms()).map(roomFromEms),
+                                    eventConfiguration.levels,
+                                    eventConfiguration.labels);
+                        }
+                    });
         }
     });
 
@@ -75,15 +76,15 @@ public class EmsFunctions {
         }
     };
 
-    public static F<no.java.incogito.domain.Event, F<no.java.ems.domain.Session, Option<Session>>> sessionFromEms = curry(new F2<no.java.incogito.domain.Event, no.java.ems.domain.Session, Option<Session>>() {
-        public Option<Session> f(no.java.incogito.domain.Event event, no.java.ems.domain.Session session) {
+    public static F<Event, F<no.java.ems.domain.Session, Either<String, Session>>> sessionFromEms = curry(new F2<Event, no.java.ems.domain.Session, Either<String, Session>>() {
+        public Either<String, Session> f(Event event, no.java.ems.domain.Session session) {
             if (session.getTitle() == null) {
-                return none();
+                return left("Not a valid session, title is missing.");
             }
 
             // Hack for now until ';' is encoded in url properly
             if (session.getTitle().indexOf(';') > 0) {
-                return none();
+                return left("Not a valid session, title has invalid character ';'.");
             }
 
             Option<LevelId> levelId = fromNull(session.getLevel()).
@@ -92,7 +93,7 @@ public class EmsFunctions {
             F<LevelId, Option<Level>> getLevel = flip(Functions.<LevelId, Level>TreeMap_get()).f(event.levels);
             F<String, Option<Label>> getLabel = flip(Functions.<String, Label>TreeMap_get()).f(event.emsIndexedLabels);
 
-            return some(new Session(new SessionId(session.getId()),
+            return right(new Session(new SessionId(session.getId()),
                 fromNull(session.getFormat()).bind(compose(Session.Format.valueOf_, Show.<no.java.ems.domain.Session.Format>anyShow().showS_())).orSome(Session.Format.Presentation),
                 session.getTitle(),
                 fromString(session.getLead()).map(WikiString.constructor),

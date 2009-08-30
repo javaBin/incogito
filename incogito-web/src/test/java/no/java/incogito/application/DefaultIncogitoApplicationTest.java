@@ -1,14 +1,16 @@
 package no.java.incogito.application;
 
-import static fj.Function.flip;
+import fj.F;
+import fj.F2;
+import static fj.Function.curry;
 import fj.P;
+import fj.data.Either;
 import fj.data.List;
 import fj.data.TreeMap;
 import fj.pre.Ord;
 import junit.framework.TestCase;
 import no.java.ems.client.RestEmsService;
 import no.java.ems.domain.Event;
-import no.java.incogito.Functions;
 import no.java.incogito.domain.Label;
 import no.java.incogito.ems.client.EmsWrapper;
 import no.java.incogito.util.TestPathFactoryBean;
@@ -24,6 +26,12 @@ public class DefaultIncogitoApplicationTest extends TestCase {
 
     File incogitoHome;
 
+    F<TreeMap<String, Event>, F<String, Either<String, Event>>> mockFindEventByName = curry(new F2<TreeMap<String, Event>, String, Either<String, Event>>() {
+        public Either<String, Event> f(TreeMap<String, Event> events, String s) {
+            return events.get(s).toEither("Could not find event '" + s + "'.");
+        }
+    });
+
     protected void setUp() throws Exception {
         TestPathFactoryBean testPathFactoryBean = new TestPathFactoryBean();
         testPathFactoryBean.setTestClass(getClass());
@@ -37,9 +45,9 @@ public class DefaultIncogitoApplicationTest extends TestCase {
         event.setId(UUID.randomUUID().toString());
         event.setName("JavaZone 2009");
 
-        TreeMap<String, Event> events = TreeMap.<String, Event>empty(Ord.stringOrd).set(event.getName(), event);
+        final TreeMap<String, Event> events = TreeMap.<String, Event>empty(Ord.stringOrd).set(event.getName(), event);
         emsWrapper.getEvents = P.p(events.values());
-        emsWrapper.findEventByName = flip(Functions.<String, Event>TreeMap_get()).f(events);
+        emsWrapper.findEventByName = mockFindEventByName.f(events);
         DefaultIncogitoApplication application = new DefaultIncogitoApplication(incogitoHome, null, emsWrapper);
 
         application.afterPropertiesSet();
@@ -74,7 +82,7 @@ public class DefaultIncogitoApplicationTest extends TestCase {
             set(javaZone2008.getName(), javaZone2008).
             set(javaZone2009.getName(), javaZone2009);
         emsWrapper.getEvents = P.p(emsEvents.values());
-        emsWrapper.findEventByName = flip(Functions.<String, Event>TreeMap_get()).f(emsEvents);
+        emsWrapper.findEventByName = mockFindEventByName.f(emsEvents);
 
         DefaultIncogitoApplication application = new DefaultIncogitoApplication(incogitoHome, null, emsWrapper);
         application.afterPropertiesSet();

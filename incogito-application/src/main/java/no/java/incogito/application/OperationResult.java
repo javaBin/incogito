@@ -6,7 +6,9 @@ import fj.F;
 import fj.P1;
 import fj.Unit;
 import fj.data.Option;
+import fj.data.Either;
 import static fj.data.Option.some;
+import no.java.incogito.domain.Event;
 
 /**
  * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
@@ -69,8 +71,12 @@ public abstract class OperationResult<T> {
         return new OkOperationResult<T>(some(t));
     }
 
-    public static <T> OperationResult<T> ok(Option<T> t) {
-        return new OkOperationResult<T>(t);
+    public static <T> OperationResult<T> fromOption(Option<T> t, String noneMessage) {
+        return t.isSome() ? ok(t.some()) : OperationResult.<T>notFound(noneMessage);
+    }
+
+    public static <T> OperationResult<T> fromEither(Either<String, T> x) {
+        return x.either(OperationResult.<T>notFound_(), OperationResult.<T>ok_());
     }
 
     public static OperationResult<Unit> emptyOk() {
@@ -85,10 +91,10 @@ public abstract class OperationResult<T> {
         };
     }
 
-    public static <T> F<Option<T>, OperationResult<T>> okOption_(final String notFoundMessage) {
+    public static <T> F<Option<T>, OperationResult<T>> fromOption_(final String noneMessage) {
         return new F<Option<T>, OperationResult<T>>() {
             public OperationResult<T> f(Option<T> t) {
-                return t.isSome() ? ok(t) : OperationResult.<T>notFound(notFoundMessage);
+                return fromOption(t, noneMessage);
             }
         };
     }
@@ -156,6 +162,14 @@ public abstract class OperationResult<T> {
 
     public static <T> OperationResult<T> notFound(String message) {
         return new NotFoundOperationResult<T>(message);
+    }
+
+    public static <T> F<String, OperationResult<T>> notFound_() {
+        return new F<String, OperationResult<T>>() {
+            public OperationResult<T> f(String message) {
+                return notFound(message);
+            }
+        };
     }
 
     public static <T> P1<OperationResult<T>> $notFound(final String message) {

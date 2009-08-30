@@ -41,5 +41,5 @@ public interface IncogitoApplication {
 
     OperationResult<User> setInterestLevel(String userName, String eventName, SessionId sessionId, InterestLevel interestLevel);
 
-    OperationResult<byte[]> getPersonPhoto(String speakerId);
+    OperationResult<byte[]> getSpeakerPhotoForSession(String sessionId, int index);
 }

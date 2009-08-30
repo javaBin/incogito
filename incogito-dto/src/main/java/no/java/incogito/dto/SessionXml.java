@@ -26,6 +26,7 @@ public class SessionXml {
     }
 
     public String selfUri;
+    public String sessionHtmlUrl;
     public String id;
     public FormatXml format;
     public String title;
@@ -41,10 +42,12 @@ public class SessionXml {
     public SessionXml() {
     }
 
-    public SessionXml(String selfUri, FormatXml format, String id, String title, Option<String> abstractHtml,
-                      Option<String> bodyHtml, Option<LevelXml> level, Option<String> room, Option<XMLGregorianCalendar> start,
-                      Option<XMLGregorianCalendar> end, Iterable<SpeakerXml> speakers, Iterable<LabelXml> labels) {
+    public SessionXml(String selfUri, String sessionHtmlUrl, FormatXml format, String id, String title,
+                      Option<String> abstractHtml, Option<String> bodyHtml, Option<LevelXml> level,
+                      Option<String> room, Option<XMLGregorianCalendar> start, Option<XMLGregorianCalendar> end,
+                      Iterable<SpeakerXml> speakers, Iterable<LabelXml> labels) {
         this.selfUri = selfUri;
+        this.sessionHtmlUrl = sessionHtmlUrl;
         this.id = id;
         this.format = format;
         this.title = title;
@@ -56,6 +59,10 @@ public class SessionXml {
         this.end = end.orSome((XMLGregorianCalendar) null);
         this.speakers = toList(speakers);
         this.labels = toList(labels);
+    }
+
+    public String getSessionHtmlUrl() {
+        return sessionHtmlUrl;
     }
 
     public String getId() {

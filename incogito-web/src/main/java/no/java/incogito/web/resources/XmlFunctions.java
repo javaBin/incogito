@@ -2,6 +2,8 @@ package no.java.incogito.web.resources;
 
 import fj.F;
 import fj.F2;
+import fj.F3;
+import fj.P2;
 import static fj.Function.curry;
 import fj.data.List;
 import no.java.incogito.Enums;
@@ -12,6 +14,7 @@ import no.java.incogito.domain.IncogitoUri.IncogitoEventsUri.IncogitoEventUri;
 import no.java.incogito.domain.IncogitoUri.IncogitoRestEventsUri.IncogitoRestEventUri;
 import no.java.incogito.domain.IncogitoUri.IncogitoRestEventsUri.IncogitoRestEventUri.IncogitoLabelsIconUri;
 import no.java.incogito.domain.IncogitoUri.IncogitoRestEventsUri.IncogitoRestEventUri.IncogitoLevelsIconUri;
+import no.java.incogito.domain.IncogitoUri.IncogitoRestEventsUri.IncogitoRestEventUri.IncogitoRestSessionUri;
 import no.java.incogito.domain.Label;
 import no.java.incogito.domain.Level;
 import no.java.incogito.domain.Schedule;
@@ -66,7 +69,7 @@ public class XmlFunctions {
     private static F<DateTime, XMLGregorianCalendar> toXmlGregorianCalendar = new F<DateTime, XMLGregorianCalendar>() {
         public XMLGregorianCalendar f(DateTime dateTime) {
             XMLGregorianCalendar gregorianCalendar = datatypeFactory.newXMLGregorianCalendar();
-            gregorianCalendar.setTime(dateTime.getHourOfDay(),dateTime.getMinuteOfHour(), dateTime.getSecondOfMinute());
+            gregorianCalendar.setTime(dateTime.getHourOfDay(), dateTime.getMinuteOfHour(), dateTime.getSecondOfMinute());
             gregorianCalendar.setYear(dateTime.getYear());
             gregorianCalendar.setMonth(dateTime.getMonthOfYear());
             gregorianCalendar.setDay(dateTime.getDayOfMonth());
@@ -74,11 +77,12 @@ public class XmlFunctions {
         }
     };
 
-    private static F<IncogitoUri, F<Speaker, SpeakerXml>> speakerToXml = curry(new F2<IncogitoUri, Speaker, SpeakerXml>() {
-        public SpeakerXml f(IncogitoUri incogitoUri, Speaker speaker) {
+    private static F<IncogitoRestSessionUri, F<P2<Speaker, Integer>, SpeakerXml>> speakerToXml = curry(new F2<IncogitoRestSessionUri, P2<Speaker, Integer>, SpeakerXml>() {
+        public SpeakerXml f(IncogitoRestSessionUri incogitoRestSessionUri, P2<Speaker, Integer> item) {
+            Speaker speaker = item._1();
             return new SpeakerXml(speaker.name,
-                speaker.bio.map(WikiString.toHtml),
-                incogitoUri.personImage(speaker.uuid));
+                    speaker.bio.map(WikiString.toHtml),
+                    incogitoRestSessionUri.speakerPhoto(item._2()));
         }
     });
 
@@ -94,26 +98,27 @@ public class XmlFunctions {
         }
     });
 
-    public static final F<IncogitoRestEventUri, F<Session, SessionXml>> sessionToXml = curry(new F2<IncogitoRestEventUri, Session, SessionXml>() {
-        public SessionXml f(IncogitoRestEventUri eventUri, Session session) {
-            return new SessionXml(eventUri.session(session),
-                    SessionXml.FormatXml.valueOf(session.format.name()), 
+    public static final F<IncogitoRestEventUri, F<IncogitoEventUri, F<Session, SessionXml>>> sessionToXml = curry(new F3<IncogitoRestEventUri, IncogitoEventUri, Session, SessionXml>() {
+        public SessionXml f(IncogitoRestEventUri restEventUri, IncogitoEventUri eventUri, Session session) {
+            IncogitoRestSessionUri restSessionUri = restEventUri.session(session);
+            return new SessionXml(restSessionUri.toString(),
+                    eventUri.session(session.title),
+                    SessionXml.FormatXml.valueOf(session.format.name()),
                     session.id.value,
                     session.title,
                     session._abstract.map(WikiString.toHtml),
                     session.body.map(WikiString.toHtml),
-                    session.level.map(levelToXml.f(eventUri.levelsIcon())),
+                    session.level.map(levelToXml.f(restEventUri.levelsIcon())),
                     session.room,
                     session.timeslot.map(compose(toXmlGregorianCalendar, Interval_start)),
                     session.timeslot.map(compose(toXmlGregorianCalendar, Interval_end)),
-                    session.speakers.map(speakerToXml.f(eventUri.restEventsUri.incogitoUri)),
-                    session.labels.map(labelToXml.f(eventUri.labelsIcon())));
+                    session.speakers.zipIndex().map(speakerToXml.f(restSessionUri)),
+                    session.labels.map(labelToXml.f(restEventUri.labelsIcon())));
         }
     });
 
     public static final F<UserSessionAssociation, UserSessionAssociationXml> sessionAssociationToXml = new F<UserSessionAssociation, UserSessionAssociationXml>() {
         public UserSessionAssociationXml f(UserSessionAssociation userSessionAssociation) {
-
             return new UserSessionAssociationXml(userSessionAssociation.sessionId.value,
                     userSessionAssociation.rating.map(Enums.<SessionRating>toString_()).bind(SessionRatingXml.valueOf_).orSome(SessionRatingXml.NOT_SET),
                     userSessionAssociation.ratingComment,
@@ -121,9 +126,9 @@ public class XmlFunctions {
         }
     };
 
-    public static final F<IncogitoRestEventUri, F<Schedule, ScheduleXml>> scheduleToXml = curry(new F2<IncogitoRestEventUri, Schedule, ScheduleXml>() {
-        public ScheduleXml f(IncogitoRestEventUri sessionsUri, Schedule schedule) {
-            return new ScheduleXml(schedule.sessions.map(sessionToXml.f(sessionsUri)),
+    public static final F<IncogitoRestEventUri, F<IncogitoEventUri, F<Schedule, ScheduleXml>>> scheduleToXml = curry(new F3<IncogitoRestEventUri, IncogitoEventUri, Schedule, ScheduleXml>() {
+        public ScheduleXml f(IncogitoRestEventUri restEventUri, IncogitoEventUri eventUri, Schedule schedule) {
+            return new ScheduleXml(schedule.sessions.map(sessionToXml.f(restEventUri).f(eventUri)),
                     schedule.sessionAssociations.values().map(sessionAssociationToXml));
         }
     });

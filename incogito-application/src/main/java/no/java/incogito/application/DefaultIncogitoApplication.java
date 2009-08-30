@@ -1,21 +1,24 @@
 package no.java.incogito.application;
 
+import fj.Bottom;
 import fj.Effect;
 import fj.F;
-import fj.F3;
-import static fj.Function.compose;
+import fj.F2;
 import static fj.Function.curry;
+import fj.P;
 import fj.P1;
 import fj.P2;
 import fj.Unit;
 import fj.control.parallel.Callables;
 import fj.data.Either;
+import static fj.data.Either.joinRight;
+import static fj.data.Either.rights;
 import fj.data.List;
 import fj.data.Option;
-import static fj.data.Option.join;
-import static fj.data.Option.some;
-import static fj.data.Option.somes;
 import fj.data.TreeMap;
+import no.java.ems.domain.Binary;
+import no.java.ems.domain.Speaker;
+import static no.java.incogito.Functions.compose;
 import static no.java.incogito.application.EmsFunctions.eventFromEms;
 import static no.java.incogito.application.EmsFunctions.sessionFromEms;
 import no.java.incogito.application.IncogitoConfiguration.EventConfiguration;
@@ -113,30 +116,27 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
     }
 
     public OperationResult<List<Event>> getEvents() {
-        List<Option<no.java.ems.domain.Event>> emsEvents = getConfiguration().eventConfigurations.
+        List<Either<String, no.java.ems.domain.Event>> emsEvents = getConfiguration().eventConfigurations.
             map(compose(emsWrapper.findEventByName, EventConfiguration.name_));
 
-        List<Option<Event>> events = Option.<no.java.ems.domain.Event>somes(emsEvents).
+        List<Either<String, Event>> events = Either.<String, no.java.ems.domain.Event>rights(emsEvents).
             map(eventFromEms.f(configuration));
 
-        return ok(Option.somes(events));
+        return ok(rights(events));
     }
 
     public OperationResult<Event> getEventByName(String eventName) {
-        Option<Event> eventOption = Option.join(emsWrapper.
+        Either<String, Event> eventOption = emsWrapper.
             findEventByName.f(eventName).
-            map(eventFromEms.f(configuration)));
+            right().bind(eventFromEms.f(configuration));
 
-        return eventOption.
-            map(OperationResult.<Event>ok_()).
-            orSome(OperationResult.<Event>notFound("Event with name '" + eventName + "' not found."));
+        return eventOption.either(OperationResult.<Event>notFound_(), OperationResult.<Event>ok_());
     }
 
     public OperationResult<List<Session>> getSessions(String eventName) {
 
-        return emsWrapper.findEventByName.f(eventName).bind(eventFromEms.f(configuration)).
-            map(compose(OperationResult.<List<Session>>ok_(), getSessionsForEvent)).
-            orSome(OperationResult.<List<Session>>notFound("Event with name '" + eventName + "' not found."));
+        return emsWrapper.findEventByName.f(eventName).right().bind(eventFromEms.f(configuration)).
+            either(OperationResult.<List<Session>>notFound_(), compose(OperationResult.<List<Session>>ok_(), getSessionsForEvent));
     }
 
     public OperationResult<Session> getSessionByTitle(final String eventName, final String sessionTitle) {
@@ -149,22 +149,23 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
         return OperationResult.joinOk(event.ok().map(new F<Event, OperationResult<Session>>() {
             public OperationResult<Session> f(Event event) {
                 return emsWrapper.
-                    findSessionIdsByEventIdAndTitle.f(event.id.toString()).f(sessionTitle).toOption().
-                    bind(sessionFromEms.f(event)).
-                    map(OperationResult.<Session>ok_()).
-                    orSome(OperationResult.<Session>notFound("Could not find session with title '" + sessionTitle + "' not found."));
+                    findSessionIdsByEventIdAndTitle.f(event.id.toString()).f(sessionTitle).toEither(P.p("Could not find session with title '" + sessionTitle + "'.")).
+                    right().bind(sessionFromEms.f(event)).
+                    right().map(OperationResult.<Session>ok_()).
+                    right().orValue(OperationResult.<Session>$notFound("Could not find session with title '" + sessionTitle + "' not found."));
             }
         }));
     }
 
     public OperationResult<Session> getSession(String eventName, final SessionId sessionId) {
-        Option<Event> x = emsWrapper.findEventByName.f(eventName).bind(eventFromEms.f(configuration));
-        return OperationResult.<Event>ok(x).ok().bind(new F<Event, Option<Session>>() {
-            public Option<Session> f(Event event) {
+        Either<String, Session> x = joinRight(emsWrapper.findEventByName.f(eventName).right().bind(eventFromEms.f(configuration)).
+                right().map(new F<Event, Either<String, Session>>() {
+            public Either<String, Session> f(Event event) {
                 return emsWrapper.getSessionById.f(sessionId.value).
-                    bind(sessionFromEms.f(event));
+                    right().bind(sessionFromEms.f(event));
             }
-        });
+        }));
+        return OperationResult.fromEither(x);
     }
 
     public OperationResult<User> createUser(User user) {
@@ -208,14 +209,9 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
         return getSchedule_(eventName, userId.map(UserId.userId).bind(userClient.getUser));
     }
 
-    private OperationResult<Schedule> getSchedule_(String eventName, Option<User> user) {
-        Option<Event> event = emsWrapper.findEventByName.f(eventName).bind(eventFromEms.f(configuration));
-
-        Option<List<Session>> sessions = event.map(getSessionsForEvent);
-
-        return event.bind(sessions, some(user), createSchedule).
-            map(OperationResult.<Schedule>ok_()).
-            orSome(OperationResult.<Schedule>$notFound("Event '" + eventName + "' not found."));
+    private OperationResult<Schedule> getSchedule_(String eventName, final Option<User> user) {
+        return OperationResult.fromEither(emsWrapper.findEventByName.f(eventName).right().bind(eventFromEms.f(configuration)).
+                right().map(createSchedule.f(user)));
     }
 
     public OperationResult<User> setInterestLevel(String userName, String eventName, SessionId sessionId, InterestLevel interestLevel) {
@@ -239,11 +235,34 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
             orSome(OperationResult.<User>$notFound("User '" + userName + "' not found."));
     }
 
-    public OperationResult<byte[]> getPersonPhoto(String personId) {
-        return join(emsWrapper.getPhoto.f(personId).
-            map(compose(P1.<Option<byte[]>>__1(), Callables.<byte[]>option()))).
-            map(OperationResult.<byte[]>ok_()).
-            orSome(OperationResult.<byte[]>notFound("No such person '" + personId + "'."));
+    public OperationResult<byte[]> getSpeakerPhotoForSession(String sessionId, int index) {
+        Either<String, no.java.ems.domain.Session> sessionOption = emsWrapper.getSessionById.f(sessionId);
+
+        if(sessionOption.isLeft()) {
+            return notFound(sessionOption.left().value());
+        }
+
+        no.java.ems.domain.Session session = sessionOption.right().value();
+
+        Either<String, Speaker> speakerEither = EmsWrapper.getSpeakerFromSession.f(index).f(session);
+
+        if(speakerEither.isLeft()) {
+            return notFound(speakerEither.left().value());
+        }
+
+        Speaker speaker = speakerEither.right().value();
+
+        Either<String, Binary> binary = EmsWrapper.getPhotoFromSpeaker.f(speaker);
+
+        if (binary.isLeft()) {
+            binary = emsWrapper.getPersonPhoto.f(speaker.getPersonId());
+        }
+
+        F<Either<Exception, byte[]>, Either<String, byte[]>> toString = Either.<Exception, byte[], String>leftMap_().f(Bottom.<Exception>eMessage());
+
+        Either<String, byte[]> result = joinRight(binary.right().map(compose(toString, P1.<Either<Exception, byte[]>>__1(), Callables.<byte[]>either(), EmsWrapper.fetchBinary)));
+
+        return result.either(OperationResult.<byte[]>notFound_(), OperationResult.<byte[]>ok_());
     }
 
     // -----------------------------------------------------------------------
@@ -252,14 +271,15 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
 
     F<Event, List<Session>> getSessionsForEvent = new F<Event, List<Session>>() {
         public List<Session> f(Event event) {
-            return somes(emsWrapper.findSessionsByEventId.f(event.id.toString()).
+            return Either.rights(emsWrapper.findSessionsByEventId.f(event.id.toString()).
                 map(sessionFromEms.f(event)));
         }
     };
 
-    F<Event, F<List<Session>, F<Option<User>, Schedule>>> createSchedule = curry(new F3<Event, List<Session>, Option<User>, Schedule>() {
-        public Schedule f(Event event, List<Session> sessions, Option<User> userOption) {
-            return new Schedule(event, sessions, userOption.map(User.sessionAssociations_).orSome(User.emptySessionAssociations));
+    F<Option<User>, F<Event, Schedule>> createSchedule = curry(new F2<Option<User>, Event, Schedule>() {
+        public Schedule f(Option<User> userOption, Event event) {
+            return new Schedule(event, getSessionsForEvent.f(event),
+                    userOption.map(User.sessionAssociations_).orSome(User.emptySessionAssociations));
         }
     });
 }

@@ -28,10 +28,6 @@ public class IncogitoUri {
         return new IncogitoEventsUri(baseurl.clone().path("events"));
     }
 
-    public String personImage(String personId) {
-        return rest.clone().segment("people", personId, "photo").build().toString();
-    }
-
     public static class IncogitoEventsUri {
         private final UriBuilder events;
 
@@ -45,9 +41,11 @@ public class IncogitoUri {
 
         public static class IncogitoEventUri {
             private final UriBuilder event;
+            private final UriBuilder sessions;
 
             public IncogitoEventUri(UriBuilder event) {
                 this.event = event;
+                this.sessions = event.clone().segment("sessions");
             }
 
             public String calendarHtml() {
@@ -55,11 +53,15 @@ public class IncogitoUri {
             }
 
             public String sessionListHtml() {
-                return event.clone().segment("sessions").build().toString();
+                return sessions.build().toString();
             }
 
             public String toString() {
                 return event.build().toString();
+            }
+
+            public String session(String title) {
+                return sessions.clone().segment(title).build().toString();
             }
         }
     }
@@ -136,14 +138,28 @@ public class IncogitoUri {
                 }
             }
 
-            public String session(Session session) {
-                return sessions.clone().segment(session.title).toString();
+            public IncogitoRestSessionUri session(Session session) {
+                return new IncogitoRestSessionUri(sessions.clone().segment(session.id.value));
             }
 
-            public String session(String sessionTitle) {
-                return sessions.clone().segment(sessionTitle).toString();
-            }
+            public static class IncogitoRestSessionUri {
+                private final UriBuilder session;
+                private final UriBuilder photos;
 
+                public IncogitoRestSessionUri(UriBuilder session) {
+                    this.session = session;
+                    photos = session.clone().segment("speaker-photos");
+                }
+
+                public String speakerPhoto(int i) {
+                    return photos.clone().segment(Integer.toString(i)).build().toString();
+                }
+
+                @Override
+                public String toString() {
+                    return session.build().toString();
+                }
+            }
         }
     }
 }

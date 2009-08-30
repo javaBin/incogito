@@ -19,11 +19,11 @@ o Remove icon tag library.
   - All JSPs should use the *Xml objects which all should have the necessary icon URLs.
 
 Priority 1
-o Caching
 o Timeslots are wrong, ems or incogito?
 o Missing label colors: domain-driven design, gaming and mobile
 o Blurbs and welcome texts for each event
 
+v Caching
 v Sort and filter non-configured events
 v Per event front pages
 v Show "sessions" button on events only
@@ -35,6 +35,7 @@ o RSS/Atom
 o Fix the link for
   - Dokumentasjon uten pistol - går det an?
   - EDR-MDS "a less is more approach to SOA Master Data Management"
+o Ability to enable/disable calendar per event
 
 Low priority:
 o More lazy reloading of configuration, check the timestamps on the files

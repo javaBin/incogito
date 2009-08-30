@@ -5,18 +5,20 @@ import fj.F2;
 import static fj.Function.compose;
 import static fj.Function.curry;
 import fj.P1;
+import fj.data.Either;
+import static fj.data.Either.joinRight;
+import static fj.data.Either.left;
 import fj.data.List;
 import static fj.data.List.iterableList;
 import static fj.data.List.nil;
-import fj.data.Option;
 import static fj.data.Option.fromNull;
-import static fj.data.Option.none;
-import static fj.data.Option.some;
 import no.java.ems.client.PeopleClient;
+import no.java.ems.client.SessionsClient;
 import no.java.ems.domain.Binary;
 import no.java.ems.domain.Event;
 import no.java.ems.domain.Person;
 import no.java.ems.domain.Session;
+import no.java.ems.domain.Speaker;
 import no.java.ems.service.EmsService;
 import no.java.incogito.Functions;
 import no.java.incogito.IO;
@@ -34,11 +36,13 @@ import java.util.concurrent.Callable;
 public class EmsWrapper {
 
     private final EmsService emsService;
+    private final SessionsClient sessionsClient;
     private final PeopleClient peopleClient;
 
     @Autowired
     public EmsWrapper(EmsService emsService) {
         this.emsService = emsService;
+        this.sessionsClient = emsService.getSessionsClient();
         this.peopleClient = emsService.getPeopleClient();
     }
 
@@ -56,13 +60,13 @@ public class EmsWrapper {
         }
     };
 
-    public F<String, Option<Event>> findEventByName = new F<String, Option<Event>>() {
-        public Option<Event> f(String eventName) {
+    public F<String, Either<String, Event>> findEventByName = new F<String, Either<String, Event>>() {
+        public Either<String, Event> f(String eventName) {
             try {
                 return iterableList(emsService.getEvents()).
-                    find(compose(Functions.equals.f(eventName), EmsFunctions.eventName));
+                    find(compose(Functions.equals.f(eventName), EmsFunctions.eventName)).toEither("Could not find an event with the name '" + eventName + "'.");
             } catch (Exception e) {
-                return none();
+                return left("Error while fetching events: " + e.getMessage());
             }
         }
     };
@@ -71,12 +75,12 @@ public class EmsWrapper {
     // Session
     // -----------------------------------------------------------------------
 
-    public F<String, Option<Session>> getSessionById = new F<String, Option<Session>>() {
-        public Option<Session> f(String id) {
+    public F<String, Either<String, Session>> getSessionById = new F<String, Either<String, Session>>() {
+        public Either<String, Session> f(String id) {
             try {
-                return fromNull(emsService.getSession(id));
+                return fromNull(emsService.getSession(id)).toEither("No such session: '" + id + "'.");
             } catch (Exception e) {
-                return none();
+                return left("No such session: '" + id + "'.");
             }
         }
     };
@@ -101,23 +105,42 @@ public class EmsWrapper {
         }
     });
 
-    public F<String, Option<Callable<byte[]>>> getPhoto = new F<String, Option<Callable<byte[]>>>() {
-        public Option<Callable<byte[]>> f(String id) {
-            Person person = peopleClient.get(id);
+    public F<String, Either<String, Binary>> getPersonPhoto = new F<String, Either<String, Binary>>() {
+        public Either<String, Binary> f(String id) {
+            return joinRight(fromNull(peopleClient.get(id)).
+                    toEither("No such person '" + id + "'.").
+                    right().map(getPhotoFromPerson));
+        }
+    };
 
-            if (person == null) {
-                return none();
+    public static F<Person, Either<String, Binary>> getPhotoFromPerson = new F<Person, Either<String, Binary>>() {
+        public Either<String, Binary> f(Person person) {
+            return fromNull(person.getPhoto()).toEither("Person does not have a photo '" + person.getId() + "'.");
+        }
+    };
+
+    public static F<Speaker, Either<String, Binary>> getPhotoFromSpeaker = new F<Speaker, Either<String, Binary>>() {
+        public Either<String, Binary> f(Speaker speaker) {
+            return fromNull(speaker.getPhoto()).toEither("Speaker does not have a photo '" + speaker.getId() + "'.");
+        }
+    };
+
+    public static F<Integer, F<Session, Either<String, Speaker>>> getSpeakerFromSession = curry(new F2<Integer, Session, Either<String, Speaker>>() {
+        public Either<String, Speaker> f(Integer index, Session session) {
+            if (index >= session.getSpeakers().size()) {
+                return left("Session does not have that many speakers: " + index + "/" + session.getSpeakers().size() + ".");
             }
 
-            Binary binary = person.getPhoto();
+            return fromNull(session.getSpeakers().get(index)).
+                    toEither("Speaker #" + index + " does not have a photo.");
+        }
+    });
 
-            if (binary == null) {
-                return none();
-            }
-
+    public static F<Binary, Callable<byte[]>> fetchBinary = new F<Binary, Callable<byte[]>>() {
+        public Callable<byte[]> f(Binary binary) {
             InputStream inputStream = binary.getDataStream();
 
-            return some(IO.ByteArrays.streamToByteArray.f(inputStream));
+            return IO.ByteArrays.streamToByteArray.f(inputStream);
         }
     };
 }

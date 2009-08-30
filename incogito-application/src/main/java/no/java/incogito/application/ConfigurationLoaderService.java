@@ -12,6 +12,7 @@ import static fj.data.List.nil;
 import fj.data.Option;
 import static fj.data.Option.some;
 import fj.data.TreeMap;
+import fj.data.Either;
 import fj.pre.Ord;
 import no.java.incogito.Functions;
 import no.java.incogito.IO;
@@ -25,6 +26,7 @@ import no.java.incogito.domain.Label;
 import no.java.incogito.domain.Level;
 import no.java.incogito.domain.Level.LevelId;
 import no.java.incogito.ems.client.EmsWrapper;
+import no.java.ems.domain.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -147,10 +149,10 @@ public class ConfigurationLoaderService {
                     }
                 }, emptyLevelIconMap);
 
-            Option<no.java.ems.domain.Event> eventOption = emsWrapper.findEventByName.f(eventName);
+            Either<String, Event> eventEither = emsWrapper.findEventByName.f(eventName);
 
-            if (eventOption.isNone()) {
-                logger.warn("Could not find event '{}' in EMS.", eventName);
+            if (eventEither.isLeft()) {
+                logger.warn("Could not find event '{}' in EMS: ", eventName, eventEither.left().value());
                 continue;
             }
 

@@ -16,7 +16,3 @@ div.speaker {
   margin-right: 20px;
   margin-bottom: 20px;
 }
-
-.speaker:last-child .speaker-image img {
-  margin-bottom: 0;
-}

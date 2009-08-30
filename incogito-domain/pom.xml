@@ -15,6 +15,12 @@
       <version>1.0</version>
     </dependency>
     <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-client</artifactId>
+      <version>${version.jersey}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.codehaus.mojo.unix</groupId>
       <artifactId>unix-common</artifactId>
       <version>1.0-alpha-4</version>
@@ -31,3 +37,4 @@
     </dependency>
   </dependencies>
 </project>
+    

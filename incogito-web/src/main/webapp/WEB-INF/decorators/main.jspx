@@ -36,11 +36,11 @@
       }
       var headDescriptionDefault = $(".head-description .default")
       var headDescriptionText = $(".head-description .text")
-      $(".event-title").bind("mouseover", eventHeaderClicked)
+      $(".event-title").bind("mouseover", onEventHeaderMouseOver)
+      $(".event-title").bind("mouseout", onEventHeaderMouseOut)
 
       // Find the currently selected event and 
-
-      function eventHeaderClicked() {
+      function onEventHeaderMouseOver() {
         var text = $(this).find(".text").text();
 
         $(this).parent().children().removeClass("high-lighted")
@@ -54,6 +54,11 @@
           headDescriptionDefault.hide()
           headDescriptionText.show().text(text)
         }
+      }
+
+      function onEventHeaderMouseOut() {
+        $(this).parent().children().removeClass("high-lighted")
+        headDescriptionText.hide().text("")
       }
     });
       </script>
@@ -81,7 +86,7 @@
       </c:set>
       <h1 class="event-title ${extraCss}">
         <span class="hidden text">${event.blurb}</span>
-        <a href="${event.eventUrlHtml}">${event.name}</a>
+        <a href="${event.htmlUrl}">${event.name}</a>
       </h1>
     </c:forEach>
   </div>
@@ -90,7 +95,7 @@
   </div>
 
   <c:if test="${fn:length(eventName) gt 0}">
-    <a class="sessions-button" href="${selectedEvent.allSessionsUrlHtml}">
+    <a class="sessions-button" href="${selectedEvent.sessionHtmlUrl}">
       <img src="${incogito.baseurl}/images/sessions-button.png" alt="All Sessions"/>
     </a>
   </c:if>
