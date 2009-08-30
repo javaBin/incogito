@@ -201,7 +201,7 @@
       <c:forEach var="labelLists" items="${i:splitAt(event.labels, 4)}" varStatus="status">
         <ul class="labels">
           <c:forEach var="label" items="${labelLists}">
-            <li class="inactive label-${label.id}">${label.displayName}</li>
+            <li class="inactive label-${label.id}"><a href="#">${label.displayName}</a></li>
           </c:forEach>
         </ul>
       </c:forEach>
