@@ -1,7 +1,8 @@
 package no.java.incogito.web.resources;
 
 import fj.F;
-import static fj.Function.compose;
+import fj.F2;
+import static fj.Function.curry;
 import fj.P1;
 import fj.control.parallel.Callables;
 import fj.data.Java;
@@ -13,12 +14,14 @@ import static fj.data.Option.some;
 import no.java.incogito.Functions;
 import no.java.incogito.IO;
 import no.java.incogito.PatternMatcher;
+import static no.java.incogito.Functions.compose;
 import no.java.incogito.application.IncogitoApplication;
 import no.java.incogito.application.OperationResult;
 import no.java.incogito.application.OperationResult.NotFoundOperationResult;
 import no.java.incogito.application.OperationResult.OkOperationResult;
 import no.java.incogito.domain.Event;
 import no.java.incogito.domain.IncogitoUri;
+import no.java.incogito.domain.IncogitoUri.IncogitoRestEventsUri.IncogitoRestEventUri;
 import no.java.incogito.domain.Label;
 import no.java.incogito.domain.Level;
 import no.java.incogito.domain.Level.LevelId;
@@ -26,7 +29,6 @@ import no.java.incogito.domain.Room;
 import no.java.incogito.domain.Session;
 import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.User;
-import no.java.incogito.domain.IncogitoUri.IncogitoRestEventsUri.IncogitoRestEventUri;
 import no.java.incogito.domain.UserSessionAssociation.InterestLevel;
 import static no.java.incogito.dto.EventListXml.eventListXml;
 import no.java.incogito.dto.EventXml;
@@ -46,10 +48,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import javax.ws.rs.core.SecurityContext;
@@ -58,7 +62,7 @@ import java.io.File;
 
 /**
  * REST-ful wrapper around IncogitoApplication.
- *
+ * <p/>
  * TODO: Add checks on every method that uses SecurityContext to check for nulls.
  *
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -72,9 +76,14 @@ public class IncogitoResource {
 
     private final IncogitoApplication incogito;
 
+    private final CacheControl cacheForOneHourCacheControl;
+
     @Autowired
     public IncogitoResource(IncogitoApplication incogito) {
         this.incogito = incogito;
+
+        cacheForOneHourCacheControl = new CacheControl();
+        cacheForOneHourCacheControl.setMaxAge(3600);
     }
 
     @GET
@@ -101,7 +110,7 @@ public class IncogitoResource {
             public String f(Event event) {
                 return generateCss.f(event.rooms).foldRight(Functions.String_join.f("\n"), "");
             }
-        }));
+        }), cacheForOneHourCacheControl);
     }
 
     @Path("/events/{eventName}/session.css")
@@ -114,7 +123,7 @@ public class IncogitoResource {
             public String f(Event event) {
                 return generateSessionCss.f(event).foldRight(Functions.String_join.f("\n"), "");
             }
-        }));
+        }), cacheForOneHourCacheControl);
     }
 
     @Path("/events/{eventName}/icons/levels/{level}.png")
@@ -124,19 +133,19 @@ public class IncogitoResource {
                                  @PathParam("level") final String level) {
         OperationResult<Event> eventResult = incogito.getEventByName(eventName);
 
-        if(!eventResult.isOk()) {
+        if (!eventResult.isOk()) {
             return toJsr311(eventResult);
         }
 
         Option<LevelId> levelOption = some(level).bind(Level.LevelId.valueOf);
 
-        if(!levelOption.isSome()) {
+        if (!levelOption.isSome()) {
             return toJsr311(OperationResult.<Object>notFound("Level '" + level + "' not known."));
         }
 
         Option<File> fileOption = eventResult.value().levels.get(levelOption.some()).map(Level.iconFile_);
 
-        if(!fileOption.isSome()) {
+        if (!fileOption.isSome()) {
             return toJsr311(OperationResult.<Object>notFound("No icon for level '" + level + "'."));
         }
 
@@ -146,7 +155,7 @@ public class IncogitoResource {
                 map(IO.<byte[]>runFileInputStream_().f(IO.ByteArrays.streamToByteArray)).
                 map(compose(P1.<Option<byte[]>>__1(), Callables.<byte[]>option())));
 
-        return toJsr311(OperationResult.ok(bytes));
+        return toJsr311(OperationResult.ok(bytes), cacheForOneHourCacheControl);
     }
 
     @Path("/events/{eventName}/icons/labels/{label}.png")
@@ -156,13 +165,13 @@ public class IncogitoResource {
                                  @PathParam("label") final String label) {
         OperationResult<Event> eventResult = incogito.getEventByName(eventName);
 
-        if(!eventResult.isOk()) {
+        if (!eventResult.isOk()) {
             return toJsr311(eventResult);
         }
 
         Option<File> fileOption = eventResult.value().labels.get(label).map(Label.iconFile_);
 
-        if(!fileOption.isSome()) {
+        if (!fileOption.isSome()) {
             return toJsr311(OperationResult.<Object>notFound("No icon for label '" + label + "'."));
         }
 
@@ -172,7 +181,7 @@ public class IncogitoResource {
                 map(IO.<byte[]>runFileInputStream_().f(IO.ByteArrays.streamToByteArray)).
                 map(compose(P1.<Option<byte[]>>__1(), Callables.<byte[]>option())));
 
-        return toJsr311(OperationResult.ok(bytes));
+        return toJsr311(OperationResult.ok(bytes), cacheForOneHourCacheControl);
     }
 
     @Path("/events/{eventName}")
@@ -188,8 +197,7 @@ public class IncogitoResource {
                                         @PathParam("eventName") final String eventName) {
 
         F<List<Session>, List<SessionXml>> sessionToXmlList = List.<Session, SessionXml>map_().
-            f(XmlFunctions.sessionToXml.
-                f(new IncogitoUri(uriInfo.getRequestUriBuilder()).restEvents().eventUri(eventName)));
+                f(XmlFunctions.sessionToXml.f(new IncogitoUri(uriInfo.getRequestUriBuilder()).restEvents().eventUri(eventName)));
 
         return toJsr311(incogito.getSessions(eventName).
                 ok().map(compose(SessionListXml.sessionListXml, sessionToXmlList)));
@@ -216,7 +224,7 @@ public class IncogitoResource {
     @GET
     public Response getPersonPhoto(@Context final UriInfo uriInfo,
                                    @PathParam("personId") final String personId) {
-        return toJsr311(incogito.getPersonPhoto(personId));
+        return toJsr311(incogito.getPersonPhoto(personId), cacheForOneHourCacheControl);
     }
 
     @Path("/events/{eventName}/{sessionId}/session-interest")
@@ -229,7 +237,7 @@ public class IncogitoResource {
 
         Option<String> userName = getUserName.f(securityContext);
 
-        if(userName.isNone()) {
+        if (userName.isNone()) {
             return Response.status(Status.UNAUTHORIZED).build();
         }
 
@@ -273,15 +281,27 @@ public class IncogitoResource {
     //
     // -----------------------------------------------------------------------
 
-    private <T> F<T, Response> ok() {
-        return new F<T, Response>() {
-            public Response f(T operationResult) {
+    private <T> F<T, ResponseBuilder> ok() {
+        return new F<T, ResponseBuilder>() {
+            public ResponseBuilder f(T operationResult) {
                 Object value = ((OperationResult) operationResult).value();
                 ToStringBuilder.reflectionToString(value, ToStringStyle.MULTI_LINE_STYLE);
-                return Response.ok(operationResult).build();
+                return Response.ok(operationResult);
             }
         };
     }
+
+    private F<CacheControl, F<ResponseBuilder, ResponseBuilder>> cacheControl = curry(new F2<CacheControl, ResponseBuilder, ResponseBuilder>() {
+        public ResponseBuilder f(CacheControl cacheControl, ResponseBuilder responseBuilder) {
+            return responseBuilder.cacheControl(cacheControl);
+        }
+    });
+
+    private F<ResponseBuilder, Response> build = new F<ResponseBuilder, Response>() {
+        public Response f(ResponseBuilder responseBuilder) {
+            return responseBuilder.build();
+        }
+    };
 
     private <T> F<T, Response> created() {
         return new F<T, Response>() {
@@ -308,12 +328,18 @@ public class IncogitoResource {
 
     private <T> PatternMatcher<OperationResult<T>, Response> defaultResponsePatternMatcher() {
         return PatternMatcher.<OperationResult<T>, Response>match().
-            add(NotFoundOperationResult.class, this.<OperationResult<T>>notFound());
+                add(NotFoundOperationResult.class, this.<OperationResult<T>>notFound());
     }
 
     private <T> Response toJsr311(OperationResult<T> result) {
         return this.<T>defaultResponsePatternMatcher().
-                add(OkOperationResult.class, this.<OperationResult<T>>ok()).
+                add(OkOperationResult.class, compose(build, this.<OperationResult<T>>ok())).
+                match(result);
+    }
+
+    private <T> Response toJsr311(OperationResult<T> result, CacheControl cacheControl) {
+        return this.<T>defaultResponsePatternMatcher().
+                add(OkOperationResult.class, compose(build, this.cacheControl.f(cacheControl), this.<OperationResult<T>>ok())).
                 match(result);
     }
 
