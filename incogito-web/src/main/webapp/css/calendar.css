@@ -264,6 +264,7 @@ td#login-submit * {
 #filters ul li {
     margin: 0.2em 0 0 1em;
     font-size: 0.80em;
+    text-transform: uppercase;
 }
 
 #filters ul li.active a {

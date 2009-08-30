@@ -198,6 +198,14 @@
 	<div id="legends">
 		<div id="title"><!-- space--></div>
 		<div id="filters">
+      <c:forEach var="labelLists" items="${i:splitAt(event.labels, 4)}" varStatus="status">
+        <ul class="labels">
+          <c:forEach var="label" items="${labelLists}">
+            <li class="inactive label-${label.id}">${label.displayName}</li>
+          </c:forEach>
+        </ul>
+      </c:forEach>
+<!--
 			<ul class="labels">
 				<li class=" inactive">CORE JAVA</li>
 				<li class=" inactive">USABILITY</li>
@@ -222,6 +230,7 @@
 				<li class=" inactive">ENTERPRISE ARCHITECTURE AND INTEGRATION</li>
 				<li class="method inactive">AGILE AND SOFTWARE ENGINEERING</li>
 			</ul>
+-->
 		</div>
 		<div id="complexity">
 			<div>Complexity Legend</div>

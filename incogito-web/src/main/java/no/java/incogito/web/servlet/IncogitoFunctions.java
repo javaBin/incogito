@@ -19,6 +19,7 @@ import static no.java.incogito.web.resources.XmlFunctions.sessionToXml;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Map;
+import java.util.ArrayList;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -51,12 +52,29 @@ public class IncogitoFunctions {
         return value == null ? defaultValue : value;
     }
 
+    public static java.util.List splitAt(java.util.List list, int n) {
+        java.util.List<java.util.List<Object>> l = new ArrayList<java.util.List<Object>>();
+        java.util.List<Object> current = null;
+
+        for (int i = 0, listSize = list.size(); i < listSize; i++) {
+            if (i % n == 0) {
+                current = new ArrayList<Object>();
+                l.add(current);
+            }
+
+            //noinspection ConstantConditions
+            current.add(list.get(i));
+        }
+
+        return l;
+    }
+
     public static SessionXml castToSession(Object o) {
         return SessionXml.class.cast(o);
     }
 
     public static SessionXml[] castToSessionList(Object o) {
-        List<SessionXml> list = (List<SessionXml>) o;
+        @SuppressWarnings({"unchecked"}) List<SessionXml> list = (List<SessionXml>) o;
 
         return list.toArray(SessionXml[].class).array();
     }

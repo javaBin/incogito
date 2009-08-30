@@ -21,6 +21,13 @@
     <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
     <function-signature>java.lang.Object mapGet(java.util.Map,java.lang.Object)</function-signature>
   </function>
+
+  <function>
+    <name>splitAt</name>
+    <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
+    <function-signature>java.util.List splitAt(java.util.List,int)</function-signature>
+  </function>
+
   <function>
     <name>treeMapGet</name>
     <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
