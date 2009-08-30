@@ -2,18 +2,25 @@ package no.java.incogito.domain;
 
 import fj.data.List;
 import fj.data.Option;
+import fj.data.TreeMap;
+import fj.pre.Ord;
 import static no.java.incogito.domain.Level.LevelId;
 import static no.java.incogito.domain.Session.Format;
 import no.java.incogito.domain.Event.EventId;
 import org.joda.time.Interval;
 
 import java.io.File;
+import java.util.UUID;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class IncogitoTestData {
+    public static final Event javaZone2008 = new Event(EventId.eventId(UUID.randomUUID().toString()), "JavaZone 2008",
+            Option.<String>none(), Option.<String>none(), List.<Room>nil(), TreeMap.<LevelId, Level>empty(LevelId.ord),
+            TreeMap.<String, Label>empty(Ord.stringOrd));
+
     public static final Level Introductory = new Level(LevelId.Introductory, "Introductory", new File(""));
     public static final Level Introductory_Intermediate = new Level(LevelId.Introductory_Intermediate, "Introductory/Intermediate", new File(""));
     public static final Level Intermediate = new Level(LevelId.Intermediate, "Intermediate", new File(""));

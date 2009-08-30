@@ -102,7 +102,7 @@ public class XmlFunctions {
         public SessionXml f(IncogitoRestEventUri restEventUri, IncogitoEventUri eventUri, Session session) {
             IncogitoRestSessionUri restSessionUri = restEventUri.session(session);
             return new SessionXml(restSessionUri.toString(),
-                    eventUri.session(session.title),
+                    eventUri.session(session),
                     SessionXml.FormatXml.valueOf(session.format.name()),
                     session.id.value,
                     session.title,

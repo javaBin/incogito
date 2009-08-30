@@ -12,9 +12,9 @@ import static fj.data.Option.fromString;
 import static fj.data.Option.join;
 import static fj.data.Option.some;
 import no.java.incogito.Functions;
+import static no.java.incogito.Functions.compose;
 import no.java.incogito.IO;
 import no.java.incogito.PatternMatcher;
-import static no.java.incogito.Functions.compose;
 import no.java.incogito.application.IncogitoApplication;
 import no.java.incogito.application.OperationResult;
 import no.java.incogito.application.OperationResult.NotFoundOperationResult;
@@ -22,8 +22,8 @@ import no.java.incogito.application.OperationResult.OkOperationResult;
 import static no.java.incogito.application.OperationResult.fromOption;
 import no.java.incogito.domain.Event;
 import no.java.incogito.domain.IncogitoUri;
-import no.java.incogito.domain.IncogitoUri.IncogitoRestEventsUri.IncogitoRestEventUri;
 import no.java.incogito.domain.IncogitoUri.IncogitoEventsUri.IncogitoEventUri;
+import no.java.incogito.domain.IncogitoUri.IncogitoRestEventsUri.IncogitoRestEventUri;
 import no.java.incogito.domain.Label;
 import no.java.incogito.domain.Level;
 import no.java.incogito.domain.Level.LevelId;
@@ -59,7 +59,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import javax.ws.rs.core.SecurityContext;
-import javax.ws.rs.core.UriInfo;
 import java.io.File;
 
 /**
@@ -95,8 +94,8 @@ public class IncogitoResource {
 
     @Path("/events")
     @GET
-    public Response getEvents(@Context UriInfo uriInfo) {
-        F<List<Event>, List<EventXml>> eventListToXml = XmlFunctions.eventListToXml.f(new IncogitoUri(uriInfo.getRequestUriBuilder()));
+    public Response getEvents() {
+        F<List<Event>, List<EventXml>> eventListToXml = XmlFunctions.eventListToXml.f(new IncogitoUri(incogito.getConfiguration().baseurl));
 
         return toJsr311(incogito.getEvents().
                 ok().map(compose(eventListXml, compose(Java.<EventXml>List_ArrayList(), eventListToXml))));
@@ -188,17 +187,15 @@ public class IncogitoResource {
 
     @Path("/events/{eventName}")
     @GET
-    public Response getEvent(@Context final UriInfo uriInfo,
-                             @PathParam("eventName") final String eventName) {
-        return toJsr311(incogito.getEventByName(eventName).ok().map(eventToXml.f(new IncogitoUri(uriInfo.getRequestUriBuilder()))));
+    public Response getEvent(@PathParam("eventName") final String eventName) {
+        return toJsr311(incogito.getEventByName(eventName).ok().map(eventToXml.f(new IncogitoUri(incogito.getConfiguration().baseurl))));
     }
 
     @Path("/events/{eventName}/sessions")
     @GET
-    public Response getSessionsForEvent(@Context final UriInfo uriInfo,
-                                        @PathParam("eventName") final String eventName) {
+    public Response getSessionsForEvent(@PathParam("eventName") final String eventName) {
 
-        IncogitoUri incogitoUri = new IncogitoUri(uriInfo.getRequestUriBuilder());
+        IncogitoUri incogitoUri = new IncogitoUri(incogito.getConfiguration().baseurl);
         F<List<Session>, List<SessionXml>> sessionToXmlList = List.<Session, SessionXml>map_().
                 f(XmlFunctions.sessionToXml.f(incogitoUri.restEvents().eventUri(eventName)).f(incogitoUri.events().eventUri(eventName)));
 
@@ -208,10 +205,9 @@ public class IncogitoResource {
 
     @Path("/events/{eventName}/sessions/{sessionId}")
     @GET
-    public Response getSessionForEvent(@Context final UriInfo uriInfo,
-                                       @PathParam("eventName") final String eventName,
+    public Response getSessionForEvent(@PathParam("eventName") final String eventName,
                                        @PathParam("sessionId") final String sessionId) {
-        IncogitoUri incogitoUri = new IncogitoUri(uriInfo.getRequestUriBuilder());
+        IncogitoUri incogitoUri = new IncogitoUri(incogito.getConfiguration().baseurl);
         IncogitoRestEventUri restEventUri = incogitoUri.restEvents().eventUri(eventName);
         IncogitoEventUri eventUri = incogitoUri.events().eventUri(eventName);
 
@@ -224,8 +220,7 @@ public class IncogitoResource {
 
     @Path("/events/{eventName}/sessions/{sessionId}/speaker-photos/{index}")
     @GET
-    public Response getPersonPhoto(@Context final UriInfo uriInfo,
-                                   @PathParam("eventName") final String eventName,
+    public Response getPersonPhoto(@PathParam("eventName") final String eventName,
                                    @PathParam("sessionId") final String sessionId,
                                    @PathParam("index") final int index) {
         return toJsr311(incogito.getSpeakerPhotoForSession(sessionId, index), cacheForOneHourCacheControl);
@@ -233,8 +228,7 @@ public class IncogitoResource {
 
     @Path("/events/{eventName}/{sessionId}/session-interest")
     @POST
-    public Response setSessionInterest(@Context final UriInfo uriInfo,
-                                       @Context final SecurityContext securityContext,
+    public Response setSessionInterest(@Context final SecurityContext securityContext,
                                        @PathParam("eventName") final String eventName,
                                        @PathParam("sessionId") final String sessionId,
                                        String payload) {
@@ -257,8 +251,7 @@ public class IncogitoResource {
 
     @Path("/events/{eventName}/my-schedule")
     @GET
-    public Response getMySchedule(@Context final UriInfo uriInfo,
-                                  @Context final SecurityContext securityContext,
+    public Response getMySchedule(@Context final SecurityContext securityContext,
                                   @PathParam("eventName") final String eventName) {
         String name = securityContext.getUserPrincipal().getName();
 
@@ -266,16 +259,15 @@ public class IncogitoResource {
             throw new WebApplicationException(Status.UNAUTHORIZED);
         }
 
-        return getScheduleForUser(uriInfo, securityContext, eventName, name);
+        return getScheduleForUser(securityContext, eventName, name);
     }
 
     @Path("/events/{eventName}/schedules/{userName}")
     @GET
-    public Response getScheduleForUser(@Context final UriInfo uriInfo,
-                                       @Context final SecurityContext securityContext,
+    public Response getScheduleForUser(@Context final SecurityContext securityContext,
                                        @PathParam("eventName") final String eventName,
                                        @PathParam("userName") final String userName) {
-        IncogitoUri incogitoUri = new IncogitoUri(uriInfo.getRequestUriBuilder());
+        IncogitoUri incogitoUri = new IncogitoUri(incogito.getConfiguration().baseurl);
         IncogitoRestEventUri restEventUri = incogitoUri.restEvents().eventUri(eventName);
         IncogitoEventUri eventUri = incogitoUri.events().eventUri(eventName);
 

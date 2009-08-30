@@ -21,11 +21,11 @@ public class IncogitoUri {
     }
 
     public IncogitoRestEventsUri restEvents() {
-        return new IncogitoRestEventsUri(this, rest.clone().path("events"));
+        return new IncogitoRestEventsUri(this, rest.clone().segment("events"));
     }
 
     public IncogitoEventsUri events() {
-        return new IncogitoEventsUri(baseurl.clone().path("events"));
+        return new IncogitoEventsUri(baseurl.clone().segment("events"));
     }
 
     public static class IncogitoEventsUri {
@@ -60,8 +60,8 @@ public class IncogitoUri {
                 return event.build().toString();
             }
 
-            public String session(String title) {
-                return sessions.clone().segment(title).build().toString();
+            public String session(Session session) {
+                return sessions.clone().segment(session.title).build().toString();
             }
         }
     }
