@@ -3,11 +3,15 @@ package no.java.incogito.domain;
 import fj.data.List;
 import fj.data.Option;
 import fj.data.TreeMap;
+import static fj.data.List.list;
 import fj.pre.Ord;
+import fj.P2;
+import static fj.P.p;
 import static no.java.incogito.domain.Level.LevelId;
 import static no.java.incogito.domain.Session.Format;
 import no.java.incogito.domain.Event.EventId;
 import org.joda.time.Interval;
+import org.joda.time.LocalDate;
 
 import java.io.File;
 import java.util.UUID;
@@ -17,8 +21,11 @@ import java.util.UUID;
  * @version $Id$
  */
 public class IncogitoTestData {
+    public static final List<Room> roomsDay1 = list(new Room("Lab I"), new Room("Lab II"));
+    public static final List<Room> roomsDay2 = list(new Room("Lab I"), new Room("Lab II"), new Room("BoF"));
+    public static final List<P2<LocalDate, List<Room>>> roomsByDate = List.list(p(new LocalDate(2008, 9, 17), roomsDay1), p(new LocalDate(2008, 9, 18), roomsDay2));
     public static final Event javaZone2008 = new Event(EventId.eventId(UUID.randomUUID().toString()), "JavaZone 2008",
-            Option.<String>none(), Option.<String>none(), List.<Room>nil(), TreeMap.<LevelId, Level>empty(LevelId.ord),
+            Option.<String>none(), Option.<String>none(), List.<Room>nil(), roomsByDate, TreeMap.<LevelId, Level>empty(LevelId.ord),
             TreeMap.<String, Label>empty(Ord.stringOrd));
 
     public static final Level Introductory = new Level(LevelId.Introductory, "Introductory", new File(""));

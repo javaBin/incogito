@@ -2,10 +2,10 @@ package no.java.incogito.web;
 
 import fj.F;
 import fj.F2;
+import fj.F3;
 import static fj.Function.curry;
 import fj.P;
 import fj.P2;
-import fj.F3;
 import fj.data.List;
 import static fj.data.List.list;
 import fj.data.Set;
@@ -14,19 +14,23 @@ import fj.data.Stream;
 import static fj.data.Stream.stream;
 import fj.data.TreeMap;
 import fj.pre.Ord;
+import static fj.pre.Ord.stringOrd;
+import fj.pre.Ordering;
 import no.java.incogito.Functions;
+import static no.java.incogito.Functions.compose;
 import no.java.incogito.application.IncogitoConfiguration;
 import no.java.incogito.domain.CssConfiguration;
 import no.java.incogito.domain.Event;
+import no.java.incogito.domain.IncogitoUri.IncogitoEventsUri.IncogitoEventUri;
+import no.java.incogito.domain.IncogitoUri.IncogitoRestEventsUri.IncogitoRestEventUri;
+import no.java.incogito.domain.Label;
 import no.java.incogito.domain.Level;
 import no.java.incogito.domain.Room;
 import no.java.incogito.domain.Schedule;
 import no.java.incogito.domain.Session;
+import no.java.incogito.domain.Session.Format;
 import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.UserSessionAssociation;
-import no.java.incogito.domain.Label;
-import no.java.incogito.domain.IncogitoUri.IncogitoRestEventsUri.IncogitoRestEventUri;
-import no.java.incogito.domain.IncogitoUri.IncogitoEventsUri.IncogitoEventUri;
 import no.java.incogito.dto.SessionXml;
 import no.java.incogito.web.resources.XmlFunctions;
 import no.java.incogito.web.servlet.WebCalendar;
@@ -35,6 +39,7 @@ import org.joda.time.LocalDate;
 import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -57,7 +62,7 @@ public class WebFunctions {
 
     public static final F<CssConfiguration, F<List<Room>, List<String>>> generateCalendarCss = curry(new F2<CssConfiguration, List<Room>, List<String>>() {
         public List<String> f(CssConfiguration cssConfiguration, List<Room> roomList) {
-          
+
             List<String> sessions = Functions.List_product(list("09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19"),
                     list("00", "15", "30", "45"), P.<String, String>p2()).
                     zipIndex().
@@ -125,65 +130,81 @@ public class WebFunctions {
 
     public static final F<IncogitoRestEventUri, F<IncogitoEventUri, F<Schedule, WebCalendar>>> webCalendar = curry(new F3<IncogitoRestEventUri, IncogitoEventUri, Schedule, WebCalendar>() {
         public WebCalendar f(IncogitoRestEventUri restEventUri, IncogitoEventUri eventUri, Schedule schedule) {
-            Collection<Integer> timeslotHours = schedule.sessions.foldLeft(timeslotFold, Set.<Integer>empty(Ord.intOrd)).toList().reverse().toCollection();
-            List<String> rooms = schedule.sessions.foldLeft(roomFolder, Set.<String>empty(Ord.stringOrd)).toList().reverse();
+            F<Session,SessionXml> sessionToXml = XmlFunctions.sessionToXml.f(restEventUri).f(eventUri);
 
+            Collection<Integer> timeslotHours = schedule.sessions.foldLeft(timeslotFold, Set.<Integer>empty(Ord.intOrd)).toList().reverse().toCollection();
             Map<String, String> attendanceMap = new HashMap<String, String>();
 
             for (P2<SessionId, UserSessionAssociation> sessionAssociation : schedule.sessionAssociations) {
                 attendanceMap.put(sessionAssociation._1().value, sessionAssociation._2().interestLevel.name());
             }
 
-            Collection<Map<String, List<SessionXml>>> dayToRoomToSessionMap =
-                getDayToRoomToSessionMap(restEventUri, eventUri, schedule, rooms);
+            LinkedHashMap<LocalDate, Collection<String>> roomsByDate = new LinkedHashMap<LocalDate, Collection<String>>();
+            TreeMap<LocalDate, TreeMap<String, List<SessionXml>>> dayToRoomToPresentationsMap = TreeMap.empty(Functions.LocalDate_ord);
+            TreeMap<LocalDate, List<SessionXml>> quickiesByDay = TreeMap.empty(Functions.LocalDate_ord);
 
-            return new WebCalendar(rooms.toCollection(), timeslotHours, attendanceMap, dayToRoomToSessionMap);
+            for (final P2<LocalDate, List<Room>> date : schedule.event.roomsByDate) {
+                final LocalDate day = date._1();
+                final List<Room> rooms = date._2();
+
+                roomsByDate.put(day, rooms.map(Room.name_).toCollection());
+
+                // -----------------------------------------------------------------------
+                // Presentations
+                // -----------------------------------------------------------------------
+
+                F<Session, Boolean> presentationFilter = new F<Session, Boolean>() {
+                    public Boolean f(Session session) {
+                        return session.timeslot.isSome() &&
+                                session.timeslot.some().getStart().toLocalDate().equals(day) &&
+                                session.room.isSome() &&
+                                rooms.find(compose(Functions.equals.f(session.room.some()), Room.name_)).isSome() &&
+                                (session.format.equals(Format.Presentation) || session.format.equals(Format.BoF));
+                    }
+                };
+
+                TreeMap<String, List<SessionXml>> roomToSessionMap = TreeMap.empty(stringOrd);
+
+                // Create an empty list for each day, just to make sure that every day is covered. Other parts rely on this fact
+                List<SessionXml> emptyList = List.nil();
+                for (Room room : rooms) {
+                    roomToSessionMap = roomToSessionMap.set(room.name, emptyList);
+                }
+
+                // For each session, find the room's list and add the session to the list
+                for (SessionXml session : schedule.sessions.filter(presentationFilter).map(sessionToXml)) {
+                    roomToSessionMap = roomToSessionMap.set(session.room, roomToSessionMap.get(session.room).some().cons(session));
+                }
+
+                dayToRoomToPresentationsMap = dayToRoomToPresentationsMap.set(date._1(), roomToSessionMap);
+
+                // -----------------------------------------------------------------------
+                // Lightning Talks
+                // -----------------------------------------------------------------------
+
+                // Do not check against the room list, just assume it is ok.
+                F<Session, Boolean> lightningTalkFilter = new F<Session, Boolean>() {
+                    public Boolean f(Session session) {
+                        return session.timeslot.isSome() &&
+                                session.timeslot.some().getStart().toLocalDate().equals(day) &&
+                                session.room.isSome() &&
+                                session.format.equals(Format.Quickie);
+                    }
+                };
+
+                Set<Session> quickies = empty(sessionTimestampOrd);
+
+                for (Session session : schedule.sessions.filter(lightningTalkFilter)) {
+                    quickies = quickies.insert(session);
+                }
+
+                quickiesByDay = quickiesByDay.set(day, quickies.toList().map(sessionToXml));
+            }
+
+            return new WebCalendar(timeslotHours, attendanceMap, roomsByDate,
+                    dayToRoomToPresentationsMap, quickiesByDay);
         }
     });
-
-    public static Collection<Map<String, List<SessionXml>>> getDayToRoomToSessionMap(IncogitoRestEventUri restEventUri, IncogitoEventUri eventUri, Schedule schedule, List<String> rooms) {
-        F<Session,SessionXml> sessionToXml = XmlFunctions.sessionToXml.f(restEventUri).f(eventUri);
-
-        List<Session> sessions = schedule.sessions.filter(new F<Session, Boolean>() {
-            public Boolean f(Session session) {
-                return session.timeslot.isSome() && session.room.isSome();
-            }
-        });
-
-        F2<Set<LocalDate>, Session, Set<LocalDate>> folder = new F2<Set<LocalDate>, Session, Set<LocalDate>>() {
-            public Set<LocalDate> f(Set<LocalDate> dateTimeSet, Session session) {
-                return dateTimeSet.insert(session.timeslot.some().getStart().toLocalDate());
-            }
-        };
-
-        Ord<LocalDate> ord = Ord.comparableOrd();
-        Set<LocalDate> days = sessions.foldLeft(folder, empty(ord));
-
-        final List<SessionXml> emptyList = List.nil();
-        List<Map<String, List<SessionXml>>> list = List.nil();
-
-        for (final LocalDate day : days) {
-            F<Session, Boolean> dayFilter = new F<Session, Boolean>() {
-                public Boolean f(Session session) {
-                    return session.timeslot.some().getStart().toLocalDate().equals(day);
-                }
-            };
-
-            TreeMap<String, List<SessionXml>> map = rooms.foldLeft(new F2<TreeMap<String, List<SessionXml>>, String, TreeMap<String, List<SessionXml>>>() {
-                public TreeMap<String, List<SessionXml>> f(TreeMap<String, List<SessionXml>> stringListTreeMap, String room) {
-                    return stringListTreeMap.set(room, emptyList);
-                }
-            }, TreeMap.<String, List<SessionXml>>empty(Ord.stringOrd));
-
-            for (SessionXml session : sessions.filter(dayFilter).map(sessionToXml)) {
-                map = map.set(session.room, map.get(session.room).some().cons(session));
-            }
-
-            list = list.cons(map.toMutableMap());
-        }
-
-        return list.toCollection();
-    }
 
     private static final F2<Set<Integer>, Session, Set<Integer>> timeslotFold = new F2<Set<Integer>, Session, Set<Integer>>() {
         public Set<Integer> f(Set<Integer> hours, Session session) {
@@ -195,13 +216,9 @@ public class WebFunctions {
         }
     };
 
-    private static final F2<Set<String>, Session, Set<String>> roomFolder = new F2<Set<String>, Session, Set<String>>() {
-        public Set<String> f(Set<String> hours, Session session) {
-            if (session.room.isNone()) {
-                return hours;
-            }
-
-            return hours.insert(session.room.some());
+    public static final Ord<Session> sessionTimestampOrd = Ord.ord(curry(new F2<Session, Session, Ordering>() {
+        public Ordering f(Session a, Session b) {
+            return Ord.longOrd.compare(a.timeslot.some().getStartMillis(), b.timeslot.some().getStartMillis());
         }
-    };
+    }));
 }

@@ -21,7 +21,7 @@ public class SessionXml {
     @XmlEnum(String.class)
     public enum FormatXml {
         Presentation,
-        Lightning_talk,
+        Quickie,
         BoF
     }
 

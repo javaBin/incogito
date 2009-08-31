@@ -3,14 +3,16 @@ package no.java.incogito.application;
 import fj.F;
 import fj.F2;
 import static fj.Function.compose;
-import fj.P;
 import fj.P1;
+import fj.P2;
+import static fj.P.p;
 import fj.control.parallel.Callables;
 import fj.data.List;
 import static fj.data.List.list;
 import static fj.data.List.nil;
 import fj.data.Option;
 import static fj.data.Option.some;
+import static fj.data.Option.none;
 import fj.data.TreeMap;
 import fj.data.Either;
 import fj.pre.Ord;
@@ -18,12 +20,15 @@ import no.java.incogito.Functions;
 import no.java.incogito.IO;
 import static no.java.incogito.IO.Strings.streamToString;
 import no.java.incogito.PropertiesF;
+import static no.java.incogito.Functions.trim;
+import static no.java.incogito.Functions.split;
 import no.java.incogito.application.IncogitoConfiguration.EventConfiguration;
 import no.java.incogito.domain.CssConfiguration;
 import static no.java.incogito.domain.Event.emptyLabelIconMap;
 import static no.java.incogito.domain.Event.emptyLevelIconMap;
 import no.java.incogito.domain.Label;
 import no.java.incogito.domain.Level;
+import no.java.incogito.domain.Room;
 import no.java.incogito.domain.Level.LevelId;
 import no.java.incogito.ems.client.EmsWrapper;
 import no.java.ems.domain.Event;
@@ -31,6 +36,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
 
 import java.io.File;
 
@@ -46,6 +54,14 @@ public class ConfigurationLoaderService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final EmsWrapper emsWrapper;
 
+    DateTimeFormatter dateFormatter = new DateTimeFormatterBuilder().
+            appendYear(4, 4).
+            appendLiteral('-').
+            appendMonthOfYear(2).
+            appendLiteral('-').
+            appendDayOfMonth(2).
+            toFormatter();
+
     @Autowired
     public ConfigurationLoaderService(EmsWrapper emsWrapper) {
         this.emsWrapper = emsWrapper;
@@ -60,8 +76,8 @@ public class ConfigurationLoaderService {
             f(PropertiesF.loadPropertiesAsMap).
             f(props).call();
 
-        String baseurl = properties.get("baseurl").toEither("").right().valueE(P.p("Missing required property: 'baseurl'"));
-        String eventsConfiguration = properties.get("events").toEither("").right().valueE(P.p("Missing required property: 'events'"));
+        String baseurl = properties.get("baseurl").toEither("").right().valueE(p("Missing required property: 'baseurl'"));
+        String eventsConfiguration = properties.get("events").toEither("").right().valueE(p("Missing required property: 'events'"));
 
         F<String, Option<Double>> parseDouble = compose(Functions.<NumberFormatException, Double>Either_rightToOption_(), Functions.parseDouble);
 
@@ -79,7 +95,7 @@ public class ConfigurationLoaderService {
         // TODO: Load the order of the rooms
         // TODO: Load "extra" room sessions which are special like "lunch" and "party zone"
         // TODO: Consider switching to reading a <event id>.xml file if it exist and use that as configuration
-        for (final String eventName : list(eventsConfiguration.split(",")).map(Functions.trim)) {
+        for (final String eventName : list(eventsConfiguration.split(",")).map(trim)) {
 
             final File eventDirectory = new File(eventsDirectory, eventName);
 
@@ -109,7 +125,7 @@ public class ConfigurationLoaderService {
             Option<String> blurb = eventProperties.get("blurb");
 
             TreeMap<String, Label> labelMap = List.list(eventProperties.get("labels").orSome("").split(",")).
-                map(Functions.trim).
+                map(trim).
                 foldLeft(new F2<TreeMap<String, Label>, String, TreeMap<String, Label>>() {
                     public TreeMap<String, Label> f(TreeMap<String, Label> labelIcons, String emsId) {
                         // If the configuration file contain an ".id" element, use that as the internal id
@@ -135,7 +151,7 @@ public class ConfigurationLoaderService {
                 }, emptyLabelIconMap);
 
             TreeMap<LevelId, Level> levelMap = List.list(eventProperties.get("levels").orSome("").split(",")).
-                map(Functions.trim).
+                map(trim).
                 foldLeft(new F2<TreeMap<LevelId, Level>, String, TreeMap<LevelId, Level>>() {
                     public TreeMap<LevelId, Level> f(TreeMap<LevelId, Level> levelIcons, String id) {
                         File iconFile = new File(eventDirectory, "levels/" + id + ".png");
@@ -156,8 +172,41 @@ public class ConfigurationLoaderService {
                 continue;
             }
 
-            events = events.cons(new EventConfiguration(eventName, blurb, frontPageContent, labelMap, levelMap,
-                    eventPropertiesFile.lastModified()));
+            List<Room> presentationRooms = eventProperties.get("room.presentation").
+                    map(split.f(",")).orSome(List.<String>nil()).
+                    map(compose(Room.room_, trim));
+
+            List<LocalDate> days = eventProperties.get("days").
+                    map(split.f(",")).orSome(List.<String>nil()).
+                    map(new F<String, LocalDate>() {
+                        public LocalDate f(String s) {
+                            return dateFormatter.parseDateTime(s.trim()).toLocalDate();
+                        }
+                    });
+
+            if(days.isEmpty()) {
+                logger.warn("Misconfiguration: missing a 'days' property.");
+                continue;
+            }
+
+            List<P2<LocalDate, List<Room>>> roomsByDate = Option.somes(days.map(new F<LocalDate, Option<P2<LocalDate, List<Room>>>>() {
+                public Option<P2<LocalDate, List<Room>>> f(LocalDate localDate) {
+                    String key = "rooms." + dateFormatter.print(localDate);
+                    Option<String> roomsOption = eventProperties.get(key);
+
+                    if(roomsOption.isNone()) {
+                        logger.warn("Missing room configuration: " + key);
+                        return none();
+                    }
+
+                    List<Room> rooms = roomsOption.map(split.f(",")).orSome(List.<String>nil()).
+                            map(compose(Room.room_, trim));
+                    return some(p(localDate, rooms));
+                }
+            }));
+
+            events = events.cons(new EventConfiguration(eventName, blurb, frontPageContent, roomsByDate, 
+                    presentationRooms, labelMap, levelMap, eventPropertiesFile.lastModified()));
         }
 
         return new IncogitoConfiguration(baseurl, cssConfiguration, events.reverse());

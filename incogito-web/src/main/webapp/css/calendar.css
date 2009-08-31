@@ -50,14 +50,14 @@ div#calendar {
 }
 
 /*
- * Session Cell
+ * Presentation Cell
 */
-div.session-header div {
+div.presentation-header div {
     display: inline;
     font-size: 1.1em;
 }
 
-.room .session {
+.room .presentation {
     width: 12.5%;
     position: absolute;
 }
@@ -68,54 +68,54 @@ div.session-header div {
     padding:0;
 }
 
-.session-body .title,.session-body .speakers {
+.presentation-body .title,.presentation-body .speakers {
     font-size: 0.75em;
 }
 
-.session-body .title {
+.presentation-body .title {
     font-weight: bolder;
     padding-top: 0.75em;
 }
 
-.session-header, session-header div {
+.presentation-header, presentation-header div {
     overflow:hidden;
     height: 1em;
     font-size: 1em;
     line-height:1em;
 }
 
-div.session-header {
+div.presentation-header {
     width: 100%;
     text-align: right;
     vertical-align: middle;
     border: thin solid silver;
 }
 
-div.session-header div.level {
+div.presentation-header div.level {
     border-left: thin #787878 solid;
 }
 
-div.session-header div.labels img {
+div.presentation-header div.labels img {
     padding-right: 0.2em;
 }
 
-div.session-header div.level img {
+div.presentation-header div.level img {
     padding-left: 0.2em;
     padding-right: 0.2em;
 }
 
-div.session-body {
+div.presentation-body {
     margin-left: 0.5em;
     margin-right: 0.5em;
 }
 
-div.session-body div.add-remove-button {
+div.presentation-body div.add-remove-button {
     position: absolute;
     bottom: 1.5em;
     left: 0;
 }
 
-div.session-footer {
+div.presentation-footer {
     background-color: #d4d4d4;
     position: absolute;
     bottom: 0;

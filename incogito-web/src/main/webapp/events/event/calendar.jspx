@@ -205,32 +205,6 @@
           </c:forEach>
         </ul>
       </c:forEach>
-<!--
-			<ul class="labels">
-				<li class=" inactive">CORE JAVA</li>
-				<li class=" inactive">USABILITY</li>
-				<li class=" inactive">GREEN IT</li>
-			</ul>
-			<ul class="labels">
-				<li class=" inactive">INNOVATIVE USE OF IT</li>
-				<li class="web inactive"><a href="#">WEB AS A PLATFORM</a></li>
-				<li class=" active">JAVA FRAMEWORKS</li>
-			</ul>
-			<ul class="labels">
-				<li class=" inactive">FRONTEND TECHNOLOGIES</li>
-				<li class=" inactive">TOOLS AND TECHNIQUES</li>
-				<li class=" inactive">EXPERIENCE REPORTS</li>
-			</ul>
-			<ul class="labels">
-				<li class=" inactive">EMBEDDED, MOBILE AND GAMING</li>
-				<li class=" inactive">ARCHITECTURE AND DESIGN</li>
-				<li class=" inactive">ALTERNATIVE LANGUAGES</li>
-			</ul>
-			<ul class="labels">
-				<li class=" inactive">ENTERPRISE ARCHITECTURE AND INTEGRATION</li>
-				<li class="method inactive">AGILE AND SOFTWARE ENGINEERING</li>
-			</ul>
--->
 		</div>
 		<div id="complexity">
 			<div>Complexity Legend</div>
@@ -247,38 +221,27 @@
 	</div> <!-- legends ends -->
 <div class="cb"><!--space--></div>
 	<div id="menu">
-		<ul class="nav">
-			<li><a href="">INFO</a></li>
-			<li><a href="">MY PROFILE</a></li>
-			<li><a href="">MY AGENDA</a></li>
-			<li><a href="">LOGOUT</a></li>
-		</ul>
-                <div class="cb"><!--space--></div>
-                <ul class="nav subnav">
-                    <li class="subday">
-                        DAY 1:
-                    </li>
-                    <li>
-                        <a href="#">sessions</a>
-                    </li>
-                    <li>
-                        <a href="#">lightning talks</a>
-                    </li>
-                    <li class="subday">
-                        DAY 2:
-                    </li>
-                    <li>
-                        <a href="#">sessions</a>
-                    </li>
-                    <li>
-                        <a href="#">lightning talks</a>
-                    </li>
-                </ul>
-	</div>
+    <ul class="nav">
+      <li><a href="">INFO</a></li>
+      <li><a href="">MY PROFILE</a></li>
+      <li><a href="">MY AGENDA</a></li>
+      <li><a href="">LOGOUT</a></li>
+    </ul>
+    <div class="cb"><!--space--></div>
+    <ul class="nav subnav">
+      <li class="subday">DAY 1:</li>
+      <li><a href="#">sessions</a></li>
+      <li><a href="#">lightning talks</a></li>
+      <li class="subday">DAY 2:</li>
+      <li><a href="#">sessions</a></li>
+      <li><a href="#">lightning talks</a></li>
+    </ul>
+  </div>
 </div> <!-- hd ends -->
 <div class="cb"><!--space--></div>
 <div id="calendar">
-  <c:forEach var="roomToSessionMap" items="${calendar.dayToRoomToSessionMap}" varStatus="i">
+  <c:forEach var="entry" items="${calendar.roomsByDate}" varStatus="i">
+    <c:set var="roomToPresentationsMap" value="${i:treeMapGet(calendar.dayToRoomToPresentationsMap, entry.key)}"/>
     <div class="day day${i.index}">
       <div class="times">
         <div class="hour">09:00</div>
@@ -332,54 +295,60 @@
         <div class="hour">21:00</div>
       </div>
       <div class="rooms">
-        <c:forEach var="room" items="${calendar.rooms}" varStatus="i">
-            <div class="room">
-              <h2>${room}</h2>
-              <c:forEach var="session" items="${i:castToSessionList(i:mapGet(roomToSessionMap, room))}" varStatus="i">
-                <c:set var="interestLevel" value="${i:mapGetDefault(calendar.attendanceMap, session.id, 'NO_INTEREST')}"/>
-                <fmt:formatNumber var="hour" value="${session.start.hour}" maxIntegerDigits="2" minIntegerDigits="2"/>
-                <fmt:formatNumber var="minute" value="${session.start.minute}" maxIntegerDigits="2" minIntegerDigits="2"/>
-                <div class="session start${hour}${minute} duration60">
-                  <div class="session-id" style="display: none;">${session.id}</div>
-                  <div class="session-interest-level" style="display: none;">${interestLevel}</div>
-                  <div class="session-header">
-                    <div class="labels">
-                      <c:forEach var="label" items="${session.labels}">
-                        <img class="label" title="${label.displayName}" alt="${label.displayName}" src="${label.  iconUrl}"/>
-                      </c:forEach>
-                    </div>
-                    <div class="level">
-                      <c:choose>
-                        <c:when test="${not (session.level eq null)}">
-                          <img title="${session.level.displayName}" alt="${session.level.displayName}" src="${session.level.iconUrl}"/>
-                        </c:when>
-                        <c:otherwise>X</c:otherwise>
-                      </c:choose>
-                    </div>
+        <c:forEach var="room" items="${entry.value}" varStatus="i">
+          <div class="room">
+            <h2>${room}</h2>
+            <c:forEach var="presentation" items="${i:castToSessionList(i:treeMapGet(roomToPresentationsMap, room))}" varStatus="i">
+            <c:set var="interestLevel" value="${i:mapGetDefault(calendar.attendanceMap, presentation.id, 'NO_INTEREST')}"/>
+              <fmt:formatNumber var="hour" value="${presentation.start.hour}" maxIntegerDigits="2" minIntegerDigits="2"/>
+              <fmt:formatNumber var="minute" value="${presentation.start.minute}" maxIntegerDigits="2" minIntegerDigits="2"/>
+              <div class="presentation start${hour}${minute} duration60">
+                <div class="presentation-id" style="display: none;">${presentation.id}</div>
+                <div class="presentation-interest-level" style="display: none;">${interestLevel}</div>
+                <div class="presentation-header">
+                  <div class="labels">
+                    <c:forEach var="label" items="${presentation.labels}">
+                      <img class="label" title="${label.displayName}" alt="${label.displayName}" src="${label.iconUrl}"/>
+                    </c:forEach>
                   </div>
-                  <div class="session-body">
-                    <div class="title">${session.title}</div>
-                    <div class="add-remove-button">
-                      <c:choose>
-                        <c:when test="${interestLevel eq 'NO_INTEREST'}">
-                          <img src="${incogito.baseurl}/images/icons/question.png" title="Click to add to schedule as a candidate session" alt="Click to add to schedule as a candidate session"/>
-                        </c:when>
-                        <c:when test="${interestLevel eq 'INTEREST'}">
-                          <img src="${incogito.baseurl}/images/icons/plus.png" title="Click to add to schedule as a session you're attending" alt="Click to add to schedule as a session you're attending"/>
-                        </c:when>
-                        <c:otherwise>
-                          <img src="${incogito.baseurl}/images/icons/minus.png" title="Click to add to schedule as a session you're not attending" alt="Click to add to schedule as a session you're not attending"/>
-                        </c:otherwise>
-                      </c:choose>
-                    </div>
+                  <div class="level">
+                    <c:choose>
+                      <c:when test="${not (presentation.level eq null)}">
+                        <img title="${presentation.level.displayName}" alt="${presentation.level.displayName}" src="${presentation.level.iconUrl}"/>
+                      </c:when>
+                      <c:otherwise>X</c:otherwise>
+                    </c:choose>
                   </div>
-                  <div class="session-footer">&amp;nbsp; <!-- space --></div>
                 </div>
-              </c:forEach>
-            </div>
-          </c:forEach>
-        </div>
+                <div class="presentation-body">
+                  <div class="title">${presentation.title}</div>
+                  <div class="add-remove-button">
+                    <c:choose>
+                      <c:when test="${interestLevel eq 'NO_INTEREST'}">
+                        <img src="${incogito.baseurl}/images/icons/question.png" title="Click to add to schedule as a candidate session" alt="Click to add to schedule as a candidate session"/>
+                      </c:when>
+                      <c:when test="${interestLevel eq 'INTEREST'}">
+                        <img src="${incogito.baseurl}/images/icons/plus.png" title="Click to add to schedule as a session you're attending" alt="Click to add to schedule as a session you're attending"/>
+                      </c:when>
+                      <c:otherwise>
+                        <img src="${incogito.baseurl}/images/icons/minus.png" title="Click to add to schedule as a session you're not attending" alt="Click to add to schedule as a session you're not attending"/>
+                      </c:otherwise>
+                    </c:choose>
+                  </div>
+                </div>
+                <div class="presentation-footer">&amp;nbsp;</div>
+              </div>
+            </c:forEach>
+          </div>
+        </c:forEach>
+      </div>
       <div class="cb"><!--space-->.</div>
+      <ul>
+        <c:set var="quickies" value="${i:treeMapGet(calendar.quickiesByDay, entry.key)}"/>
+        <c:forEach var="quickie" items="${i:castToSessionList(quickies)}" varStatus="i">
+          <li>${quickie.title}</li>
+        </c:forEach>
+      </ul>
     </div>
   </c:forEach>
 </div>

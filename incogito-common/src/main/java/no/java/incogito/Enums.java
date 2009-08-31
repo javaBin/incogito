@@ -8,6 +8,8 @@ import static fj.data.Option.none;
 import static fj.data.Option.some;
 import fj.pre.Ord;
 import fj.pre.Ordering;
+import fj.pre.Equal;
+import static fj.pre.Equal.anyEqual;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -49,5 +51,9 @@ public class Enums {
                 return Ord.stringOrd.compare(a.name(), b.name());
             }
         }));
+    }
+
+    public static <E extends Enum> Equal<E> equal() {
+        return anyEqual();
     }
 }

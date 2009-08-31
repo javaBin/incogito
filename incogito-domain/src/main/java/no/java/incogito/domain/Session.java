@@ -1,6 +1,7 @@
 package no.java.incogito.domain;
 
 import fj.F;
+import fj.pre.Equal;
 import fj.data.List;
 import fj.data.Option;
 import no.java.incogito.Enums;
@@ -13,9 +14,10 @@ import org.joda.time.Interval;
 public class Session {
     public enum Format {
         Presentation,
-        Lightning_talk,
+        Quickie,
         BoF;
 
+        public static Equal<Format> equal = Enums.<Format>equal();
         public static F<String, Option<Format>> valueOf_ = Enums.<Format>valueOf().f(Format.class);
         public static F<Format, String> toString = Enums.toString_();
     }

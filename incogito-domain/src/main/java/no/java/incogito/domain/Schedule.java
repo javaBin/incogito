@@ -2,8 +2,8 @@ package no.java.incogito.domain;
 
 import fj.F;
 import fj.data.List;
-import fj.data.TreeMap;
 import fj.data.Option;
+import fj.data.TreeMap;
 import no.java.incogito.domain.UserSessionAssociation.InterestLevel;
 
 /**

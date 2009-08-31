@@ -44,7 +44,7 @@ public class IncogitoFunctions {
     }
 
     public static Object treeMapGet(TreeMap<Object, Object> map, Object key) {
-        return map.get(key);
+        return map.get(key).some();
     }
 
     public static Object mapGet(Map map, Object key, Object defaultValue) {

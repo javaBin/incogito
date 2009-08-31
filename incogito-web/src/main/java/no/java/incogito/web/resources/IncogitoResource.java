@@ -109,7 +109,7 @@ public class IncogitoResource {
 
         return toJsr311(incogito.getEventByName(eventName).ok().map(new F<Event, String>() {
             public String f(Event event) {
-                return generateCss.f(event.rooms).foldRight(Functions.String_join.f("\n"), "");
+                return generateCss.f(event.presentationRooms).foldRight(Functions.String_join.f("\n"), "");
             }
         }), cacheForOneHourCacheControl);
     }
@@ -194,7 +194,6 @@ public class IncogitoResource {
     @Path("/events/{eventName}/sessions")
     @GET
     public Response getSessionsForEvent(@PathParam("eventName") final String eventName) {
-
         IncogitoUri incogitoUri = new IncogitoUri(incogito.getConfiguration().baseurl);
         F<List<Session>, List<SessionXml>> sessionToXmlList = List.<Session, SessionXml>map_().
                 f(XmlFunctions.sessionToXml.f(incogitoUri.restEvents().eventUri(eventName)).f(incogitoUri.events().eventUri(eventName)));

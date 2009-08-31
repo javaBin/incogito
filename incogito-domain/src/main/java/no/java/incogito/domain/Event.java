@@ -5,10 +5,13 @@ import fj.data.Option;
 import fj.data.TreeMap;
 import fj.pre.Ord;
 import static fj.pre.Ord.stringOrd;
+import fj.P2;
 import no.java.incogito.Enums;
 import no.java.incogito.domain.Level.LevelId;
 
 import java.util.UUID;
+
+import org.joda.time.LocalDate;
 
 /**
  * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
@@ -26,7 +29,9 @@ public class Event {
 
     public final Option<String> frontpageContent;
 
-    public final List<Room> rooms;
+    public final List<Room> presentationRooms;
+
+    public final List<P2<LocalDate, List<Room>>> roomsByDate;
 
     public final TreeMap<LevelId, Level> levels;
 
@@ -34,13 +39,15 @@ public class Event {
 
     public final TreeMap<String, Label> emsIndexedLabels;
 
-    public Event(EventId id, String name, Option<String> blurb, Option<String> frontpageContent, List<Room> rooms,
-                 TreeMap<LevelId, Level> levels, TreeMap<String, Label> labels) {
+    public Event(EventId id, String name, Option<String> blurb, Option<String> frontpageContent,
+                 List<Room> presentationRooms, List<P2<LocalDate, List<Room>>> roomsByDate, TreeMap<LevelId, Level> levels,
+                 TreeMap<String, Label> labels) {
         this.id = id;
         this.name = name;
         this.blurb = blurb;
         this.frontpageContent = frontpageContent;
-        this.rooms = rooms;
+        this.presentationRooms = presentationRooms;
+        this.roomsByDate = roomsByDate;
         this.levels = levels;
         this.labels = labels;
 

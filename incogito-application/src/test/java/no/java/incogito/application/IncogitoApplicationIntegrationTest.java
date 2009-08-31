@@ -47,7 +47,6 @@ import voldemort.server.VoldemortServer;
 import java.io.File;
 import java.net.URL;
 import java.util.Random;
-import java.util.UUID;
 
 /**
  * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
@@ -156,18 +155,25 @@ public class IncogitoApplicationIntegrationTest {
         assertTrue(incogitoHome.isDirectory());
 
         File etc = new File(incogitoHome, "etc");
-        File props = new File(etc, "incogito.properties");
-        File jz08File = new File(etc, "events/" + dataSet.javaZone2008.getName());
-        FileUtils.deleteDirectory(jz08File);
-        assertTrue(jz08File.mkdirs());
+        File incogitoPropertiesFile = new File(etc, "incogito.properties");
+        File jz08Directory = new File(etc, "events/" + dataSet.javaZone2008.getName());
+        FileUtils.deleteDirectory(jz08Directory);
+        assertTrue(jz08Directory.mkdirs());
         //noinspection ResultOfMethodCallIgnored
-        jz08File.mkdirs();
-        File jz08Welcome = new File(jz08File, "frontpage.txt");
+        jz08Directory.mkdirs();
+        File jz08Welcome = new File(jz08Directory, "frontpage.txt");
+        File jz08PropertiesFile = new File(jz08Directory, "event.properties");
 
-        TreeMap<String, String> properties = TreeMap.<String, String>empty(Ord.stringOrd).
+        TreeMap<String, String> incogitoProperties = TreeMap.<String, String>empty(Ord.stringOrd).
             set("baseurl", "http://poop").
             set("events", dataSet.javaZone2008.getName() + ",");
-        IO.runFileOutputStream(storePropertiesMap.f(properties), props).call();
+        IO.runFileOutputStream(storePropertiesMap.f(incogitoProperties), incogitoPropertiesFile).call();
+
+        TreeMap<String, String> jz08Properties = TreeMap.<String, String>empty(Ord.stringOrd).
+            set("days", "2008-09-17, 2008-09-18").
+            set("rooms.2008-09-17", "Lab I, Lab II").
+            set("rooms.2008-09-18", "Lab I, Lab II, BoF");
+        IO.runFileOutputStream(storePropertiesMap.f(jz08Properties), jz08PropertiesFile).call();
 
         IO.runFileOutputStream(stringToStream.f(text), jz08Welcome).call();
 

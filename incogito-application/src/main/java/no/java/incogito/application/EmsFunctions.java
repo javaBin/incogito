@@ -43,12 +43,6 @@ public class EmsFunctions {
         }
     };
 
-    public static F<no.java.ems.domain.Room, Room> roomFromEms = new F<no.java.ems.domain.Room, Room>() {
-        public Room f(no.java.ems.domain.Room room) {
-            return new Room(room.getName());
-        }
-    };
-
     public static F<IncogitoConfiguration, F<no.java.ems.domain.Event, Either<String, Event>>> eventFromEms = curry(new F2<IncogitoConfiguration, no.java.ems.domain.Event, Either<String, Event>>() {
         public Either<String, Event> f(IncogitoConfiguration configuration, final no.java.ems.domain.Event event) {
             final EventId eventId = eventIdFromEms.f(event);
@@ -62,7 +56,8 @@ public class EmsFunctions {
                                     event.getName(),
                                     eventConfiguration.blurb,
                                     eventConfiguration.frontPageText,
-                                    List.iterableList(event.getRooms()).map(roomFromEms),
+                                    eventConfiguration.presentationRooms,
+                                    eventConfiguration.roomsByDate,
                                     eventConfiguration.levels,
                                     eventConfiguration.labels);
                         }

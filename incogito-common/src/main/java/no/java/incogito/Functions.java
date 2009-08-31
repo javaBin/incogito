@@ -22,12 +22,16 @@ import fj.data.TreeMap;
 import static fj.data.Either.left;
 import static fj.data.Either.right;
 import fj.pre.Show;
+import fj.pre.Ord;
+import fj.pre.Ordering;
 import static fj.pre.Show.show;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import org.joda.time.LocalDate;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -178,6 +182,8 @@ public class Functions {
     public static final Show<File> File_show = Show.showS(File_getName);
 
     public static final Show<File> File_showAbsolute = Show.showS(File_getAbsolutePath);
+
+    public static Ord<LocalDate> LocalDate_ord = Ord.comparableOrd();
 
     // -----------------------------------------------------------------------
     // fj.data.Either
