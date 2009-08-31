@@ -34,8 +34,8 @@
       else {
         $("#header .logo").animate({ left: "0px" }, 0);
       }
-      var headDescriptionDefault = $(".head-description .default")
-      var headDescriptionText = $(".head-description .text")
+      var headBlurbDefault = $(".head-blurb .default")
+      var headBlurbText = $(".head-blurb .text")
       $(".event-title").bind("mouseover", onEventHeaderMouseOver)
       $(".event-title").bind("mouseout", onEventHeaderMouseOut)
 
@@ -47,18 +47,18 @@
         $(this).addClass("high-lighted")
 
         if (text == "") {
-          headDescriptionDefault.show()
-          headDescriptionText.hide().text("")
+          headBlurbDefault.show()
+          headBlurbText.hide().text("")
         }
         else {
-          headDescriptionDefault.hide()
-          headDescriptionText.show().text(text)
+          headBlurbDefault.hide()
+          headBlurbText.show().text(text)
         }
       }
 
       function onEventHeaderMouseOut() {
         $(this).parent().children().removeClass("high-lighted")
-        headDescriptionText.hide().text("")
+        headBlurbText.hide().text("")
       }
     });
       </script>
@@ -90,7 +90,7 @@
       </h1>
     </c:forEach>
   </div>
-  <div class="head-description">
+  <div class="head-blurb">
     <span class="text"><!-- space --></span>
   </div>
 
