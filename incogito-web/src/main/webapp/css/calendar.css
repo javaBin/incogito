@@ -8,7 +8,7 @@ div#calendar {
   width: 100%;
   overflow: auto;
   position:absolute;
-  top: 8em;
+  top: 10em;
   margin: 2em auto;
 }
 
@@ -234,20 +234,20 @@ td#login-submit * {
 /* legend */
 #legends {
 	width: 100%;
-	height: 5em;
+	height: 6.5em;
 }
 
 #legends #title {
 	width: 6%;
 	float: left;
-	height: 5em;
+	height: 6.5em;
 	background: #EAEAEA;
 }
 
 #legends #filters {
         overflow: auto;
         float: left;
-	height: 5em;
+	height: 6.5em;
 	width: 80%;
 	color: #787878;
 }
@@ -255,15 +255,15 @@ td#login-submit * {
 #filters .labels {
 	font-size: 0.8em;
 	list-style-image: none;
-	list-style-position: outside;
+	list-style-position: inside;
 	list-style-type: none;
 	margin:0;
-	padding:1em 0.8em 1em 0.8em;
+	padding:1em 0 1em 0;
+	float: left;
 }
 
 #filters ul li {
-    margin: 0.2em 0 0 1em;
-    font-size: 0.80em;
+    margin: 0.2em;
     text-transform: uppercase;
 }
 
@@ -272,7 +272,13 @@ td#login-submit * {
     text-decoration: none;
 }
 
-#filters ul li.inactive a:hover,#filters ul li.active a:hover  {
+#filters ul li a {
+    display:block;
+    margin-left: 1.3em;
+    padding-left: 0.3em;
+}
+
+#filters ul li a:hover {
     background: #333333;
     color: #EAEAEA;
 }
@@ -280,7 +286,8 @@ td#login-submit * {
 /* Complexity */
 #legends #complexity {
 	width: 13%;
-	height: 5em;
+        padding-top: 1em;
+	height: 5.5em;
 	float: left;
 	border-left: 0.1em solid #EAEAEA;
 }
@@ -307,14 +314,14 @@ td#login-submit * {
 }
 
 #complexity .explanation {
-	height: 1em;
-  text-align: center;
+    height: 1em;
+    text-align: center;
 }
 
 #complexity .explanation span {
-	font-size: 0.75em;
-  width: 50%;
-  float: left;
+    font-size: 0.75em;
+    width: 50%;
+    float: left;
 }
 
 /* navigation */
@@ -328,10 +335,6 @@ ul.nav {
 
 ul.nav li {
 	float:left;
-}
-
-#filters .labels {
-	float: left;
 }
 
 #menu {
