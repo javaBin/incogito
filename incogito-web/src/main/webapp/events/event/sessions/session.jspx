@@ -38,17 +38,16 @@
       <c:otherwise>TBA</c:otherwise>
     </c:choose>
   </li>
-  <li>Room:
 <!--
+  <li>Room:
     <c:choose>
       <c:when test="${not(session.room eq null)}">${session.room}</c:when>
       <c:otherwise>TBA</c:otherwise>
     </c:choose>
--->
-    TBA
   </li>
-  <li class="session-detail-time format-${session.format}">
+-->
 <!-- TODO: Add date
+  <li class="session-detail-time format-${session.format}">
     <c:choose>
       <c:when test="${not(session.start eq null) and not(session.end eq null)}">
         <fmt:formatNumber minIntegerDigits="2" maxIntegerDigits="2" value="${session.start.hour}"/>:<fmt:formatNumber minIntegerDigits="2" maxIntegerDigits="2" value="${session.start.minute}"/>
@@ -57,9 +56,8 @@
       </c:when>
       <c:otherwise>TBA</c:otherwise>
     </c:choose>
--->
-    Timeslot: TBA
   </li>
+-->
   <li>
     <c:choose>
       <c:when test="${fn:length(session.speakers) eq 1}">
