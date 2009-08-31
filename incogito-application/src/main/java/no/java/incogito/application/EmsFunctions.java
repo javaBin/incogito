@@ -24,7 +24,6 @@ import no.java.incogito.domain.Event.EventId;
 import no.java.incogito.domain.Label;
 import no.java.incogito.domain.Level;
 import no.java.incogito.domain.Level.LevelId;
-import no.java.incogito.domain.Room;
 import no.java.incogito.domain.Session;
 import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.Speaker;
@@ -91,8 +90,7 @@ public class EmsFunctions {
             return right(new Session(new SessionId(session.getId()),
                 fromNull(session.getFormat()).bind(compose(Session.Format.valueOf_, Show.<no.java.ems.domain.Session.Format>anyShow().showS_())).orSome(Session.Format.Presentation),
                 session.getTitle(),
-                fromString(session.getLead()).map(WikiString.constructor),
-                fromString(session.getBody()).map(WikiString.constructor),
+                    fromString(session.getBody()).map(WikiString.constructor),
                 levelId.bind(getLevel),
                 fromNull(session.getTimeslot()),
                 fromNull(session.getRoom()).map(no.java.incogito.ems.client.EmsFunctions.roomName),

@@ -106,7 +106,6 @@ public class XmlFunctions {
                     SessionXml.FormatXml.valueOf(session.format.name()),
                     session.id.value,
                     session.title,
-                    session._abstract.map(WikiString.toHtml),
                     session.body.map(WikiString.toHtml),
                     session.level.map(levelToXml.f(restEventUri.levelsIcon())),
                     session.room,

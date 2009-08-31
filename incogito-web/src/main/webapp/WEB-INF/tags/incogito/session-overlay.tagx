@@ -22,7 +22,6 @@
     <div class="session-details-level"><!-- space --></div>
     <div class="session-details-room">Room: <span class="text"><!-- space --></span></div>
     <div class="session-details-timeslot"><!-- space --></div>
-    <div class="session-details-abstract"><!-- space --></div>
     <div class="session-details-body"><!-- space --></div>
     <div class="session-details-speakers"><!-- space --></div>
   </div>

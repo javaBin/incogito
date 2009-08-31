@@ -25,7 +25,6 @@ public class Session {
     public final SessionId id;
     public final Format format;
     public final String title;
-    public final Option<WikiString> _abstract;
     public final Option<WikiString> body;
     public final Option<Level> level;
     public final Option<Interval> timeslot;
@@ -34,13 +33,12 @@ public class Session {
     public final List<Speaker> speakers;
     public final List<Comment> comments;
 
-    public Session(SessionId id, Format format, String title, Option<WikiString> _abstract, Option<WikiString> body,
-                   Option<Level> level, Option<Interval> timeslot, Option<String> room, List<Label> labels,
-                   List<Speaker> speakers, List<Comment> comments) {
+    public Session(SessionId id, Format format, String title, Option<WikiString> body, Option<Level> level,
+                   Option<Interval> timeslot, Option<String> room, List<Label> labels, List<Speaker> speakers,
+                   List<Comment> comments) {
         this.id = id;
         this.format = format;
         this.title = title;
-        this._abstract = _abstract;
         this.body = body;
         this.level = level;
         this.timeslot = timeslot;
@@ -51,10 +49,10 @@ public class Session {
     }
 
     public Session timeslot(Option<Interval> timeslot) {
-        return new Session(id, format, title, _abstract, body, level, timeslot, room, labels, speakers, comments);
+        return new Session(id, format, title, body, level, timeslot, room, labels, speakers, comments);
     }
 
     public Session room(Option<String> room) {
-        return new Session(id, format, title, _abstract, body, level, timeslot, room, labels, speakers, comments);
+        return new Session(id, format, title, body, level, timeslot, room, labels, speakers, comments);
     }
 }

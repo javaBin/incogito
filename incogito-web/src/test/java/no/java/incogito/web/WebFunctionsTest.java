@@ -60,8 +60,8 @@ public class WebFunctionsTest extends TestCase {
         List.<Room>nil(), roomsByDate, TreeMap.<LevelId, Level>empty(LevelId.ord).set(intermediate.id, intermediate),
         TreeMap.<String, Label>empty(Ord.stringOrd).set(java.id, java));
 
-    Session templateSession = new Session(new SessionId("123"), Presentation, "Session 1", Option.<WikiString>none(),
-        Option.<WikiString>none(), Option.<Level>none(), Option.<Interval>none(), Option.<String>none(),
+    Session templateSession = new Session(new SessionId("123"), Presentation, "Session 1",
+            Option.<WikiString>none(), Option.<Level>none(), Option.<Interval>none(), Option.<String>none(),
         List.<Label>nil(), List.<Speaker>nil(), List.<Comment>nil());
 
     Option<String> room1 = some("Room 1");
