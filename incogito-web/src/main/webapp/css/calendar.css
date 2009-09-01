@@ -13,18 +13,43 @@ div#calendar {
 }
 
 .times {
-    margin: 2.5em 0 0 0.5em;
-    width: 3em;
-    float: left;
+  float: left;
 }
 
-.cb {
-    clear:both;
+.timeslot {
+  position: absolute;
+}
+
+.times .timeslot-start {
+  position: absolute;
+  top: 1.5em;
+}
+
+.times .timeslot-separator {
+  position: absolute;
+  top: 1.5em;
+}
+
+.times .timeslot-end {
+  position: absolute;
+  bottom: 1.5em;
+}
+
+/*
+.times {
+  width: 3em;
+  float: left;
 }
 
 .times div {
-    height: 2.5em;
-    overflow: hidden;
+  background-color: #eaeaea;
+  text-align: center;
+  vertical-align: middle;
+}
+*/
+
+.cb {
+    clear:both;
 }
 
 .rooms {
@@ -389,4 +414,3 @@ ul.nav li {
     text-decoration: underline;
     padding: 0;
 }
-

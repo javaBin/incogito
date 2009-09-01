@@ -3,10 +3,10 @@ package no.java.incogito.domain;
 import junit.framework.TestCase;
 import no.java.incogito.domain.IncogitoUri.IncogitoRestEventsUri.IncogitoRestEventUri.IncogitoRestSessionUri;
 
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -95,4 +95,5 @@ public class IncogitoUriTest extends TestCase {
 //
 //        System.out.println();
         System.out.println();
-    }}
+    }
+}

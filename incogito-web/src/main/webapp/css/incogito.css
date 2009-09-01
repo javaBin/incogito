@@ -188,12 +188,6 @@ a:visited {
 
 /* Content */
 
-li.session-list {
-  list-style-image: url(../images/yellow-bullet.png);
-  margin-left: 0;
-  margin-bottom: 7px;
-}
-
 #main-content {
   margin-left: 200px;
   margin-right: 200px;

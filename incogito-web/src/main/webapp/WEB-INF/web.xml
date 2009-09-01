@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<web-app id="starter" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+<web-app id="starter" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
   <filter>
     <filter-name>url-rewrite</filter-name>
@@ -83,4 +84,8 @@
     <listener-class>no.java.incogito.web.servlet.WebGuiRequestListener</listener-class>
   </listener>
 
+  <error-page>
+    <exception-type>Exception</exception-type>
+    <location>/exception.jspx</location>
+  </error-page>
 </web-app>
