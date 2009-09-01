@@ -37,10 +37,12 @@ import no.java.incogito.web.servlet.WebCalendar;
 import org.joda.time.LocalDate;
 
 import java.text.NumberFormat;
+import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Locale;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -51,7 +53,7 @@ public class WebFunctions {
     private static final NumberFormat oneDigitFormat;
 
     static {
-        oneDigitFormat = NumberFormat.getNumberInstance();
+        oneDigitFormat = DecimalFormat.getNumberInstance(Locale.ENGLISH);
         oneDigitFormat.setMaximumFractionDigits(1);
         oneDigitFormat.setMinimumFractionDigits(1);
     }

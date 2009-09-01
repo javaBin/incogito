@@ -1,1 +1,45 @@
-Welcome to JavaZone 2009!
+<h1>JavaZone 2009</h1>
+<p>
+Welcome to the JavaZone 2009 agenda application Incogito. For more detailed information about this application please navigate back to Incogito main page, or read more about JavaZone at <a href="http://www.javazo
+ne.no">www.javazone.no</a>
+</p>
+
+<h2>Labels</h2>
+<p>
+The JavaZone 2009 program is organized by labels.
+</p>
+<p>
+You should free your mind from thinking the regular organization with either tracks or one specific topic on every room. This program is put together using labels. Some are predefined and the speakers also had th
+e possibility to create their own. One talk may have one or more labels. Click to the calendar mode to try out the possibilities with labels.
+</p>
+
+<h2>Views</h2>
+<p>
+Incogito has furthermore two views. The session view lists all talks by alphabetically by the talk\342\200\231s title and the calendar view let you put together your own agenda.
+</p>
+
+<h3>Sessions view</h3>
+<p>
+The session mode view lists all talks by alphabetically by the talk\342\200\231s title.
+</p>
+
+<h3>Your personal JavaZone Calendar</h3>
+<p>
+The calendar mode let you organize your very own JavaZone agenda, which can be accessed both from your browser and mobile devices. The session may also be exported as events in iCal.
+</p>
+
+<p>
+Please note! The calendar will shortly be available!
+</p>
+
+<h2>Presentations and lightningtalks</h2>
+<p>
+In addition to the regular presentations will JavaZone the year also have one room for lightningtalks. This is very short talks at the most on 15 minutes included an eventually QA part. We encourage all speakers
+and participants to continue QA sessions and other discussions on the whiteboards at the javaBin booth. The lightningtalks replaces birds of a feather (BOF) sessions in the program.
+</p>
+
+<h2>The full agenda will not be printed!</h2>
+<p>
+JavaZone encourage to smart printing. The conference program magazine will therefore not be printed on paper, but it will be provided in a digital version. Pocket agenda will be printed. You may of course also pu
+t together your personal agenda with Incogito and print that.
+</p>

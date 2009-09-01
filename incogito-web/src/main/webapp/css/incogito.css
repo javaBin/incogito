@@ -49,6 +49,19 @@ table {
 h1 {
   font-size: 140%;
   font-weight: normal;
+  margin-bottom: 1.4em;
+}
+
+h2 {
+  font-size: 120%;
+  font-weight: normal;
+  margin-bottom: 1.2em;
+}
+
+h3 {
+  font-size: 110%;
+  font-weight: normal;
+  margin-bottom: 1.1em;
 }
 
 body {
@@ -128,13 +141,14 @@ a:visited {
   margin-right: 0;
 }
 
-#header .head-description {
+#header .head-blurb {
   position: absolute;
   top: 95px;
   left: 360px;
   font-size: 80%;
   color: #7a7a7a;
   font-weight: normal;
+  width: 50em;
 }
 
 #header .select-text {
@@ -173,12 +187,6 @@ a:visited {
 }
 
 /* Content */
-
-li.session-list {
-  list-style-image: url(../images/yellow-bullet.png);
-  margin-left: 0;
-  margin-bottom: 7px;
-}
 
 #main-content {
   margin-left: 200px;

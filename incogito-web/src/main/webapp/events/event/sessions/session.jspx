@@ -14,18 +14,10 @@
 <c:set var="eventName" value="${i:urlDecode(eventName)}"/>
 
 <head>
+  <title>-${eventName}-${i:urlDecode(eventName)}-</title>
   <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/session.css"/>
   <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/rest/events/${eventName}/session.css"/>
 </head>
-
-<!--
-TODO: Add level
-TODO: Add labels
-TODO: Add speaker image
-TODO: Proper formatting of timeslot
-
-http://javazone.no/incogito/session/Agility+at+Scale+-+Using+Team+Concert+in+a+Globally+Distributed+Team.html
--->
 
 <body>
 <!--
@@ -39,15 +31,11 @@ http://javazone.no/incogito/session/Agility+at+Scale+-+Using+Team+Concert+in+a+G
 
 <ul class="outside session-metadata">
   <c:forEach var="label" items="${session.labels}">
-    <li class="session-detail-label label-${label.id}">
-      ${label.displayName}
-    </li>
+    <li class="session-detail-label label-${label.id}">${label.displayName}</li>
   </c:forEach>
   <li class="session-detail-level level-${session.level.id}">
     <c:choose>
-      <c:when test="${not(session.level eq null)}">
-        ${session.level.displayName}
-      </c:when>
+      <c:when test="${not(session.level eq null)}">${session.level.displayName}</c:when>
       <c:otherwise>TBA</c:otherwise>
     </c:choose>
   </li>
@@ -60,6 +48,7 @@ http://javazone.no/incogito/session/Agility+at+Scale+-+Using+Team+Concert+in+a+G
   <li class="session-detail-time format-${session.format}">
     <c:choose>
       <c:when test="${not(session.start eq null) and not(session.end eq null)}">
+        Sep ${session.start.day}th, 
         <fmt:formatNumber minIntegerDigits="2" maxIntegerDigits="2" value="${session.start.hour}"/>:<fmt:formatNumber minIntegerDigits="2" maxIntegerDigits="2" value="${session.start.minute}"/>
         -
         <fmt:formatNumber minIntegerDigits="2" maxIntegerDigits="2" value="${session.end.hour}"/>:<fmt:formatNumber minIntegerDigits="2" maxIntegerDigits="2" value="${session.end.minute}"/>
@@ -82,12 +71,6 @@ http://javazone.no/incogito/session/Agility+at+Scale+-+Using+Team+Concert+in+a+G
     </c:forEach>
   </li>
 </ul>
-
-<c:if test="${not (session.abstractHtml eq null)}">
-  <div class="abstract">
-    ${session.abstractHtml}
-  </div>
-</c:if>
 
 <c:if test="${not (session.bodyHtml eq null)}">
   <div class="body">

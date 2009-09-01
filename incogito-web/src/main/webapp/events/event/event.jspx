@@ -11,6 +11,10 @@
 <c:set var="eventName" value="${i:urlDecode(eventName)}"/>
 <c:set var="event" value="${i:getEventByName(app, eventName)}"/>
 
+<head>
+  <title> - ${eventName}</title>
+</head>
+
 <body>
 <div id="main-content">
   <!--
