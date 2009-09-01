@@ -215,6 +215,10 @@
       </plugin>
     </plugins>
   </build>
+  <scm>
+    <connection>scm:git:git@github.com:javaBin/incogito.git</connection>
+    <developerConnection>scm:git:git@github.com:javaBin/incogito.git</developerConnection>
+  </scm>
   <modules>
     <module>incogito-application</module>
     <module>incogito-cli</module>
