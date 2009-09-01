@@ -125,26 +125,26 @@
     <script type="text/javascript">
 	<![CDATA[
 	var labels = [];
-	
+
 	$(document).ready(function() {
 
 		//Register click event for labels
 		labelClick();
 	});
-	
+
 	function filters(){
 		labels = [];
 
                 // Find all active labels and add to the filter
 		$("#filters ul li.active").each(function(){
 			var classes = $(this).attr("class");
-			labels.push(classes.split(" ")[0]);
+			labels.push(((classes.split(" ")[0]).split("-")[1]).toLowerCase());
 		});
 	}
-	
+
 	function labelClick(){
 		$("#filters ul li a").each(function(){
-			$(this).click(function(){
+			$(this).click(function(e){
 
                                 // Toggle classes for current container
 				$(this.parentNode).toggleClass("active");
@@ -153,26 +153,37 @@
                                 // Update filters
 				filters();
 
-                                // Run an update on the sessions
-				checkSessions();
+                                // If no labels are selected
+                                if(labels.length == 0){
+                                    // Display all sessions
+                                    $(".room .session").each(function(){
+                                        $(this).removeClass("hidden");
+                                    });
+                                } else {
+                                    // Run an update on the sessions
+                                    checkSessions();
+                                }
+
+                                //Prevent default behaviour for links
+                                e.preventDefault();
                                 return false;
 			});
 		});
 	}
-	
+
 	function checkSessions(){
 		$(".room .session").each(function(){
 
 			// Get all labels for current session
 			var sessionLabels = $(".session-header .labels .label",this);
-			
+
 			var hideSession = true;
 
                         // Loop thru all labels for the session
 			$(sessionLabels).each(function(){
 				var label = $(this).attr("alt").toLowerCase();
 
-                                // If session has a label, set true
+                                // If session has atleast one of the labels
 				if($.inArray(label,labels)>-1){
 					hideSession = false;
 
@@ -180,7 +191,7 @@
                                         return false;
 				}
 			});
-			
+
 			// If session matches no selected tags, hide it
 			if(hideSession){
 				$(this).addClass("hidden");
