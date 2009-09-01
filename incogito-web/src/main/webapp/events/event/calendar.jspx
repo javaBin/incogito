@@ -245,55 +245,12 @@
     <c:set var="roomToPresentationsMap" value="${i:treeMapGet(calendar.dayToRoomToPresentationsMap, entry.key)}"/>
     <div class="day day${i.index}">
       <div class="times">
-        <div class="hour">09:00</div>
-        <div class="quarter">09:15</div>
-        <div class="quarter">09:30</div>
-        <div class="quarter">09:45</div>
-        <div class="hour">10:00</div>
-        <div class="quarter">10:15</div>
-        <div class="quarter">10:30</div>
-        <div class="quarter">10:45</div>
-        <div class="hour">11:00</div>
-        <div class="quarter">11:15</div>
-        <div class="quarter">11:30</div>
-        <div class="quarter">11:45</div>
-        <div class="hour">12:00</div>
-        <div class="quarter">12:15</div>
-        <div class="quarter">12:30</div>
-        <div class="quarter">12:45</div>
-        <div class="hour">13:00</div>
-        <div class="quarter">13:15</div>
-        <div class="quarter">13:30</div>
-        <div class="quarter">13:45</div>
-        <div class="hour">14:00</div>
-        <div class="quarter">14:15</div>
-        <div class="quarter">14:30</div>
-        <div class="quarter">14:45</div>
-        <div class="hour">15:00</div>
-        <div class="quarter">15:15</div>
-        <div class="quarter">15:30</div>
-        <div class="quarter">15:45</div>
-        <div class="hour">16:00</div>
-        <div class="quarter">16:15</div>
-        <div class="quarter">16:30</div>
-        <div class="quarter">16:45</div>
-        <div class="hour">17:00</div>
-        <div class="quarter">17:15</div>
-        <div class="quarter">17:30</div>
-        <div class="quarter">17:45</div>
-        <div class="hour">18:00</div>
-        <div class="quarter">18:15</div>
-        <div class="quarter">18:30</div>
-        <div class="quarter">18:45</div>
-        <div class="hour">19:00</div>
-        <div class="quarter">19:15</div>
-        <div class="quarter">19:30</div>
-        <div class="quarter">19:45</div>
-        <div class="hour">20:00</div>
-        <div class="quarter">20:15</div>
-        <div class="quarter">20:30</div>
-        <div class="quarter">20:45</div>
-        <div class="hour">21:00</div>
+        <div class="timeslot duration60 start0900"><div class="timeslot-start">09:00</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
+        <div class="timeslot duration60 start1015"><div class="timeslot-start">09:00</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
+        <div class="timeslot duration60 start1145"><div class="timeslot-start">09:00</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
+        <div class="timeslot duration60 start1300"><div class="timeslot-start">09:00</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
+        <div class="timeslot duration60 start1415"><div class="timeslot-start">09:00</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
+        <div class="timeslot duration60 start1530"><div class="timeslot-start">09:00</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
       </div>
       <div class="rooms">
         <c:forEach var="room" items="${entry.value}" varStatus="i">
