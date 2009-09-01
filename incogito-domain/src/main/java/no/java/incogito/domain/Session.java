@@ -48,6 +48,10 @@ public class Session {
         this.comments = comments;
     }
 
+    public Session title(String title) {
+        return new Session(id, format, title, body, level, timeslot, room, labels, speakers, comments);
+    }
+
     public Session timeslot(Option<Interval> timeslot) {
         return new Session(id, format, title, body, level, timeslot, room, labels, speakers, comments);
     }

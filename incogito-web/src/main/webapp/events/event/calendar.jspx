@@ -17,6 +17,7 @@
 
 <head>
   <title>Calendar for ${eventName} - Incogito - javaBin</title>
+  <link type="image/x-icon" href="http://www4.java.no/favicon.ico" rel="shortcut icon"/>
   <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/incogito.css"/>
   <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/calendar.css"/>
   <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/session.css"/>

@@ -61,7 +61,7 @@ public class IncogitoUri {
             }
 
             public String session(Session session) {
-                return sessions.clone().segment(session.title).build().toString();
+                return sessions.clone().segment(session.title).build().toString().replaceAll("\\+", "%2b");
             }
         }
     }

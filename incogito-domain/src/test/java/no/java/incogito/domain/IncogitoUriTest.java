@@ -2,6 +2,8 @@ package no.java.incogito.domain;
 
 import junit.framework.TestCase;
 import no.java.incogito.domain.IncogitoUri.IncogitoRestEventsUri.IncogitoRestEventUri.IncogitoRestSessionUri;
+import no.java.incogito.domain.Session.Format;
+import static no.java.incogito.domain.IncogitoTestData.session46;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -16,7 +18,7 @@ public class IncogitoUriTest extends TestCase {
     public void testBasic() {
         IncogitoUri incogitoUri = new IncogitoUri("http://localhost");
 
-        String what = incogitoUri.events().eventUri("JavaZone 2009").session(IncogitoTestData.session46);
+        String what = incogitoUri.events().eventUri("JavaZone 2009").session(session46);
 
         assertEquals("http://localhost/events/JavaZone%202009/sessions/Dokumentasjon%20uten%20pistol%20-%20g%C3%A5r%20det%20an%3F", what);
 
@@ -26,6 +28,12 @@ public class IncogitoUriTest extends TestCase {
 
         assertEquals("http://localhost/rest/events/JavaZone%202009/sessions/b8a6034f-573d-4321-9155-a5ed31885958", s);
         assertEquals("http://localhost/rest/events/JavaZone%202009/sessions/b8a6034f-573d-4321-9155-a5ed31885958/speaker-photos/2", session2RestUri.speakerPhoto(2));
+
+        assertEquals("http://localhost/events/JavaZone%202009/sessions/Scala%20%2b%20Wicket%20=%20Match%20made%20in%20heaven%3F",
+                incogitoUri.events().eventUri("JavaZone 2009").session(session46.title("Scala + Wicket = Match made in heaven?")));
+
+        assertEquals("http://localhost/events/JavaZone%202009/sessions/%2b=",
+                incogitoUri.events().eventUri("JavaZone 2009").session(session46.title("+=")));
     }
 
 //    public void testCrap() {

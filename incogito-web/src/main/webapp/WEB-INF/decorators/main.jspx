@@ -17,6 +17,7 @@
 </c:if>
 <head>
   <title><decorator:title/>Incogito - javaBin</title>
+  <link type="image/x-icon" href="http://www4.java.no/favicon.ico" rel="shortcut icon"/>
   <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/incogito.css"/>
   <script src="${incogito.baseurl}/js/jquery-1.3.2.js" type="text/javascript"><!-- space --></script>
   <script src="${incogito.baseurl}/js/jquery.json-1.0.js" type="text/javascript"><!-- space --></script>
