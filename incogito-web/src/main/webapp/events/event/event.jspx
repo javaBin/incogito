@@ -12,7 +12,7 @@
 <c:set var="event" value="${i:getEventByName(app, eventName)}"/>
 
 <head>
-  <title> - ${eventName}</title>
+  <title>${eventName} - </title>
 </head>
 
 <body>

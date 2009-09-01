@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<jsp:directive.page pageEncoding="utf-8" contentType="text/html;charset=utf-8"/>
+<jsp:useBean id="incogito" type="no.java.incogito.application.IncogitoConfiguration" scope="request"/>
+<head>
+  <title>Something bad happened!</title>
+  <style type="text/css">
+    .main-content {
+      margin-top: 5em;
+      text-align: center;
+    }
+
+    .small-note {
+      color: grey;
+      font-size: small;
+    }
+  </style>
+</head>
+<body>
+<div class="main-content">
+  <div class="spacer"><!-- space --></div>
+  <p>
+    <img src="${incogito.baseurl}/images/oh-hay-i-haz-bad-news.jpg" alt="OH HAY I HAZ BAD NEWS"/>
+  </p>
+  <p>
+    Something bad just happened. An army of guinea pigs has been deployed to fix the problem.
+  </p>
+  <p class="small-note">
+    Seriously, if the problem persist, please notify incogito@java.no.
+  </p>
+</div>
+</body>
+</html>

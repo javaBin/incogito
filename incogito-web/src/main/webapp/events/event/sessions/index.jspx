@@ -11,7 +11,7 @@
 <c:set var="eventName" value="${i:urlDecode(eventName)}"/>
 
 <head>
-  <title> - Sessions for ${eventName}</title>
+  <title>Sessions for ${eventName} - </title>
   <style type="text/css">
     ul.session-list li {
       margin-left: 0;

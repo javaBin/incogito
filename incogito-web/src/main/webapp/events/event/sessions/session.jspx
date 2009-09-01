@@ -14,7 +14,7 @@
 <c:set var="eventName" value="${i:urlDecode(eventName)}"/>
 
 <head>
-  <title>-${eventName}-${i:urlDecode(eventName)}-</title>
+  <title>${session.title} - ${eventName} - </title>
   <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/session.css"/>
   <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/rest/events/${eventName}/session.css"/>
 </head>

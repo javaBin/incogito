@@ -85,7 +85,11 @@
   </listener>
 
   <error-page>
-    <exception-type>Exception</exception-type>
+    <exception-type>java.lang.Exception</exception-type>
+    <location>/exception.jspx</location>
+  </error-page>
+  <error-page>
+    <exception-type>java.lang.Error</exception-type>
     <location>/exception.jspx</location>
   </error-page>
 </web-app>

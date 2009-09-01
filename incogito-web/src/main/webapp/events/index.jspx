@@ -6,6 +6,9 @@
 <jsp:directive.page pageEncoding="utf-8" contentType="text/html;charset=utf-8"/>
 <jsp:useBean id="incogito" type="no.java.incogito.application.IncogitoConfiguration" scope="request"/>
 <jsp:useBean id="app" type="no.java.incogito.application.IncogitoApplication" scope="application"/>
+<head>
+  <title>All Events - </title>
+</head>
 <body>
 <h2>Events</h2>
 <ul>

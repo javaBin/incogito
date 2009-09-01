@@ -16,7 +16,7 @@
 <c:set var="event" value="${i:getEventByName(app, eventName)}"/>
 
 <head>
-  <title>javaBin - Incogito - Calendar for ${eventName}</title>
+  <title>Calendar for ${eventName} - Incogito - javaBin</title>
   <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/incogito.css"/>
   <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/calendar.css"/>
   <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/session.css"/>
