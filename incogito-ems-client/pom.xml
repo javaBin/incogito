@@ -3,7 +3,7 @@
   <parent>
     <groupId>no.java.incogito</groupId>
     <artifactId>incogito</artifactId>
-    <version>2009.1</version>
+    <version>2009.2-SNAPSHOT</version>
   </parent>
   <artifactId>incogito-ems-client</artifactId>
   <name>Incogito 2009 :: EMS Client</name>
