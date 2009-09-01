@@ -3,6 +3,11 @@ package no.java.incogito.domain;
 import junit.framework.TestCase;
 import no.java.incogito.domain.IncogitoUri.IncogitoRestEventsUri.IncogitoRestEventUri.IncogitoRestSessionUri;
 
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
@@ -22,4 +27,72 @@ public class IncogitoUriTest extends TestCase {
         assertEquals("http://localhost/rest/events/JavaZone%202009/sessions/b8a6034f-573d-4321-9155-a5ed31885958", s);
         assertEquals("http://localhost/rest/events/JavaZone%202009/sessions/b8a6034f-573d-4321-9155-a5ed31885958/speaker-photos/2", session2RestUri.speakerPhoto(2));
     }
-}
+
+//    public void testCrap() {
+//        String expr = "^/events/([.&&[^/]]*)/?$";
+//        showMatches("/events/JavaZone%202009/", expr);
+//        showMatches("/events/JavaZone%202009", expr);
+//
+//        expr = "^/events/([\\w%0-9])*";
+//        showMatches("/events/JavaZone%202009/", expr);
+//        showMatches("/events/JavaZone%202009", expr);
+//
+//        expr = "^/events/(.*)?$";
+//        showMatches("/events/JavaZone%202009/", expr);
+//        showMatches("/events/JavaZone%202009", expr);
+//    }
+
+    private void showMatches(String text, String regexp) {
+        List<Integer> starts = new LinkedList<Integer>();
+        List<Integer> ends = new LinkedList<Integer>();
+        List<String> groups = new LinkedList<String>();
+
+        Pattern pattern = Pattern.compile(regexp);
+        Matcher matcher = pattern.matcher(text);
+
+        while (matcher.find()) {
+//            System.out.println("start: " + matcher.start() + ", end: " + matcher.end() + ", group: " + matcher.group());
+            starts.add(matcher.start());
+            ends.add(matcher.end());
+            groups.add(matcher.group());
+        }
+
+        System.out.print(regexp + " with " + text + " => ");
+
+        for (String group : groups) {
+            System.out.println(group);
+        }
+
+//        System.out.print("match:  ");
+//
+//        if (starts.size() == 0) {
+//            System.out.println();
+//            return;
+//        }
+//
+//        int start = starts.remove(0);
+//        int end = ends.remove(0);
+//        for (int i = 0; i < text.length(); i++) {
+//            if (i == start && start == end - 1) {
+//                System.out.print("|");
+//            }
+//            else if (i == start) {
+//                System.out.print("|");
+//            } else if (i == end - 1) {
+//                System.out.print("|");
+//
+//                if (starts.size() == 0) {
+//                    break;
+//                }
+//                start = starts.remove(0);
+//                end = ends.remove(0);
+//            } else if (start < i && i < end) {
+//                System.out.print("-");
+//            } else {
+//                System.out.print(" ");
+//            }
+//        }
+//
+//        System.out.println();
+        System.out.println();
+    }}

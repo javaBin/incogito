@@ -14,6 +14,7 @@
 <c:set var="eventName" value="${i:urlDecode(eventName)}"/>
 
 <head>
+  <title>-${eventName}-${i:urlDecode(eventName)}-</title>
   <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/session.css"/>
   <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/rest/events/${eventName}/session.css"/>
 </head>
@@ -46,7 +47,8 @@
     </c:choose>
   </li>
 -->
-<!-- TODO: Add date
+<!-- TODO: Add date -->
+<!--
   <li class="session-detail-time format-${session.format}">
     <c:choose>
       <c:when test="${not(session.start eq null) and not(session.end eq null)}">

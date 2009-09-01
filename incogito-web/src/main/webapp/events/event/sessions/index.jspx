@@ -11,6 +11,7 @@
 <c:set var="eventName" value="${i:urlDecode(eventName)}"/>
 
 <head>
+  <title> - Sessions for ${eventName}</title>
   <style type="text/css">
     .session-list li {
       list-style-image: url("${incogito.baseurl}/images/yellow-bullet.png");
