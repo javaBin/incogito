@@ -158,7 +158,7 @@
                                 // If no labels are selected
                                 if(labels.length == 0){
                                     // Display all sessions
-                                    $(".room .session").each(function(){
+                                    $(".room .presentation").each(function(){
                                         $(this).removeClass("hidden");
                                     });
                                 } else {
@@ -174,10 +174,10 @@
 	}
 
 	function checkSessions(){
-		$(".room .session").each(function(){
+		$(".room .presentation").each(function(){
 
 			// Get all labels for current session
-			var sessionLabels = $(".session-header .labels .label",this);
+			var sessionLabels = $(".presentation-header .labels .label",this);
 
 			var hideSession = true;
 
@@ -281,7 +281,7 @@
                 <div class="presentation-header">
                   <div class="labels">
                     <c:forEach var="label" items="${presentation.labels}">
-                      <img class="label" title="${label.displayName}" alt="${label.displayName}" src="${label.iconUrl}"/>
+                      <img class="label" title="${label.displayName}" alt="${label.id}" src="${label.iconUrl}"/>
                     </c:forEach>
                   </div>
                   <div class="level">
