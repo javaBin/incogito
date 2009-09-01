@@ -6,16 +6,12 @@ body {
 
 div#calendar {
   width: 100%;
-  overflow: auto;
   position:absolute;
   top: 10em;
   margin: 2em auto;
 }
 
-.times {
-  float: left;
-}
-
+/*
 .timeslot {
   position: absolute;
 }
@@ -34,11 +30,51 @@ div#calendar {
   position: absolute;
   bottom: 1.5em;
 }
+*/
+.timeslot {
+    height: 10em;
+}
 
-/*
+.ts0900 {
+    margin-top: 0;
+}
+
+.ts1015 {
+    margin-top: 2.5em;
+}
+
+.ts1145 {
+    margin-top: 5em;
+}
+
+.ts1300 {
+    margin-top: 2.5em;
+}
+
+.ts1415 {
+    margin-top: 2.5em;
+}
+
+.ts1530 {
+    margin-top: 5em;
+}
+
+.ts1645 {
+    margin-top: 2.5em;
+}
+
+.ts1800 {
+    margin-top: 2.5em;
+}
+
+.ts1915 {
+    margin-top: 2.5em;
+}
+
 .times {
-  width: 3em;
+  padding-top: 2.5em;
   float: left;
+  width: 6.3%;
 }
 
 .times div {
@@ -46,16 +82,16 @@ div#calendar {
   text-align: center;
   vertical-align: middle;
 }
-*/
+
 
 .cb {
     clear:both;
 }
 
 .rooms {
-    width:95.7%;
+    width:93.7%;
     position:absolute;
-    margin-left:4.3%;
+    margin-left:6.3%;
 }
 
 .day {

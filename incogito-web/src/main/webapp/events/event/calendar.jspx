@@ -256,13 +256,16 @@
     <c:set var="roomToPresentationsMap" value="${i:treeMapGet(calendar.dayToRoomToPresentationsMap, entry.key)}"/>
     <div class="day day${i.index}">
       <div class="times">
-        <div class="timeslot duration60 start0900"><div class="timeslot-start">09:00</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
-        <div class="timeslot duration60 start1015"><div class="timeslot-start">09:00</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
-        <div class="timeslot duration60 start1145"><div class="timeslot-start">09:00</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
-        <div class="timeslot duration60 start1300"><div class="timeslot-start">09:00</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
-        <div class="timeslot duration60 start1415"><div class="timeslot-start">09:00</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
-        <div class="timeslot duration60 start1530"><div class="timeslot-start">09:00</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
-      </div>
+        <div class="timeslot ts0900"><div class="timeslot-start">09:00</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
+        <div class="timeslot ts1015"><div class="timeslot-start">10:15</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
+        <div class="timeslot ts1145"><div class="timeslot-start">11:45</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
+        <div class="timeslot ts1300"><div class="timeslot-start">13:00</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
+        <div class="timeslot ts1415"><div class="timeslot-start">14:15</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
+        <div class="timeslot ts1530"><div class="timeslot-start">15:30</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
+        <div class="timeslot ts1645"><div class="timeslot-start">16:45</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
+        <div class="timeslot ts1800"><div class="timeslot-start">18:00</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
+        <div class="timeslot ts1915"><div class="timeslot-start">19:15</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
+    </div>
       <div class="rooms">
         <c:forEach var="room" items="${entry.value}" varStatus="i">
           <div class="room">
@@ -311,7 +314,7 @@
           </div>
         </c:forEach>
       </div>
-      <div class="cb"><!--space-->.</div>
+      <div class="cb"><!--space--></div>
       <ul>
         <c:set var="quickies" value="${i:treeMapGet(calendar.quickiesByDay, entry.key)}"/>
         <c:forEach var="quickie" items="${i:castToSessionList(quickies)}" varStatus="i">
@@ -319,6 +322,7 @@
         </c:forEach>
       </ul>
     </div>
+      <div class="cb"><!--space--></div>
   </c:forEach>
 </div>
 
