@@ -255,25 +255,28 @@
 <div class="cb"><!--space--></div>
 	<div id="menu">
     <ul class="nav">
+      <li><!-- space -->&amp;nbsp;</li>
+      <!--
       <li><a href="">INFO</a></li>
       <li><a href="">MY PROFILE</a></li>
       <li><a href="">MY AGENDA</a></li>
       <li><a href="">LOGOUT</a></li>
+      -->
     </ul>
     <div class="cb"><!--space--></div>
     <ul class="nav subnav">
-      <li class="subday">DAY 1:</li>
-      <li><a href="#">sessions</a></li>
-      <li><a href="#">lightning talks</a></li>
-      <li class="subday">DAY 2:</li>
-      <li><a href="#">sessions</a></li>
-      <li><a href="#">lightning talks</a></li>
+      <c:forEach var="entry" items="${calendar.roomsByDate}" varStatus="i">
+        <li class="subday">DAY ${i.index+1}:</li>
+        <li><a href="#presentations-day-${i.index+1}">sessions</a></li>
+        <li><a href="#quickies-day-${i.index+1}">lightning talks</a></li>
+      </c:forEach>
     </ul>
   </div>
 </div> <!-- hd ends -->
 <div class="cb"><!--space--></div>
 <div id="calendar">
   <c:forEach var="entry" items="${calendar.roomsByDate}" varStatus="i">
+    <a name="presentations-day-${i.index+1}"/>
     <c:set var="roomToPresentationsMap" value="${i:treeMapGet(calendar.dayToRoomToPresentationsMap, entry.key)}"/>
     <div class="day day${i.index}">
       <div class="times">
@@ -336,6 +339,7 @@
         </c:forEach>
       </div>
       <div class="cb"><!--space--></div>
+      <a name="quickies-day-${i.index+1}"/>
       <ul>
         <c:set var="quickies" value="${i:treeMapGet(calendar.quickiesByDay, entry.key)}"/>
         <c:forEach var="quickie" items="${i:castToSessionList(quickies)}" varStatus="i">
