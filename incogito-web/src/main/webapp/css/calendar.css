@@ -114,19 +114,25 @@ div#calendar {
  * Presentation Cell
 */
 div.presentation-header div {
-    display: inline;
+    /*display: inline;*/
     font-size: 1.1em;
 }
 
 .room .presentation {
-    width: 12.5%;
+    width: 8.5em;
+    min-width: 12.5%;
     position: absolute;
+}
+
+.presentation-header .labels {
+    float: right;
+    width: 6em;
 }
 
 .level img, .labels img {
     border:0;
     margin:0;
-    padding:0;
+    padding:0.15em 0 0 0;
 }
 
 .presentation-body .title,.presentation-body .speakers {
@@ -138,7 +144,7 @@ div.presentation-header div {
     padding-top: 0.75em;
 }
 
-.presentation-header, presentation-header div {
+.presentation-header, .presentation-header div {
     overflow:hidden;
     height: 1em;
     font-size: 1em;
@@ -154,6 +160,7 @@ div.presentation-header {
 
 div.presentation-header div.level {
     border-left: thin #787878 solid;
+    float: right;
 }
 
 div.presentation-header div.labels img {
@@ -486,7 +493,7 @@ ul.qts {
 .qts li {
 	height: 1em;
 	margin: 0;
-	padding: 0.25em 0 0.25em 17.5em;
+	padding: 0.25em 0 0.25em 0em;
 }
 
 .qts li>div {
@@ -497,9 +504,9 @@ ul.qts {
 }
 
 .qts li .qt-info {
-	margin-left: -100%;
 	width: 17.5em;
-	right: 17.5em;
+        float: left;
+        background: #FFF;
 }
 
 .qt-info div.qt-time {
