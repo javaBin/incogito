@@ -55,12 +55,12 @@ function getSessionsByEventName(eventName, success) {
     })
 }
 
-function getSession(eventName, sessionId, success) {
-    console.log("Fetching " + sessionId + " for event " + eventName + "...")
+function getSession(eventName, sessionUrl, success) {
+    console.log("Fetching " + sessionUrl + " for event " + eventName + "...")
     var s = success
     $.ajax({
         dataType: "json",
-        url: baseurl + "/rest/events/" + eventName + "/sessions/" + sessionId,
+        url: sessionUrl,
         success: function(data) {
             console.log("Got '" + data.title + "' for event " + eventName)
             s(data)
@@ -94,12 +94,12 @@ function getSchedule(eventName, userName, success) {
     })
 }
 
-function updateInterest(eventName, sessionId, state, success, unauthorized) {
+function updateInterest(eventName, sessionUrl, state, success, unauthorized) {
     console.log("Setting interest level on " + sessionId + " for event " + eventName + " to " + state + "...")
 
     $.ajax({
         dataType: "json",
-        url: baseurl + "/rest/events/" + eventName + "/" + sessionId + "/session-interest",
+        url: sessionUrl,
         type: "POST",
         contentType: "application/json",
         data: state,

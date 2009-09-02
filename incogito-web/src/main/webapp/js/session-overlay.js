@@ -23,8 +23,8 @@ function showSession() {
     sessionOverlay.show()
     sessionOverlayBg.show()
 
-    var sessionId = $(this).find(".session-id").text()
-    getSession(eventName, sessionId, function(session) {
+    var sessionUrl = $(this).find(".session-url").text()
+    getSession(eventName, sessionUrl, function(session) {
         console.log("session:")
         console.log(session)
         var sessionDetails = $("#template-session-details").clone()
