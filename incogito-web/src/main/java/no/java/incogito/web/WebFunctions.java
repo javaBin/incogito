@@ -115,7 +115,7 @@ public class WebFunctions {
                     }
                 });
 
-            List<String> labels = event.labels.values().
+            List<String> labels = event.labels.
                 map(new F<Label, String>() {
                     public String f(Label label) {
                         return ".label-" + label.id + " { list-style-image: url('" + configuration.baseurl + "/rest/events/" + event.name + "/icons/labels/" + label.id + ".png'); }";

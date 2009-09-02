@@ -144,7 +144,7 @@ public class XmlFunctions {
                     eventUri.toString(),
                     eventUri.sessionListHtml(),
                     eventUri.calendarHtml(),
-                    event.labels.values().map(labelToXml.f(restEventUri.labelsIcon())),
+                    event.labels.map(labelToXml.f(restEventUri.labelsIcon())),
                     event.levels.values().map(levelToXml.f(restEventUri.levelsIcon())));
         }
     });

@@ -124,31 +124,29 @@ public class ConfigurationLoaderService {
 
             Option<String> blurb = eventProperties.get("blurb");
 
-            TreeMap<String, Label> labelMap = List.list(eventProperties.get("labels").orSome("").split(",")).
-                map(trim).
-                foldLeft(new F2<TreeMap<String, Label>, String, TreeMap<String, Label>>() {
-                    public TreeMap<String, Label> f(TreeMap<String, Label> labelIcons, String emsId) {
-                        // If the configuration file contain an ".id" element, use that as the internal id
-                        String id = eventProperties.get(emsId + ".id").orSome(emsId);
+            List<Label> labels = Option.somes(List.list(eventProperties.get("labels").orSome("").split(",")).
+                    map(trim).
+                    map(new F<String, Option<Label>>() {
+                        public Option<Label> f(String emsId) {
+                            // If the configuration file contain an ".id" element, use that as the internal id
+                            String id = eventProperties.get(emsId + ".id").orSome(emsId);
 
-                        if (id.indexOf(' ') != -1) {
-                            logger.warn("Invalid id for ems label '" + emsId + "'. Override the id by adding a '" + emsId + ".id' property to the event configuration.");
-                            return labelIcons;
+                            if (id.indexOf(' ') != -1) {
+                                logger.warn("Invalid id for ems label '" + emsId + "'. Override the id by adding a '" + emsId + ".id' property to the event configuration.");
+                                return none();
+                            }
+
+                            File iconFile = new File(eventDirectory, "labels/" + id + ".png");
+
+                            Option<Label> label = some(id).bind(some(emsId), eventProperties.get(emsId + ".displayName"), Option.iif(Functions.File_canRead, iconFile), Label.label_);
+
+                            if (!label.isSome()) {
+                                logger.warn("Could not find file for label: " + id);
+                            }
+
+                            return label;
                         }
-
-                        File iconFile = new File(eventDirectory, "labels/" + id + ".png");
-
-                        Option<Label> label = some(id).bind(some(emsId), eventProperties.get(emsId + ".displayName"), Option.iif(Functions.File_canRead, iconFile), Label.label_);
-
-                        if (label.isSome()) {
-                            return labelIcons.set(label.some().id, label.some());
-                        }
-
-                        logger.warn("Could not find file for label: " + id);
-
-                        return labelIcons;
-                    }
-                }, emptyLabelIconMap);
+                    }));
 
             TreeMap<LevelId, Level> levelMap = List.list(eventProperties.get("levels").orSome("").split(",")).
                 map(trim).
@@ -206,7 +204,7 @@ public class ConfigurationLoaderService {
             }));
 
             events = events.cons(new EventConfiguration(eventName, blurb, frontPageContent, roomsByDate, 
-                    presentationRooms, labelMap, levelMap, eventPropertiesFile.lastModified()));
+                    presentationRooms, labels, levelMap, eventPropertiesFile.lastModified()));
         }
 
         return new IncogitoConfiguration(baseurl, cssConfiguration, events.reverse());

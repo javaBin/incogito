@@ -84,10 +84,9 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
         for (Event event : events) {
             logger.info("Event: " + event.name);
 
-            TreeMap<String, Label> labels = event.labels;
-            logger.info(" Labels: (" + labels.size() + ")");
-            for (P2<String, Label> label : labels) {
-                logger.info("  " + label._2().displayName + " (" + label._2().id + "), icon: " + label._2().iconFile.getName());
+            logger.info(" Labels: (" + event.labels.length() + ")");
+            for (Label label : event.labels) {
+                logger.info("  " + label.displayName + " (" + label.id + "=>" + label.emsId + "), icon: " + label.iconFile.getName());
             }
 
             TreeMap<LevelId, Level> levels = event.levels;
