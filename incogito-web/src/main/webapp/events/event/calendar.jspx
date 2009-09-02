@@ -308,11 +308,6 @@
                 <div class="presentation-id" style="display: none;">${presentation.id}</div>
                 <div class="presentation-interest-level" style="display: none;">${interestLevel}</div>
                 <div class="presentation-header">
-                  <div class="labels">
-                    <c:forEach var="label" items="${presentation.labels}">
-                      <img class="label" title="${label.displayName}" alt="${label.id}" src="${label.iconUrl}"/>
-                    </c:forEach>
-                  </div>
                   <div class="level">
                     <c:choose>
                       <c:when test="${not (presentation.level eq null)}">
@@ -320,6 +315,11 @@
                       </c:when>
                       <c:otherwise>X</c:otherwise>
                     </c:choose>
+                  </div>
+                  <div class="labels">
+                    <c:forEach var="label" items="${presentation.labels}">
+                      <img class="label" title="${label.displayName}" alt="${label.id}" src="${label.iconUrl}"/>
+                    </c:forEach>
                   </div>
                 </div>
                 <div class="presentation-body">
@@ -350,7 +350,17 @@
         <c:set var="quickies" value="${i:treeMapGet(calendar.quickiesByDay, entry.key)}"/>
         <c:forEach var="quickie" items="${i:castToSessionList(quickies)}" varStatus="i">
          <li>
+
                <div class="qt-presentation">
+                    <div class="qt-info">
+                            <div class="qt-legend">
+                                    <div class="level qt-level">L</div>
+                                    <div class="labels qt-labels">LABEL</div>
+                                    Norwegian
+                            </div>
+                            <div class="qt-time">09.00</div>
+
+                    </div>
                     <div class="qt-title">
                         <div class="qt-feedback">
                             <div class="qt-rating">4/5</div>
@@ -359,15 +369,6 @@
 			${quickie.title} <span class="qt-speaker"> - Some Speaker</span>
                         </div>
 	        </div>
-		<div class="qt-info">
-			<div class="qt-legend">
-				<div class="level qt-level">L</div>
-				<div class="labels qt-labels">LABEL</div>
-				Norwegian
-			</div>
-			<div class="qt-time">09.00</div>
-
-		</div>
 	</li>
         </c:forEach>
       </ul>
