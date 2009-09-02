@@ -344,10 +344,29 @@
       </div>
       <div class="cb"><!--space--></div>
       <a name="quickies-day-${i.index+1}"/>
-      <ul>
+      <ul class="qts">
         <c:set var="quickies" value="${i:treeMapGet(calendar.quickiesByDay, entry.key)}"/>
         <c:forEach var="quickie" items="${i:castToSessionList(quickies)}" varStatus="i">
-          <li>${quickie.title}</li>
+         <li>
+               <div class="qt-presentation">
+                    <div class="qt-title">
+                        <div class="qt-feedback">
+                            <div class="qt-rating">4/5</div>
+                            99 Comment(s)
+                        </div>
+			${quickie.title} <span class="qt-speaker"> - Some Speaker</span>
+                        </div>
+	        </div>
+		<div class="qt-info">
+			<div class="qt-legend">
+				<div class="level qt-level">L</div>
+				<div class="labels qt-labels">LABEL</div>
+				Norwegian
+			</div>
+			<div class="qt-time">09.00</div>
+
+		</div>
+	</li>
         </c:forEach>
       </ul>
     </div>

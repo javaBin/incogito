@@ -56,7 +56,7 @@ div#calendar {
 }
 
 .ts1530 {
-    margin-top: 5em;
+    margin-top: 2.5em;
 }
 
 .ts1645 {
@@ -444,10 +444,10 @@ ul.nav li {
     background: #EAEAEA;
 }
 
-.hidden {
-	visibility: hidden;
-	display: none;
+div.presentation.duration60.hidden .presentation-body {
+    display:block;
 }
+
 
 #menu ul.subnav {
 	color: #333333;
@@ -472,4 +472,81 @@ ul.nav li {
     color: #333333;
     text-decoration: underline;
     padding: 0;
+}
+
+/*Quicktalks*/
+
+ul.qts {
+	width: 98%;
+	list-style-type: none;
+	padding: 0;
+	margin:1em 0 1em 1%;
+}
+
+.qts li {
+	height: 1em;
+	margin: 0;
+	padding: 0.25em 0 0.25em 17.5em;
+}
+
+.qts li>div {
+	height: 1em;
+	border: 0.065em solid #FFF;
+	float: left;
+	position: relative;
+}
+
+.qts li .qt-info {
+	margin-left: -100%;
+	width: 17.5em;
+	right: 17.5em;
+}
+
+.qt-info div.qt-time {
+	width: 2.5em;
+	background: #CCC;
+	padding-left: 0.25em;
+}
+
+.qt-info div.qt-legend {
+	width: 13.5em;
+	float: right;
+	margin: 0 0.5em 0 0;
+	border: 0.065em solid #EAEAEA;
+}
+
+.qt-legend .qt-level {
+	border-left: 0.065em solid #CCC;
+	width: 1em;
+	float: right;
+}
+
+.qt-legend .qt-labels {
+	text-align: right;
+	width: 6em;
+	float: right;
+}
+
+.qts li .qt-feedback {
+	width: 11em;
+	margin: -0.065em 0.5em 0  0;
+	float: right;
+	border: 0.065em solid #EAEAEA;
+	background: #DDD;
+}
+
+div.qt-feedback .qt-rating {
+	width: 3em;
+	text-align: right;
+	float: right;
+}
+
+.qts li .qt-presentation {
+	border: 0;
+	width: 100%;
+}
+
+.qt-presentation .qt-title {
+	background: #DDD;
+	border: 0.065em solid #DDD;
 }
