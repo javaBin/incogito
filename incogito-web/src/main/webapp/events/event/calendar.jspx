@@ -149,6 +149,7 @@
                     $(this).toggleClass("inactive");
                 });
                 //Prevent default behaviour for links
+                $("#filtersReset").hide();
                 e.preventDefault();
                 return false;
             });
@@ -181,6 +182,7 @@
                                 } else {
                                     // Run an update on the sessions
                                     checkSessions();
+                                    $("#filtersReset").show();
                                 }
 
                                 //Prevent default behaviour for links
@@ -228,7 +230,7 @@
 	<div id="legends">
 		<div id="title"><!-- space--></div>
 		<div id="filters">
-                <div id="filtersReset"><a href="#">Reset Filter</a></div>
+                <div id="filtersReset" style="display:none;"><a href="#">Reset Filter</a></div>
       <c:forEach var="labelLists" items="${i:splitAt(event.labels, 4)}" varStatus="status">
         <ul class="labels">
           <c:forEach var="label" items="${labelLists}">
