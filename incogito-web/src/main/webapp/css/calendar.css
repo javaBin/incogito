@@ -329,8 +329,31 @@ td#login-submit * {
 }
 
 #filters ul li.active a {
-    color: #333333;
+    color: #EAEAEA;
     text-decoration: none;
+    background: #333333;
+}
+
+#filtersReset {
+    width:7em;
+    font-size: 0.75em;
+    float:right;
+    padding-top:7em;
+    margin-right: 1em;
+    text-align:center;
+}
+
+#filtersReset a {
+    display: block;
+    color: #EAEAEA;
+    padding: 0.4em 0 0.4em 0;
+    background: #333333;
+}
+
+#filtersReset a:hover {
+    display: block;
+    color: #333333;
+    background: #EAEAEA;
 }
 
 #filters ul li a {

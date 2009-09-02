@@ -132,7 +132,27 @@
 
 		//Register click event for labels
 		labelClick();
+                labelReset();
 	});
+
+        function labelReset(){
+            $("#filtersReset a").click(function(e){
+                // Reset the presentations
+                $(".room .presentation").each(function(){
+                    $(this).removeClass("hidden");
+                });
+
+                //Reset the labels
+                $("#filters ul li.active").each(function(){
+                    // Toggle classes for current container
+                    $(this).toggleClass("active");
+                    $(this).toggleClass("inactive");
+                });
+                //Prevent default behaviour for links
+                e.preventDefault();
+                return false;
+            });
+        }
 
 	function filters(){
 		labels = [];
@@ -140,7 +160,7 @@
                 // Find all active labels and add to the filter
 		$("#filters ul li.active").each(function(){
 			var classes = $(this).attr("class");
-			labels.push(((classes.split(" ")[0]).split("-")[1]).toLowerCase());
+			labels.push(((classes.split(" ")[0]).slice(6)).toLowerCase());
 		});
 	}
 
@@ -157,10 +177,7 @@
 
                                 // If no labels are selected
                                 if(labels.length == 0){
-                                    // Display all sessions
-                                    $(".room .presentation").each(function(){
-                                        $(this).removeClass("hidden");
-                                    });
+                                    labelReset();
                                 } else {
                                     // Run an update on the sessions
                                     checkSessions();
@@ -211,6 +228,7 @@
 	<div id="legends">
 		<div id="title"><!-- space--></div>
 		<div id="filters">
+                <div id="filtersReset"><a href="#">Reset Filter</a></div>
       <c:forEach var="labelLists" items="${i:splitAt(event.labels, 4)}" varStatus="status">
         <ul class="labels">
           <c:forEach var="label" items="${labelLists}">
