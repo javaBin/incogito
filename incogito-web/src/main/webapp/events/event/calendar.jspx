@@ -148,6 +148,7 @@
                     $(this).toggleClass("active");
                     $(this).toggleClass("inactive");
                 });
+
                 //Prevent default behaviour for links
                 $("#filtersReset").hide();
                 e.preventDefault();
@@ -178,7 +179,10 @@
 
                                 // If no labels are selected
                                 if(labels.length == 0){
-                                    labelReset();
+                                    // Reset the presentations
+                                    $(".room .presentation").each(function(){
+                                        $(this).removeClass("hidden");
+                                    });
                                 } else {
                                     // Run an update on the sessions
                                     checkSessions();
