@@ -5,6 +5,7 @@ import fj.F2;
 import static fj.Function.compose;
 import static fj.Function.curry;
 import static fj.Function.flip;
+import fj.P2;
 import fj.data.Either;
 import static fj.data.Either.left;
 import static fj.data.Either.right;
@@ -17,6 +18,7 @@ import static fj.data.Option.somes;
 import fj.pre.Show;
 import no.java.incogito.Enums;
 import no.java.incogito.Functions;
+import no.java.incogito.application.IncogitoConfiguration.DayConfiguration;
 import no.java.incogito.application.IncogitoConfiguration.EventConfiguration;
 import no.java.incogito.domain.Comment;
 import no.java.incogito.domain.Event;
@@ -24,10 +26,13 @@ import no.java.incogito.domain.Event.EventId;
 import no.java.incogito.domain.Label;
 import no.java.incogito.domain.Level;
 import no.java.incogito.domain.Level.LevelId;
+import no.java.incogito.domain.Room;
 import no.java.incogito.domain.Session;
 import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.Speaker;
 import no.java.incogito.domain.WikiString;
+import org.joda.time.Interval;
+import org.joda.time.LocalDate;
 
 /**
  * Functions from EMS domain objects to Incogito domain objects.
@@ -51,12 +56,26 @@ public class EmsFunctions {
                     toEither("Could not find configured event '" + eventId + "'.").right().
                     map(new F<EventConfiguration, Event>() {
                         public Event f(EventConfiguration eventConfiguration) {
+                            F<P2<LocalDate, DayConfiguration>, List<Room>> roomMap = new F<P2<LocalDate, DayConfiguration>, List<Room>>() {
+                                public List<Room> f(P2<LocalDate, DayConfiguration> p2) {
+                                    return p2._2().rooms;
+                                }
+                            };
+
+                            F<P2<LocalDate, DayConfiguration>, List<Interval>> timeslotMap = new F<P2<LocalDate, DayConfiguration>, List<Interval>>() {
+                                public List<Interval> f(P2<LocalDate, DayConfiguration> p2) {
+                                    return p2._2().timeslots;
+                                }
+                            };
+
                             return new Event(eventId,
                                     event.getName(),
                                     eventConfiguration.blurb,
                                     eventConfiguration.frontPageText,
                                     eventConfiguration.presentationRooms,
-                                    eventConfiguration.roomsByDate,
+                                    eventConfiguration.dayConfigurations.map(P2.<LocalDate, DayConfiguration>__1()),
+                                    eventConfiguration.dayConfigurations.map(roomMap),
+                                    eventConfiguration.dayConfigurations.map(timeslotMap),
                                     eventConfiguration.levels,
                                     eventConfiguration.labels,
                                     eventConfiguration.labelMap);

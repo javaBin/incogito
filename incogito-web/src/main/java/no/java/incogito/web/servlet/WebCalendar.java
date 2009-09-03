@@ -4,6 +4,7 @@ import fj.data.List;
 import fj.data.TreeMap;
 import no.java.incogito.dto.SessionXml;
 import org.joda.time.LocalDate;
+import org.joda.time.Interval;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -16,23 +17,24 @@ import java.util.Map;
  * @version $Id$
  */
 public class WebCalendar {
-    private final Collection<Integer> timeslotHours;
-
     private final Map<String, String> attendanceMap;
 
     private final LinkedHashMap<LocalDate, Collection<String>> roomsByDate;
+
+    private final LinkedHashMap<LocalDate, Collection<Interval>> timeslotsByDate;
 
     private final TreeMap<LocalDate, TreeMap<String, List<SessionXml>>> dayToRoomToPresentationsMap;
 
     private final TreeMap<LocalDate, List<SessionXml>> quickiesByDay;
 
-    public WebCalendar(Collection<Integer> timeslotHours, Map<String, String> attendanceMap,
+    public WebCalendar(Map<String, String> attendanceMap,
                        LinkedHashMap<LocalDate, Collection<String>> roomsByDate,
+                       LinkedHashMap<LocalDate, Collection<Interval>> timeslotsByDate,
                        TreeMap<LocalDate, TreeMap<String, List<SessionXml>>> dayToRoomToPresentationsMap,
                        TreeMap<LocalDate, List<SessionXml>> quickiesByDay) {
-        this.timeslotHours = timeslotHours;
         this.attendanceMap = attendanceMap;
         this.roomsByDate = roomsByDate;
+        this.timeslotsByDate = timeslotsByDate;
         this.dayToRoomToPresentationsMap = dayToRoomToPresentationsMap;
         this.quickiesByDay = quickiesByDay;
     }
@@ -43,6 +45,10 @@ public class WebCalendar {
 
     public LinkedHashMap<LocalDate, Collection<String>> getRoomsByDate() {
         return roomsByDate;
+    }
+
+    public LinkedHashMap<LocalDate, Collection<Interval>> getTimeslotsByDate() {
+        return timeslotsByDate;
     }
 
     public TreeMap<LocalDate, TreeMap<String, List<SessionXml>>> getDayToRoomToPresentationsMap() {

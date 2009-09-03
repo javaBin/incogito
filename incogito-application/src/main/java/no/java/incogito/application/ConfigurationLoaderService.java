@@ -5,6 +5,7 @@ import fj.F2;
 import static fj.Function.compose;
 import fj.P1;
 import fj.P2;
+import fj.P;
 import static fj.P.p;
 import fj.control.parallel.Callables;
 import fj.data.List;
@@ -13,6 +14,7 @@ import static fj.data.List.nil;
 import fj.data.Option;
 import static fj.data.Option.some;
 import static fj.data.Option.none;
+import static fj.data.Option.somes;
 import fj.data.TreeMap;
 import fj.data.Either;
 import fj.pre.Ord;
@@ -23,8 +25,8 @@ import no.java.incogito.PropertiesF;
 import static no.java.incogito.Functions.trim;
 import static no.java.incogito.Functions.split;
 import no.java.incogito.application.IncogitoConfiguration.EventConfiguration;
+import no.java.incogito.application.IncogitoConfiguration.DayConfiguration;
 import no.java.incogito.domain.CssConfiguration;
-import static no.java.incogito.domain.Event.emptyLabelIconMap;
 import static no.java.incogito.domain.Event.emptyLevelIconMap;
 import no.java.incogito.domain.Label;
 import no.java.incogito.domain.Level;
@@ -37,6 +39,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.joda.time.LocalDate;
+import org.joda.time.Interval;
+import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
 
@@ -60,6 +64,11 @@ public class ConfigurationLoaderService {
             appendMonthOfYear(2).
             appendLiteral('-').
             appendDayOfMonth(2).
+            toFormatter();
+
+    DateTimeFormatter timeslotFormatter = new DateTimeFormatterBuilder().
+            appendHourOfDay(2).
+            appendMinuteOfHour(2).
             toFormatter();
 
     @Autowired
@@ -174,36 +183,66 @@ public class ConfigurationLoaderService {
                     map(split.f(",")).orSome(List.<String>nil()).
                     map(compose(Room.room_, trim));
 
-            List<LocalDate> days = eventProperties.get("days").
+            List<P2<LocalDate, DayConfiguration>> days = eventProperties.get("dates").
                     map(split.f(",")).orSome(List.<String>nil()).
                     map(new F<String, LocalDate>() {
                         public LocalDate f(String s) {
                             return dateFormatter.parseDateTime(s.trim()).toLocalDate();
                         }
+                    }).
+                    map(new F<LocalDate, P2<LocalDate, DayConfiguration>>() {
+                        public P2<LocalDate, DayConfiguration> f(LocalDate localDate) {
+                            String roomsKey = dateFormatter.print(localDate) + ".rooms";
+                            Option<String> roomsOption = eventProperties.get(roomsKey);
+                            String timeslotsKey = dateFormatter.print(localDate) + ".timeslots";
+                            Option<String> timeslotsOption = eventProperties.get(timeslotsKey);
+
+                            List<Room> rooms = nil();
+                            List<Interval> timeslots = nil();
+
+                            if(roomsOption.isNone()) {
+                                logger.warn("Missing room configuration: " + roomsKey);
+                                return P.p(localDate, new DayConfiguration(rooms, timeslots));
+                            }
+
+                            if(timeslotsOption.isNone()) {
+                                logger.warn("Missing timeslots configuration: " + timeslotsKey);
+                                return P.p(localDate, new DayConfiguration(rooms, timeslots));
+                            }
+
+                            rooms = roomsOption.map(split.f(",")).orSome(List.<String>nil()).
+                                    map(compose(Room.room_, trim));
+
+                            final DateTime dateTime = localDate.toDateMidnight().toDateTime();
+
+                            timeslots = somes(timeslotsOption.map(split.f(",")).orSome(List.<String>nil()).
+                                    map(trim).
+                                    map(new F<String, Option<Interval>>() {
+                                        public Option<Interval> f(String s) {
+                                            List<String> parts = split.f("-").f(s);
+
+                                            if(parts.length() != 2) {
+                                                logger.warn("Invalid timeslot: " + s);
+                                                return none();
+                                            }
+                                            DateTime start = timeslotFormatter.parseDateTime(parts.index(0));
+                                            DateTime end = timeslotFormatter.parseDateTime(parts.index(1));
+                                            return some(new Interval(
+                                                    dateTime.withHourOfDay(start.getHourOfDay()).withMinuteOfHour(start.getMinuteOfHour()),
+                                                    dateTime.withHourOfDay(end.getHourOfDay()).withMinuteOfHour(end.getMinuteOfHour())));
+                                        }
+                                    }));
+
+                            return P.p(localDate, new DayConfiguration(rooms, timeslots));
+                        }
                     });
 
             if(days.isEmpty()) {
-                logger.warn("Misconfiguration: missing a 'days' property.");
+                logger.warn("Misconfiguration: missing a 'dates' property.");
                 continue;
             }
 
-            List<P2<LocalDate, List<Room>>> roomsByDate = Option.somes(days.map(new F<LocalDate, Option<P2<LocalDate, List<Room>>>>() {
-                public Option<P2<LocalDate, List<Room>>> f(LocalDate localDate) {
-                    String key = "rooms." + dateFormatter.print(localDate);
-                    Option<String> roomsOption = eventProperties.get(key);
-
-                    if(roomsOption.isNone()) {
-                        logger.warn("Missing room configuration: " + key);
-                        return none();
-                    }
-
-                    List<Room> rooms = roomsOption.map(split.f(",")).orSome(List.<String>nil()).
-                            map(compose(Room.room_, trim));
-                    return some(p(localDate, rooms));
-                }
-            }));
-
-            events = events.cons(new EventConfiguration(eventName, blurb, frontPageContent, roomsByDate, 
+            events = events.cons(new EventConfiguration(eventName, blurb, frontPageContent, days,
                     presentationRooms, labels, levelMap, eventPropertiesFile.lastModified()));
         }
 

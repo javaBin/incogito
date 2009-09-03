@@ -34,15 +34,18 @@ import no.java.incogito.domain.UserSessionAssociation;
 import no.java.incogito.dto.SessionXml;
 import no.java.incogito.web.resources.XmlFunctions;
 import no.java.incogito.web.servlet.WebCalendar;
+import org.joda.time.Interval;
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
 
-import java.text.NumberFormat;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -51,6 +54,11 @@ import java.util.Locale;
 public class WebFunctions {
 
     private static final NumberFormat oneDigitFormat;
+
+    private static final DateTimeFormatter timeslotFormatter = new DateTimeFormatterBuilder().
+            appendHourOfDay(2).
+            appendMinuteOfHour(2).
+            toFormatter();
 
     static {
         oneDigitFormat = DecimalFormat.getNumberInstance(Locale.ENGLISH);
@@ -76,6 +84,53 @@ public class WebFunctions {
         }
     });
 
+//    public static final F<CssConfiguration, F<EventConfiguration, F<List<Room>, List<String>>>> generateCalendarCss = curry(new F3<CssConfiguration, EventConfiguration, List<Room>, List<String>>() {
+//        public List<String> f(CssConfiguration cssConfiguration, EventConfiguration eventConfiguration, List<Room> roomList) {
+//            Ord<Interval> intervalOrd = Ord.ord(curry(new F2<Interval, Interval, Ordering>() {
+//                Ord<DateTime> dateTimeOrd = Ord.comparableOrd();
+//
+//                public Ordering f(Interval a, Interval b) {
+//                    Ordering ordering = dateTimeOrd.compare(a.getStart(), b.getEnd());
+//
+//                    if (Ordering.EQ.equals(ordering)) {
+//                        return dateTimeOrd.compare(a.getEnd(), b.getEnd());
+//                    }
+//
+//                    return ordering;
+//                }
+//            }));
+//
+//            Set<Interval> intervalSet = Set.iterableSet(intervalOrd,
+//                    List.join(eventConfiguration.dayConfigurations.
+//                            map(P2.<LocalDate, DayConfiguration>__2()).map(new F<DayConfiguration, List<Interval>>() {
+//                        public List<Interval> f(DayConfiguration dayConfiguration) {
+//                            return dayConfiguration.timeslots;
+//                        }
+//                    })));
+//
+//            F<Interval, P2<String, Integer>> x = Functions.<Interval, String, Integer>P2_fanout_().f(new F<Interval, String>() {
+//                public String f(Interval interval) {
+//                    return timeslotFormatter.print(interval.getStart());
+//                }
+//            }).f(new F<Interval, Integer>() {
+//                public Integer f(Interval interval) {
+//                    return Minutes.minutesIn(interval).getMinutes();
+//                }
+//            });
+//
+//            List<String> sessions = intervalSet.
+//                    toList().
+//                    reverse().
+//                    map(x).
+//                    map(hourToSessionCss.f(cssConfiguration));
+//
+//            // TODO: Use the interval set to calculate all the possible intervals
+//            Stream<String> durations = stream(10, 15, 60).zapp(Stream.repeat(durationToCss.f(cssConfiguration)));
+//
+//            return List.join(list(sessions, durations.toList()));
+//        }
+//    });
+
     // div.room.r1 { left: 0; position: absolute; }
     public static final F<CssConfiguration, F<Integer, String>> durationToCss = curry(new F2<CssConfiguration, Integer, String>() {
         public String f(CssConfiguration cssConfiguration, Integer minutes) {
@@ -92,6 +147,13 @@ public class WebFunctions {
             return ".start" + prepend.f(p._1()) + " { top: " + oneDigitFormat.format(em) + "em; }";
         }
     });
+
+//    public static final F<CssConfiguration, F<P2<String, Integer>, String>> hourToSessionCss = curry(new F2<CssConfiguration, P2<String, Integer>, String>() {
+//        public String f(CssConfiguration cssConfiguration, P2<String, Integer> p) {
+//            double em = cssConfiguration.sessionEmStart + (cssConfiguration.getHeightInEm(p._2() * 10));
+//            return ".start" + p._1() + " { top: " + oneDigitFormat.format(em) + "em; }";
+//        }
+//    });
 
     // -----------------------------------------------------------------------
     // Session CSS
@@ -134,7 +196,6 @@ public class WebFunctions {
         public WebCalendar f(IncogitoRestEventUri restEventUri, IncogitoEventUri eventUri, Schedule schedule) {
             F<Session,SessionXml> sessionToXml = XmlFunctions.sessionToXml.f(restEventUri).f(eventUri);
 
-            Collection<Integer> timeslotHours = schedule.sessions.foldLeft(timeslotFold, Set.<Integer>empty(Ord.intOrd)).toList().reverse().toCollection();
             Map<String, String> attendanceMap = new HashMap<String, String>();
 
             for (P2<SessionId, UserSessionAssociation> sessionAssociation : schedule.sessionAssociations) {
@@ -142,14 +203,17 @@ public class WebFunctions {
             }
 
             LinkedHashMap<LocalDate, Collection<String>> roomsByDate = new LinkedHashMap<LocalDate, Collection<String>>();
+            LinkedHashMap<LocalDate, Collection<Interval>> timeslotsByDate = new LinkedHashMap<LocalDate, Collection<Interval>>();
             TreeMap<LocalDate, TreeMap<String, List<SessionXml>>> dayToRoomToPresentationsMap = TreeMap.empty(Functions.LocalDate_ord);
             TreeMap<LocalDate, List<SessionXml>> quickiesByDay = TreeMap.empty(Functions.LocalDate_ord);
 
-            for (final P2<LocalDate, List<Room>> date : schedule.event.roomsByDate) {
-                final LocalDate day = date._1();
-                final List<Room> rooms = date._2();
+            for (final P2<LocalDate, Integer> dayIndex : schedule.event.dates.zipIndex()) {
+                final LocalDate day = dayIndex._1();
+                final List<Room> rooms = schedule.event.roomsByDate.index(dayIndex._2());
+                final List<Interval> timeslots = schedule.event.timeslotsByDate.index(dayIndex._2());
 
                 roomsByDate.put(day, rooms.map(Room.name_).toCollection());
+                timeslotsByDate.put(day, timeslots.toCollection());
 
                 // -----------------------------------------------------------------------
                 // Presentations
@@ -178,7 +242,7 @@ public class WebFunctions {
                     roomToSessionMap = roomToSessionMap.set(session.room, roomToSessionMap.get(session.room).some().cons(session));
                 }
 
-                dayToRoomToPresentationsMap = dayToRoomToPresentationsMap.set(date._1(), roomToSessionMap);
+                dayToRoomToPresentationsMap = dayToRoomToPresentationsMap.set(dayIndex._1(), roomToSessionMap);
 
                 // -----------------------------------------------------------------------
                 // Lightning Talks
@@ -203,7 +267,7 @@ public class WebFunctions {
                 quickiesByDay = quickiesByDay.set(day, quickies.toList().map(sessionToXml));
             }
 
-            return new WebCalendar(timeslotHours, attendanceMap, roomsByDate,
+            return new WebCalendar(attendanceMap, roomsByDate, timeslotsByDate,
                     dayToRoomToPresentationsMap, quickiesByDay);
         }
     });

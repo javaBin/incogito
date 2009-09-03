@@ -5,13 +5,12 @@ import fj.data.Option;
 import fj.data.TreeMap;
 import fj.pre.Ord;
 import static fj.pre.Ord.stringOrd;
-import fj.P2;
 import no.java.incogito.Enums;
 import no.java.incogito.domain.Level.LevelId;
+import org.joda.time.Interval;
+import org.joda.time.LocalDate;
 
 import java.util.UUID;
-
-import org.joda.time.LocalDate;
 
 /**
  * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
@@ -22,34 +21,30 @@ public class Event {
     public static final TreeMap<String, Label> emptyLabelIconMap = TreeMap.empty(stringOrd);
 
     public final EventId id;
-
     public final String name;
-
     public final Option<String> blurb;
-
     public final Option<String> frontpageContent;
-
     public final List<Room> presentationRooms;
-
-    public final List<P2<LocalDate, List<Room>>> roomsByDate;
-
+    public final List<LocalDate> dates;
+    public final List<List<Room>> roomsByDate;
+    public final List<List<Interval>> timeslotsByDate;
     public final TreeMap<LevelId, Level> levels;
-
     public final List<Label> labels;
-
     public final TreeMap<String, Label> labelMap;
-
     public final TreeMap<String, Label> emsIndexedLabels;
 
     public Event(EventId id, String name, Option<String> blurb, Option<String> frontpageContent,
-                 List<Room> presentationRooms, List<P2<LocalDate, List<Room>>> roomsByDate, TreeMap<LevelId, Level> levels,
+                 List<Room> presentationRooms, List<LocalDate> dates, List<List<Room>> roomsByDate,
+                 List<List<Interval>> timeslotsByDate, TreeMap<LevelId, Level> levels,
                  List<Label> labels, TreeMap<String, Label> labelMap) {
         this.id = id;
         this.name = name;
         this.blurb = blurb;
         this.frontpageContent = frontpageContent;
         this.presentationRooms = presentationRooms;
+        this.dates = dates;
         this.roomsByDate = roomsByDate;
+        this.timeslotsByDate = timeslotsByDate;
         this.levels = levels;
         this.labels = labels;
         this.labelMap = labelMap;

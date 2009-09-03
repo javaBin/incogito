@@ -170,7 +170,7 @@ public class IncogitoApplicationIntegrationTest {
         IO.runFileOutputStream(storePropertiesMap.f(incogitoProperties), incogitoPropertiesFile).call();
 
         TreeMap<String, String> jz08Properties = TreeMap.<String, String>empty(Ord.stringOrd).
-            set("days", "2008-09-17, 2008-09-18").
+            set("dates", "2008-09-17, 2008-09-18").
             set("rooms.2008-09-17", "Lab I, Lab II").
             set("rooms.2008-09-18", "Lab I, Lab II, BoF");
         IO.runFileOutputStream(storePropertiesMap.f(jz08Properties), jz08PropertiesFile).call();

@@ -14,10 +14,11 @@ div#calendar {
   position: absolute;
   width: 3em;
 }
-/*
 .times .timeslot-start {
   position: absolute;
   top: 1.5em;
+  width: 100%;
+  text-align: center;
 }
 
 .times .timeslot-separator {
@@ -28,12 +29,17 @@ div#calendar {
 .times .timeslot-end {
   position: absolute;
   bottom: 1.5em;
+  width: 100%;
+  text-align: center;
 }
-*/
+
+/*
 .timeslot {
     height: 10em;
 }
+*/
 
+/*
 .ts0900 {
     margin-top: 0;
 }
@@ -69,6 +75,7 @@ div#calendar {
 .ts1915 {
     margin-top: 2.5em;
 }
+*/
 
 .times {
   float: left;

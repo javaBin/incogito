@@ -127,109 +127,109 @@
       }
     }
     </script>
-    <script type="text/javascript">
-	<![CDATA[
-	var labels = [];
+  <script type="text/javascript">
+    <![CDATA[
+    var labels = [];
 
-	$(document).ready(function() {
+    $(document).ready(function() {
 
-		//Register click event for labels
-		labelClick();
-                labelReset();
-	});
+      //Register click event for labels
+      labelClick();
+      labelReset();
+    });
 
-        function labelReset(){
-            $("#filtersReset a").click(function(e){
-                // Reset the presentations
-                $(".room .presentation").each(function(){
-                    $(this).removeClass("hidden");
-                });
+    function labelReset() {
+      $("#filtersReset a").click(function(e) {
+        // Reset the presentations
+        $(".room .presentation").each(function() {
+          $(this).removeClass("hidden");
+        });
 
-                //Reset the labels
-                $("#filters ul li.active").each(function(){
-                    // Toggle classes for current container
-                    $(this).toggleClass("active");
-                    $(this).toggleClass("inactive");
-                });
+        //Reset the labels
+        $("#filters ul li.active").each(function() {
+          // Toggle classes for current container
+          $(this).toggleClass("active");
+          $(this).toggleClass("inactive");
+        });
 
-                //Prevent default behaviour for links
-                $("#filtersReset").hide();
-                e.preventDefault();
-                return false;
+        //Prevent default behaviour for links
+        $("#filtersReset").hide();
+        e.preventDefault();
+        return false;
+      });
+    }
+
+    function filters() {
+      labels = [];
+
+      // Find all active labels and add to the filter
+      $("#filters ul li.active").each(function() {
+        var classes = $(this).attr("class");
+        labels.push(((classes.split(" ")[0]).slice(6)).toLowerCase());
+      });
+    }
+
+    function labelClick() {
+      $("#filters ul li a").each(function() {
+        $(this).click(function(e) {
+
+          // Toggle classes for current container
+          $(this.parentNode).toggleClass("active");
+          $(this.parentNode).toggleClass("inactive");
+
+          // Update filters
+          filters();
+
+          // If no labels are selected
+          if (labels.length == 0) {
+            // Reset the presentations
+            $(".room .presentation").each(function() {
+              $(this).removeClass("hidden");
             });
+          } else {
+            // Run an update on the sessions
+            checkSessions();
+            $("#filtersReset").show();
+          }
+
+          //Prevent default behaviour for links
+          e.preventDefault();
+          return false;
+        });
+      });
+    }
+
+    function checkSessions() {
+      $(".room .presentation").each(function() {
+
+        // Get all labels for current session
+        var sessionLabels = $(".presentation-header .labels .label", this);
+
+        var hideSession = true;
+
+        // Loop thru all labels for the session
+        $(sessionLabels).each(function() {
+          var label = $(this).attr("alt").toLowerCase();
+
+          // If session has atleast one of the labels
+          if ($.inArray(label, labels) > -1) {
+            hideSession = false;
+
+            // Exit loop
+            return false;
+          }
+        });
+
+        // If session matches no selected tags, hide it
+        if (hideSession) {
+          $(this).addClass("hidden");
+        } else {
+          $(this).removeClass("hidden");
         }
-
-	function filters(){
-		labels = [];
-
-                // Find all active labels and add to the filter
-		$("#filters ul li.active").each(function(){
-			var classes = $(this).attr("class");
-			labels.push(((classes.split(" ")[0]).slice(6)).toLowerCase());
-		});
-	}
-
-	function labelClick(){
-		$("#filters ul li a").each(function(){
-			$(this).click(function(e){
-
-                                // Toggle classes for current container
-				$(this.parentNode).toggleClass("active");
-				$(this.parentNode).toggleClass("inactive");
-
-                                // Update filters
-				filters();
-
-                                // If no labels are selected
-                                if(labels.length == 0){
-                                    // Reset the presentations
-                                    $(".room .presentation").each(function(){
-                                        $(this).removeClass("hidden");
-                                    });
-                                } else {
-                                    // Run an update on the sessions
-                                    checkSessions();
-                                    $("#filtersReset").show();
-                                }
-
-                                //Prevent default behaviour for links
-                                e.preventDefault();
-                                return false;
-			});
-		});
-	}
-
-	function checkSessions(){
-		$(".room .presentation").each(function(){
-
-			// Get all labels for current session
-			var sessionLabels = $(".presentation-header .labels .label",this);
-
-			var hideSession = true;
-
-                        // Loop thru all labels for the session
-			$(sessionLabels).each(function(){
-				var label = $(this).attr("alt").toLowerCase();
-
-                                // If session has atleast one of the labels
-				if($.inArray(label,labels)>-1){
-					hideSession = false;
-
-                                        // Exit loop
-                                        return false;
-				}
-			});
-
-			// If session matches no selected tags, hide it
-			if(hideSession){
-				$(this).addClass("hidden");
-			} else {
-				$(this).removeClass("hidden");
-			}
-		});
-	}
-	]]>
-	</script>
+      });
+    }
+    ]]>
+  </script>
 </head>
 
 <body>
@@ -283,7 +283,7 @@
 <div class="cb"><!--space--></div>
 <div id="calendar">
   <c:forEach var="entry" items="${calendar.roomsByDate}" varStatus="i">
-    <a name="presentations-day-${i.index+1}"/>
+    <a name="presentations-day-${i.index+1}"><!-- space --></a>
     <c:set var="roomToPresentationsMap" value="${i:treeMapGet(calendar.dayToRoomToPresentationsMap, entry.key)}"/>
     <div class="day day${i.index}">
 
@@ -292,15 +292,28 @@
       <div class="rooms">
       <div class="times">
         <h2><!--space--></h2>
-        <div class="timeslot start0900 duration60"><div class="timeslot-start">09:00</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
-        <div class="timeslot start1015 duration60"><div class="timeslot-start">10:15</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
-        <div class="timeslot start1145 duration60"><div class="timeslot-start">11:45</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
-        <div class="timeslot start1300 duration60"><div class="timeslot-start">13:00</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
-        <div class="timeslot start1415 duration60"><div class="timeslot-start">14:15</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
-        <div class="timeslot start1530 duration60"><div class="timeslot-start">15:30</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
-        <div class="timeslot start1645 duration60"><div class="timeslot-start">16:45</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
-        <div class="timeslot start1800 duration60"><div class="timeslot-start">18:00</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
-        <div class="timeslot start1915 duration60"><div class="timeslot-start">19:15</div><div class="timeslot-separator">-</div><div class="timeslot-end">10:00</div></div>
+        <c:forEach var="timeslot" items="${i:castToIntervalList(i:mapGet(calendar.timeslotsByDate, entry.key))}">
+          <fmt:formatNumber var="startHour" value="${timeslot.start.hourOfDay}" maxIntegerDigits="2" minIntegerDigits="2"/>
+          <fmt:formatNumber var="startMinute" value="${timeslot.start.minuteOfHour}" maxIntegerDigits="2" minIntegerDigits="2"/>
+          <fmt:formatNumber var="endHour" value="${timeslot.end.hourOfDay}" maxIntegerDigits="2" minIntegerDigits="2"/>
+          <fmt:formatNumber var="endMinute" value="${timeslot.end.minuteOfHour}" maxIntegerDigits="2" minIntegerDigits="2"/>
+          <!-- TODO:  -->
+          <div class="timeslot start${startHour}${startMinute} duration60">
+            <div class="timeslot-start">${startHour}:${startMinute}</div>
+            <div class="timeslot-end">${endHour}:${endMinute}</div>
+          </div>
+        </c:forEach>
+<!--
+        <div class="timeslot start0900 duration60"><div class="timeslot-start">09:00</div><div class="timeslot-end">10:00</div></div>
+        <div class="timeslot start1015 duration60"><div class="timeslot-start">10:15</div><div class="timeslot-end">10:00</div></div>
+        <div class="timeslot start1145 duration60"><div class="timeslot-start">11:45</div><div class="timeslot-end">10:00</div></div>
+        <div class="timeslot start1300 duration60"><div class="timeslot-start">13:00</div><div class="timeslot-end">10:00</div></div>
+        <div class="timeslot start1415 duration60"><div class="timeslot-start">14:15</div><div class="timeslot-end">10:00</div></div>
+        <div class="timeslot start1530 duration60"><div class="timeslot-start">15:30</div><div class="timeslot-end">10:00</div></div>
+        <div class="timeslot start1645 duration60"><div class="timeslot-start">16:45</div><div class="timeslot-end">10:00</div></div>
+        <div class="timeslot start1800 duration60"><div class="timeslot-start">18:00</div><div class="timeslot-end">10:00</div></div>
+        <div class="timeslot start1915 duration60"><div class="timeslot-start">19:15</div><div class="timeslot-end">10:00</div></div>
+-->
      </div>
         <c:forEach var="room" items="${entry.value}" varStatus="i">
           <div class="room">

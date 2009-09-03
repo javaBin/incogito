@@ -38,6 +38,7 @@ import no.java.incogito.dto.IncogitoXml;
 import no.java.incogito.dto.SessionListXml;
 import no.java.incogito.dto.SessionXml;
 import no.java.incogito.web.WebFunctions;
+import static no.java.incogito.web.WebFunctions.generateCalendarCss;
 import static no.java.incogito.web.resources.XmlFunctions.eventToXml;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -109,6 +110,10 @@ public class IncogitoResource {
 
         return toJsr311(incogito.getEventByName(eventName).ok().map(new F<Event, String>() {
             public String f(Event event) {
+//                final F<List<Room>, List<String>> generateCss = generateCalendarCss.
+//                        f(incogito.getConfiguration().cssConfiguration).
+//                        f(incogito.getConfiguration().findEventConfigurationByName(eventName).some());
+
                 return generateCss.f(event.presentationRooms).foldRight(Functions.String_join.f("\n"), "");
             }
         }), cacheForOneHourCacheControl);

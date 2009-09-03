@@ -16,6 +16,7 @@ import no.java.incogito.domain.Level.LevelId;
 import static no.java.incogito.Functions.compose;
 import no.java.incogito.Functions;
 import org.joda.time.LocalDate;
+import org.joda.time.Interval;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -39,7 +40,7 @@ public class IncogitoConfiguration {
         public final String name;
         public final Option<String> blurb;
         public final Option<String> frontPageText;
-        public List<P2<LocalDate, List<Room>>> roomsByDate;
+        public final List<P2<LocalDate, DayConfiguration>> dayConfigurations;
         public List<Room> presentationRooms;
         public final List<Label> labels;
         public final TreeMap<String, Label> labelMap;
@@ -47,12 +48,12 @@ public class IncogitoConfiguration {
         private final long timestamp;
 
         public EventConfiguration(String name, Option<String> blurb, Option<String> frontPageText,
-                                  List<P2<LocalDate, List<Room>>> roomsByDate, List<Room> presentationRooms,
+                                  List<P2<LocalDate, DayConfiguration>> dayConfigurations, List<Room> presentationRooms,
                                   List<Label> labels, TreeMap<LevelId, Level> levels, long timestamp) {
             this.name = name;
             this.blurb = blurb;
             this.frontPageText = frontPageText;
-            this.roomsByDate = roomsByDate;
+            this.dayConfigurations = dayConfigurations;
             this.presentationRooms = presentationRooms;
             this.labels = labels;
             this.levels = levels;
@@ -69,6 +70,16 @@ public class IncogitoConfiguration {
 
         public boolean isOutdated(long fileTimestamp) {
             return fileTimestamp > timestamp;
+        }
+    }
+
+    public static class DayConfiguration {
+        public final List<Room> rooms;
+        public final List<Interval> timeslots;
+
+        public DayConfiguration(List<Room> rooms, List<Interval> timeslots) {
+            this.rooms = rooms;
+            this.timeslots = timeslots;
         }
     }
 

@@ -13,6 +13,8 @@ import no.java.incogito.domain.Label;
 import no.java.incogito.domain.Room;
 import no.java.incogito.ems.client.EmsWrapper;
 import org.joda.time.LocalDate;
+import org.joda.time.Interval;
+import org.joda.time.DateTime;
 
 import java.util.UUID;
 
@@ -43,14 +45,25 @@ public class ConfigurationLoaderServiceTest extends TestCase {
 
         EventConfiguration eventConfiguration = configuration.findEventConfigurationByName(event.getName()).some();
 
-        assertEquals(2, eventConfiguration.roomsByDate.length());
-        assertEquals(sep17th, eventConfiguration.roomsByDate.index(0)._1());
-        assertEquals(new Room("Lab I"), eventConfiguration.roomsByDate.index(0)._2().index(0));
-        assertEquals(new Room("Lab II"), eventConfiguration.roomsByDate.index(0)._2().index(1));
-        assertEquals(sep18th, eventConfiguration.roomsByDate.index(1)._1());
-        assertEquals(new Room("Lab I"), eventConfiguration.roomsByDate.index(1)._2().index(0));
-        assertEquals(new Room("Lab II"), eventConfiguration.roomsByDate.index(1)._2().index(1));
-        assertEquals(new Room("BoF"), eventConfiguration.roomsByDate.index(1)._2().index(2));
+        assertEquals(2, eventConfiguration.dayConfigurations.length());
+        assertEquals(sep17th, eventConfiguration.dayConfigurations.index(0)._1());
+        assertEquals(sep18th, eventConfiguration.dayConfigurations.index(1)._1());
+
+        assertEquals(2, eventConfiguration.dayConfigurations.index(0)._2().rooms.length());
+        assertEquals(new Room("Lab I"), eventConfiguration.dayConfigurations.index(0)._2().rooms.index(0));
+        assertEquals(new Room("Lab II"), eventConfiguration.dayConfigurations.index(0)._2().rooms.index(1));
+
+        DateTime s17 = sep17th.toDateMidnight().toDateTime();
+        DateTime s18 = sep17th.toDateMidnight().toDateTime();
+
+        assertEquals(8, eventConfiguration.dayConfigurations.index(0)._2().timeslots.length());
+        assertEquals(new Interval(s17.withHourOfDay(9), s17.withHourOfDay(10)), eventConfiguration.dayConfigurations.index(0)._2().timeslots.index(0));
+        assertEquals(new Interval(s17.withHourOfDay(18).withMinuteOfHour(15), s17.withHourOfDay(19).withMinuteOfHour(15)), eventConfiguration.dayConfigurations.index(0)._2().timeslots.index(7));
+
+        assertEquals(3, eventConfiguration.dayConfigurations.index(1)._2().rooms.length());
+        assertEquals(new Room("Lab I"), eventConfiguration.dayConfigurations.index(1)._2().rooms.index(0));
+        assertEquals(new Room("Lab II"), eventConfiguration.dayConfigurations.index(1)._2().rooms.index(1));
+        assertEquals(new Room("BoF"), eventConfiguration.dayConfigurations.index(1)._2().rooms.index(2));
 
         assertEquals(2, eventConfiguration.labels.length());
         assertEquals(eventConfiguration.labels.length(), eventConfiguration.labelMap.size());

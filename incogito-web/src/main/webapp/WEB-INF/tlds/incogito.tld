@@ -50,6 +50,11 @@
     <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
     <function-signature>no.java.incogito.dto.SessionXml[] castToSessionList(java.lang.Object)</function-signature>
   </function>
+  <function>
+    <name>castToIntervalList</name>
+    <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
+    <function-signature>org.joda.time.Interval[] castToIntervalList(java.lang.Object)</function-signature>
+  </function>
 
   <function>
     <name>getCalendar</name>

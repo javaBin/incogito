@@ -1,15 +1,14 @@
 package no.java.incogito.domain;
 
 import fj.data.List;
+import static fj.data.List.list;
 import fj.data.Option;
 import fj.data.TreeMap;
-import static fj.data.List.list;
 import fj.pre.Ord;
-import fj.P2;
-import static fj.P.p;
+import no.java.incogito.domain.Event.EventId;
 import static no.java.incogito.domain.Level.LevelId;
 import static no.java.incogito.domain.Session.Format;
-import no.java.incogito.domain.Event.EventId;
+import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
@@ -21,18 +20,56 @@ import java.util.UUID;
  * @version $Id$
  */
 public class IncogitoTestData {
-    public static final List<Room> roomsDay1 = list(new Room("Lab I"), new Room("Lab II"));
-    public static final List<Room> roomsDay2 = list(new Room("Lab I"), new Room("Lab II"), new Room("BoF"));
-    public static final List<P2<LocalDate, List<Room>>> roomsByDate = List.list(p(new LocalDate(2008, 9, 17), roomsDay1), p(new LocalDate(2008, 9, 18), roomsDay2));
-    public static final Event javaZone2008 = new Event(EventId.eventId(UUID.randomUUID().toString()), "JavaZone 2008",
-            Option.<String>none(), Option.<String>none(), List.<Room>nil(), roomsByDate, TreeMap.<LevelId, Level>empty(LevelId.ord), List.<Label>nil(),
-            TreeMap.<String, Label>empty(Ord.stringOrd));
 
     public static final Level Introductory = new Level(LevelId.Introductory, "Introductory", new File(""));
     public static final Level Introductory_Intermediate = new Level(LevelId.Introductory_Intermediate, "Introductory/Intermediate", new File(""));
     public static final Level Intermediate = new Level(LevelId.Intermediate, "Intermediate", new File(""));
     public static final Level Intermediate_Advanced = new Level(LevelId.Intermediate_Advanced, "Intermediate/Advanced", new File(""));
     public static final Level Advanced = new Level(LevelId.Advanced, "Advanced", new File(""));
+
+    static Label java = new Label("java", "Java", "Java", new File("java.png"));
+
+    public static LocalDate sep17th = new LocalDate(2008, 9, 17);
+    public static final List<Room> jz08Day1Rooms = list(new Room("Lab I"), new Room("Lab II"), new Room("BoF"));
+    public static DateTime s17 = sep17th.toDateMidnight().toDateTime();
+    public static List<Interval> jz08Day1Timeslots = list(
+            new Interval(s17.withHourOfDay(9), s17.withHourOfDay(10)),
+            new Interval(s17.withHourOfDay(10).withMinuteOfHour(15), s17.withHourOfDay(11).withMinuteOfHour(15)),
+            new Interval(s17.withHourOfDay(11).withMinuteOfHour(45), s17.withHourOfDay(12).withMinuteOfHour(45)),
+            new Interval(s17.withHourOfDay(13), s17.withHourOfDay(14)),
+            new Interval(s17.withHourOfDay(14).withMinuteOfHour(15), s17.withHourOfDay(15).withMinuteOfHour(15)),
+            new Interval(s17.withHourOfDay(15).withMinuteOfHour(45), s17.withHourOfDay(16).withMinuteOfHour(45)),
+            new Interval(s17.withHourOfDay(17), s17.withHourOfDay(18)),
+            new Interval(s17.withHourOfDay(18).withMinuteOfHour(15), s17.withHourOfDay(19).withMinuteOfHour(15)));
+
+    public static LocalDate sep18th = new LocalDate(2008, 9, 18);
+    public static final List<Room> jz08Day2Rooms = list(new Room("Lab I"), new Room("Lab II"));
+    public static DateTime s18 = sep18th.toDateMidnight().toDateTime();
+    public static List<Interval> jz08Day2Timeslots = list(
+            new Interval(s18.withHourOfDay(9), s18.withHourOfDay(10)),
+            new Interval(s18.withHourOfDay(10).withMinuteOfHour(15), s18.withHourOfDay(11).withMinuteOfHour(15)),
+            new Interval(s18.withHourOfDay(11).withMinuteOfHour(45), s18.withHourOfDay(12).withMinuteOfHour(45)),
+            new Interval(s18.withHourOfDay(13), s18.withHourOfDay(14)),
+            new Interval(s18.withHourOfDay(14).withMinuteOfHour(15), s18.withHourOfDay(15).withMinuteOfHour(15)),
+            new Interval(s18.withHourOfDay(15).withMinuteOfHour(45), s18.withHourOfDay(16).withMinuteOfHour(45)),
+            new Interval(s18.withHourOfDay(17), s18.withHourOfDay(18)),
+            new Interval(s18.withHourOfDay(18).withMinuteOfHour(15), s18.withHourOfDay(19).withMinuteOfHour(15)));
+
+    public static List<LocalDate> jz08Dates = List.list(sep17th, sep18th);
+    public static List<List<Room>> jz08RoomsByDate = List.list(jz08Day1Rooms, jz08Day2Rooms);
+    public static List<List<Interval>> jz08TimeslotsByDate = List.list(jz08Day1Timeslots, jz08Day2Timeslots);
+
+    public static final Event javaZone2008 = new Event(EventId.eventId(UUID.randomUUID().toString()),
+            "JavaZone 2008",
+            Option.<String>none(),
+            Option.<String>none(),
+            List.<Room>nil(),
+            jz08Dates,
+            jz08RoomsByDate,
+            jz08TimeslotsByDate,
+            TreeMap.<LevelId, Level>empty(LevelId.ord).set(Intermediate.id, Intermediate),
+            List.<Label>nil(),
+            TreeMap.<String, Label>empty(Ord.stringOrd).set(java.id, java));
 
     public static final Label EMG = new Label("id", "EMG", "EMS", new File(""));
     public static final Label Method = new Label("id", "Method", "Method", new File(""));

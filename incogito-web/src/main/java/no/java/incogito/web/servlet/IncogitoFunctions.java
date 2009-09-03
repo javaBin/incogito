@@ -20,6 +20,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Map;
 import java.util.ArrayList;
+import java.util.Collection;
+
+import org.joda.time.Interval;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -77,6 +80,12 @@ public class IncogitoFunctions {
         @SuppressWarnings({"unchecked"}) List<SessionXml> list = (List<SessionXml>) o;
 
         return list.toArray(SessionXml[].class).array();
+    }
+
+    public static Interval[] castToIntervalList(Object o) {
+        @SuppressWarnings({"unchecked"}) Collection<Interval> list = (Collection<Interval>) o;
+
+        return list.toArray(new Interval[list.size()]);
     }
 
     public static WebCalendar getCalendar(IncogitoApplication app, String eventName, String userName) {
