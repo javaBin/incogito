@@ -201,7 +201,7 @@ div.overlay-bg {
     top: 0;
     left: 0;
     height: 100%;
-    -opacity: 0.8;
+    opacity: 0.8;
     position: fixed;
     width: 100%;
     z-index: 4999;
@@ -491,6 +491,7 @@ ul.qts {
 	height: 1.3em;
 	margin: 0.5em 0 0.5em 0;
 	padding: 0;
+        background: #FFF;
 }
 
 .qts li>div {
