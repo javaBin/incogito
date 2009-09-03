@@ -488,14 +488,13 @@ ul.qts {
 }
 
 .qts li {
-        overflow:hidden;
-	height: 1.2em;
+	height: 1.3em;
 	margin: 0.5em 0 0.5em 0;
 	padding: 0;
 }
 
 .qts li>div {
-	height: 1.2em;
+	height: 1.3em;
 	float: left;
 	position: relative;
 }
@@ -506,7 +505,7 @@ ul.qts {
         background: #FFF;
 }
 .qt-info>div {
-    height:1.2em;
+    height:1.3em;
 }
 .qt-info div.qt-time {
 	width: 3em;
@@ -519,16 +518,16 @@ ul.qts {
 .qt-info div.qt-legend {
 	width: 13em;
 	float: right;
-        height: 1.07em;
+        height: 1.23em;
 	margin: 0 0.5em 0 0;
         border: 0.065em solid #CCC;
 }
 .qt-legend>div {
-    height: 1.070em;
+    height: 1.17em;
 }
 
 .qt-legend>div img {
-    padding-top: 0.2em;
+    padding-top: 0.3em;
 }
 
 .qt-legend .qt-level {
