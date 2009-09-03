@@ -51,7 +51,8 @@
         }
       })
       $(".add-remove-button").bind("click", toggleAttendance)
-      $(".session").bind("click", showSession)
+      $(".presentation").bind("click", showSession)
+      $(".qt-title").bind("click", showSession)
 
       $("#results-below-tab").corner("round top")
       $(window).scroll(updateResultsBelowTab)
@@ -88,7 +89,7 @@
     /* TODO: Spinner */
     function toggleAttendance() {
       var sessionDiv = $(this).parent().parent();
-      var sessionIdDiv = sessionDiv.find(".session-id")
+      var sessionUrlDiv = sessionDiv.find(".session-url")
       var interestLevel = sessionDiv.find(".session-interest-level").text()
       if (interestLevel == InterestLevel.NO_INTEREST) {
         interestLevel = InterestLevel.INTEREST
@@ -102,7 +103,7 @@
       else {
         interestLevel = InterestLevel.INTEREST
       }
-      updateInterest(eventName, sessionIdDiv.text(), interestLevel, onAttendanceUpdated.curry(sessionDiv, interestLevel), showLogin)
+      updateInterest(eventName, sessionUrlDiv.text(), interestLevel, onAttendanceUpdated.curry(sessionDiv, interestLevel), showLogin)
       return false
     }
 
@@ -309,7 +310,7 @@
               <fmt:formatNumber var="hour" value="${presentation.start.hour}" maxIntegerDigits="2" minIntegerDigits="2"/>
               <fmt:formatNumber var="minute" value="${presentation.start.minute}" maxIntegerDigits="2" minIntegerDigits="2"/>
               <div class="presentation start${hour}${minute} duration60">
-                <div class="presentation-id" style="display: none;">${presentation.id}</div>
+                <div class="session-url" style="display: none;">${presentation.selfUri}</div>
                 <div class="presentation-interest-level" style="display: none;">${interestLevel}</div>
                 <div class="presentation-header">
                   <div class="level">
@@ -349,31 +350,49 @@
         </c:forEach>
       </div>
       <div class="cb"><!--space--></div>
-      <a name="quickies-day-${i.index+1}"/>
+      <a name="quickies-day-${i.index+1}"><!-- space --></a>
       <ul class="qts">
         <c:set var="quickies" value="${i:treeMapGet(calendar.quickiesByDay, entry.key)}"/>
         <c:forEach var="quickie" items="${i:castToSessionList(quickies)}" varStatus="i">
-         <li>
-
-               <div class="qt-presentation">
-                    <div class="qt-info">
-                            <div class="qt-legend">
-                                    <div class="level qt-level">L</div>
-                                    <div class="labels qt-labels">LABEL</div>
-                                    Norwegian
-                            </div>
-                            <div class="qt-time">09.00</div>
-
+          <fmt:formatNumber var="hour" value="${quickie.start.hour}" maxIntegerDigits="2" minIntegerDigits="2"/>
+          <fmt:formatNumber var="minute" value="${quickie.start.minute}" maxIntegerDigits="2" minIntegerDigits="2"/>
+          <li>
+            <div class="qt-presentation">
+              <div class="qt-info">
+                <div class="qt-legend">
+                  <div class="level qt-level">
+                    <div class="level">
+                      <c:choose>
+                        <c:when test="${not (quickie.level eq null)}">
+                          <img title="${quickie.level.displayName}" alt="${quickie.level.displayName}" src="${quickie.level.iconUrl}"/>
+                        </c:when>
+                        <c:otherwise>X</c:otherwise>
+                      </c:choose>
                     </div>
-                    <div class="qt-title">
-                        <div class="qt-feedback">
-                            <div class="qt-rating">4/5</div>
-                            99 Comment(s)
-                        </div>
-			${quickie.title} <span class="qt-speaker"> - Some Speaker</span>
-                        </div>
-	        </div>
-	</li>
+                  </div>
+                  <div class="labels qt-labels">
+                    <c:forEach var="label" items="${quickie.labels}">
+                      <img class="label" title="${label.displayName}" alt="${label.id}" src="${label.iconUrl}"/>
+                    </c:forEach>
+                  </div>
+<!--
+                  Norwegian
+-->
+                </div>
+                <div class="qt-time">${hour}:${minute}</div>
+                <div class="session-url" style="display: none;">${presentation.selfUri}</div>
+              </div>
+              <div class="qt-title">
+<!--
+                <div class="qt-feedback">
+                  <div class="qt-rating">4/5</div>
+                  99 Comment(s)
+                </div>
+-->
+                ${quickie.title} <span class="qt-speaker"> - Some Speaker</span>
+              </div>
+            </div>
+          </li>
         </c:forEach>
       </ul>
     </div>

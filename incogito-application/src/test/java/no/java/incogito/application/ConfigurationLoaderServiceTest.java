@@ -1,21 +1,20 @@
 package no.java.incogito.application;
 
 import fj.P;
-import fj.data.TreeMap;
 import fj.data.List;
 import static fj.data.List.list;
+import fj.data.TreeMap;
 import fj.pre.Ord;
 import junit.framework.TestCase;
 import no.java.ems.client.RestEmsService;
 import no.java.ems.domain.Event;
+import no.java.incogito.application.IncogitoConfiguration.EventConfiguration;
 import no.java.incogito.domain.Label;
 import no.java.incogito.domain.Room;
 import no.java.incogito.ems.client.EmsWrapper;
-import no.java.incogito.application.IncogitoConfiguration.EventConfiguration;
+import org.joda.time.LocalDate;
 
 import java.util.UUID;
-
-import org.joda.time.LocalDate;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -53,16 +52,20 @@ public class ConfigurationLoaderServiceTest extends TestCase {
         assertEquals(new Room("Lab II"), eventConfiguration.roomsByDate.index(1)._2().index(1));
         assertEquals(new Room("BoF"), eventConfiguration.roomsByDate.index(1)._2().index(2));
 
-        assertEquals(2, eventConfiguration.labels.size());
-        Label actualMyLabel = eventConfiguration.labels.get("MyLabel").some();
+        assertEquals(2, eventConfiguration.labels.length());
+        assertEquals(eventConfiguration.labels.length(), eventConfiguration.labelMap.size());
+        Label actualMyLabel = eventConfiguration.labelMap.get("MyLabel").some();
         assertEquals("My label", actualMyLabel.displayName);
         assertEquals("MyLabel", actualMyLabel.id);
         assertEquals("MyLabel", actualMyLabel.emsId);
 
-        Label actualRenamedLabel = eventConfiguration.labels.get("renamed-label").some();
+        Label actualRenamedLabel = eventConfiguration.labelMap.get("renamed-label").some();
         assertEquals("Renamed Label", actualRenamedLabel.displayName);
         assertEquals("renamed-label", actualRenamedLabel.id);
         assertEquals("Renamed label", actualRenamedLabel.emsId);
+
+        assertEquals("MyLabel", eventConfiguration.labels.index(0).id);
+        assertEquals("renamed-label", eventConfiguration.labels.index(1).id);
 
         assertEquals(5, eventConfiguration.levels.size());
     }

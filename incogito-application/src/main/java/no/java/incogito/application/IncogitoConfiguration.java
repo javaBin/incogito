@@ -11,6 +11,7 @@ import static no.java.incogito.domain.CssConfiguration.defaultCssConfiguration;
 import no.java.incogito.domain.Label;
 import no.java.incogito.domain.Level;
 import no.java.incogito.domain.Room;
+import static no.java.incogito.domain.Event.emptyLabelIconMap;
 import no.java.incogito.domain.Level.LevelId;
 import static no.java.incogito.Functions.compose;
 import no.java.incogito.Functions;
@@ -40,13 +41,14 @@ public class IncogitoConfiguration {
         public final Option<String> frontPageText;
         public List<P2<LocalDate, List<Room>>> roomsByDate;
         public List<Room> presentationRooms;
-        public final TreeMap<String, Label> labels;
+        public final List<Label> labels;
+        public final TreeMap<String, Label> labelMap;
         public final TreeMap<LevelId, Level> levels;
         private final long timestamp;
 
         public EventConfiguration(String name, Option<String> blurb, Option<String> frontPageText,
                                   List<P2<LocalDate, List<Room>>> roomsByDate, List<Room> presentationRooms,
-                                  TreeMap<String, Label> labels, TreeMap<LevelId, Level> levels, long timestamp) {
+                                  List<Label> labels, TreeMap<LevelId, Level> levels, long timestamp) {
             this.name = name;
             this.blurb = blurb;
             this.frontPageText = frontPageText;
@@ -55,6 +57,8 @@ public class IncogitoConfiguration {
             this.labels = labels;
             this.levels = levels;
             this.timestamp = timestamp;
+
+            labelMap = labels.foldLeft(Functions.<String, Label>TreeMap_set().f(Label.id_), emptyLabelIconMap);
         }
 
         public static final F<EventConfiguration, String> name_ = new F<EventConfiguration, String>() {

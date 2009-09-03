@@ -35,13 +35,15 @@ public class Event {
 
     public final TreeMap<LevelId, Level> levels;
 
-    public final TreeMap<String, Label> labels;
+    public final List<Label> labels;
+
+    public final TreeMap<String, Label> labelMap;
 
     public final TreeMap<String, Label> emsIndexedLabels;
 
     public Event(EventId id, String name, Option<String> blurb, Option<String> frontpageContent,
                  List<Room> presentationRooms, List<P2<LocalDate, List<Room>>> roomsByDate, TreeMap<LevelId, Level> levels,
-                 TreeMap<String, Label> labels) {
+                 List<Label> labels, TreeMap<String, Label> labelMap) {
         this.id = id;
         this.name = name;
         this.blurb = blurb;
@@ -50,9 +52,10 @@ public class Event {
         this.roomsByDate = roomsByDate;
         this.levels = levels;
         this.labels = labels;
+        this.labelMap = labelMap;
 
         TreeMap<String, Label> emsIndexedLabels = TreeMap.empty(stringOrd);
-        for (Label label : labels.values()) {
+        for (Label label : labels) {
             emsIndexedLabels = emsIndexedLabels.set(label.emsId, label);
         }
 

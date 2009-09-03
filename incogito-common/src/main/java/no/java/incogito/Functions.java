@@ -11,6 +11,8 @@ import fj.P1;
 import fj.P2;
 import fj.P3;
 import fj.data.Either;
+import static fj.data.Either.left;
+import static fj.data.Either.right;
 import fj.data.List;
 import static fj.data.List.cons;
 import static fj.data.List.list;
@@ -19,19 +21,15 @@ import static fj.data.Option.none;
 import static fj.data.Option.some;
 import fj.data.Stream;
 import fj.data.TreeMap;
-import static fj.data.Either.left;
-import static fj.data.Either.right;
-import fj.pre.Show;
 import fj.pre.Ord;
-import fj.pre.Ordering;
+import fj.pre.Show;
 import static fj.pre.Show.show;
+import org.joda.time.LocalDate;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-import org.joda.time.LocalDate;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -260,6 +258,14 @@ public class Functions {
                 };
             }
         };
+    }
+
+    public static <K, V> F<F<V, K>, F<TreeMap<K, V>, F<V, TreeMap<K, V>>>> TreeMap_set() {
+        return curry(new F3<F<V, K>, TreeMap<K, V>, V, TreeMap<K, V>>() {
+            public TreeMap<K, V> f(F<V, K> vkf, TreeMap<K, V> treeMap, V v) {
+                return treeMap.set(vkf.f(v), v);
+            }
+        });
     }
 
     // -----------------------------------------------------------------------

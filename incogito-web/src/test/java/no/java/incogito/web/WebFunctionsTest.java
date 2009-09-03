@@ -58,7 +58,7 @@ public class WebFunctionsTest extends TestCase {
     private List<P2<LocalDate, List<Room>>> roomsByDate = List.list(p(sep17th, roomsDay1), p(new LocalDate(2008, 9, 18), roomsDay2));
     Event jz08 = new Event(eventId(UUID.randomUUID().toString()), "FunZone", Option.<String>none(), Option.<String>none(),
         List.<Room>nil(), roomsByDate, TreeMap.<LevelId, Level>empty(LevelId.ord).set(intermediate.id, intermediate),
-        TreeMap.<String, Label>empty(Ord.stringOrd).set(java.id, java));
+        List.<Label>nil(), TreeMap.<String, Label>empty(Ord.stringOrd).set(java.id, java));
 
     Session templateSession = new Session(new SessionId("123"), Presentation, "Session 1",
             Option.<WikiString>none(), Option.<Level>none(), Option.<Interval>none(), Option.<String>none(),

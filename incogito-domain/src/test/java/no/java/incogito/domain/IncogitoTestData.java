@@ -25,7 +25,7 @@ public class IncogitoTestData {
     public static final List<Room> roomsDay2 = list(new Room("Lab I"), new Room("Lab II"), new Room("BoF"));
     public static final List<P2<LocalDate, List<Room>>> roomsByDate = List.list(p(new LocalDate(2008, 9, 17), roomsDay1), p(new LocalDate(2008, 9, 18), roomsDay2));
     public static final Event javaZone2008 = new Event(EventId.eventId(UUID.randomUUID().toString()), "JavaZone 2008",
-            Option.<String>none(), Option.<String>none(), List.<Room>nil(), roomsByDate, TreeMap.<LevelId, Level>empty(LevelId.ord),
+            Option.<String>none(), Option.<String>none(), List.<Room>nil(), roomsByDate, TreeMap.<LevelId, Level>empty(LevelId.ord), List.<Label>nil(),
             TreeMap.<String, Label>empty(Ord.stringOrd));
 
     public static final Level Introductory = new Level(LevelId.Introductory, "Introductory", new File(""));

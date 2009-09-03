@@ -37,4 +37,10 @@ public class Label {
             return new Label(id, emsId, displayName, iconFile);
         }
     });
+
+    public static final F<Label, String> id_ = new F<Label, String>() {
+        public String f(Label label) {
+            return label.id;
+        }
+    };
 }

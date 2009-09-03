@@ -507,9 +507,11 @@ ul.qts {
 }
 
 .qt-info div.qt-time {
-	width: 2.5em;
-	background: #CCC;
+	width: 5em;
+	background: #EAEAEA;
 	padding-left: 0.25em;
+	padding-right: 0.25em;
+  text-align: center;
 }
 
 .qt-info div.qt-legend {

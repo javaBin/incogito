@@ -170,7 +170,7 @@ public class IncogitoResource {
             return toJsr311(eventResult);
         }
 
-        Option<File> fileOption = eventResult.value().labels.get(label).map(Label.iconFile_);
+        Option<File> fileOption = eventResult.value().labelMap.get(label).map(Label.iconFile_);
 
         if (!fileOption.isSome()) {
             return toJsr311(OperationResult.<Object>notFound("No icon for label '" + label + "'."));

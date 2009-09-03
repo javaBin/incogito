@@ -59,6 +59,10 @@ public class SessionXml {
         this.labels = toList(labels);
     }
 
+    public String getSelfUri() {
+        return selfUri;
+    }
+
     public String getSessionHtmlUrl() {
         return sessionHtmlUrl;
     }

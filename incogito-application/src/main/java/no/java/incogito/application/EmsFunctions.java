@@ -58,7 +58,8 @@ public class EmsFunctions {
                                     eventConfiguration.presentationRooms,
                                     eventConfiguration.roomsByDate,
                                     eventConfiguration.levels,
-                                    eventConfiguration.labels);
+                                    eventConfiguration.labels,
+                                    eventConfiguration.labelMap);
                         }
                     });
         }
