@@ -201,7 +201,7 @@ div.overlay-bg {
     top: 0;
     left: 0;
     height: 100%;
-    opacity: 0.8;
+    -opacity: 0.8;
     position: fixed;
     width: 100%;
     z-index: 4999;
@@ -488,14 +488,14 @@ ul.qts {
 }
 
 .qts li {
-	height: 1em;
-	margin: 0;
-	padding: 0.25em 0 0.25em 0em;
+        overflow:hidden;
+	height: 1.2em;
+	margin: 0.5em 0 0.5em 0;
+	padding: 0;
 }
 
 .qts li>div {
-	height: 1em;
-	border: 0.065em solid #FFF;
+	height: 1.2em;
 	float: left;
 	position: relative;
 }
@@ -505,9 +505,11 @@ ul.qts {
         float: left;
         background: #FFF;
 }
-
+.qt-info>div {
+    height:1.2em;
+}
 .qt-info div.qt-time {
-	width: 5em;
+	width: 3em;
 	background: #EAEAEA;
 	padding-left: 0.25em;
 	padding-right: 0.25em;
@@ -515,15 +517,25 @@ ul.qts {
 }
 
 .qt-info div.qt-legend {
-	width: 13.5em;
+	width: 13em;
 	float: right;
+        height: 1.07em;
 	margin: 0 0.5em 0 0;
-	border: 0.065em solid #EAEAEA;
+        border: 0.065em solid #CCC;
+}
+.qt-legend>div {
+    height: 1.070em;
+}
+
+.qt-legend>div img {
+    padding-top: 0.2em;
 }
 
 .qt-legend .qt-level {
 	border-left: 0.065em solid #CCC;
-	width: 1em;
+        width: 0.8em;
+        text-align:center;
+        margin-left: 0.2em;
 	float: right;
 }
 

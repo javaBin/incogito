@@ -360,17 +360,15 @@
             <div class="qt-presentation">
               <div class="qt-info">
                 <div class="qt-legend">
-                  <div class="level qt-level">
-                    <div class="level">
+                  <div class="qt-level">
                       <c:choose>
                         <c:when test="${not (quickie.level eq null)}">
                           <img title="${quickie.level.displayName}" alt="${quickie.level.displayName}" src="${quickie.level.iconUrl}"/>
                         </c:when>
                         <c:otherwise>X</c:otherwise>
                       </c:choose>
-                    </div>
                   </div>
-                  <div class="labels qt-labels">
+                  <div class="qt-labels">
                     <c:forEach var="label" items="${quickie.labels}">
                       <img class="label" title="${label.displayName}" alt="${label.id}" src="${label.iconUrl}"/>
                     </c:forEach>
