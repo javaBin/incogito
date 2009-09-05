@@ -19,3 +19,5 @@ pom.xml.releaseBackup
 release.properties
 incogito-application/src/test/resources/cluster-it/node-it/etc/
 jmeter/*.*
+incogito-ems-server/binaries
+incogito-ems-server/database

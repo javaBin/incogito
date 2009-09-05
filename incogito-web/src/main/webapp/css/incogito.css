@@ -161,9 +161,15 @@ a:visited {
   vertical-align: middle;
 }
 
+#header .agenda-button {
+  position: absolute;
+  top: 81px;
+  left: 200px;
+}
+
 #header .sessions-button {
   position: absolute;
-  top: 107px;
+  top: 117px;
   left: 200px;
 }
 

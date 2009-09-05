@@ -15,20 +15,20 @@
   </div>
 
   <div id="template-session-details" class="template session-details">
-    <div class="session-details-title"><!-- space --></div>
+    <h2 class="session-details-title"><!-- space --></h2>
+    <ul class="outside session-metadata">
+      <!-- space-->
+    </ul>
     <div class="session-details-labels">
       <ul><!-- space --></ul>
     </div>
-    <div class="session-details-level"><!-- space --></div>
-    <div class="session-details-room">Room: <span class="text"><!-- space --></span></div>
-    <div class="session-details-timeslot"><!-- space --></div>
     <div class="session-details-body"><!-- space --></div>
-    <div class="session-details-speakers"><!-- space --></div>
+    <div class="speaker-bioses"><!-- space --></div>
   </div>
 
-  <div id="template-details-session-speaker" class="template session-details-speaker">
-    <img class="session-details-speaker-image" src="#" alt=""/>
-    <div class="session-details-speaker-name"><!-- space --></div>
-    <div class="session-details-speaker-bio"><!-- space --></div>
+  <div class="template speaker">
+    <div class="speaker-image"><img src="#" alt=""/></div>
+    <h2 class="speaker-name"><!-- space --></h2>
+    <div class="speaker-bio"><!-- space --></div>
   </div>
 </jsp:root>

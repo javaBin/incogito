@@ -19,12 +19,43 @@ $(document).ready(function() {
     })
 })
 
+function formatTime(time) {
+    var s = ""
+    if(time.hour < 10) {
+        s += "0"
+    }
+    s += time.hour + ":"
+
+    if(time.minute < 10) {
+        s += "0"
+    }
+    s += time.minute
+
+    return s
+}
+
+function formatSpeakerSummary(speakers) {
+    var prefix = "Speaker: "
+    var s = ""
+    $.each(speakers, function(i, speaker) {
+        if(i > 0) {
+            s += ", "
+            prefix = "Speakers: "
+        }
+
+        s += speaker.name
+    })
+
+    return prefix + s;
+}
+
 function showSession() {
     sessionOverlay.show()
     sessionOverlayBg.show()
 
     var sessionUrl = $(this).find(".session-url").text()
     getSession(eventName, sessionUrl, function(session) {
+        $("#session-overlay .overlay-content").empty()
         console.log("session:")
         console.log(session)
         var sessionDetails = $("#template-session-details").clone()
@@ -34,38 +65,53 @@ function showSession() {
             removeClass("template")
 
         sessionDetails.find(".session-details-title").text(session.title)
-        var ul = sessionDetails.find(".session-details-labels ul");
+        var ul = sessionDetails.find(".session-metadata");
+        console.log(ul)
+        // <li class="session-detail-label label-${label.id}">${label.displayName}</li>
         $.each(session.labels, function(i, label) {
-            var li = $("<li>").appendTo(ul)
+            console.log("label: " + label.displayName)
+            var li = $("<li>").
+                addClass("session-detail-label").
+                addClass("label-" + label.id).
+                appendTo(ul)
             li.text(label.displayName)
         })
-        sessionDetails.find(".session-details-room .text").text(session.room)
+        var li = $("<li>").
+            text("Room: " + session.room).
+            appendTo(ul)
+        li = $("<li>").
+            text(formatTime(session.start) + " - " + formatTime(session.end)).
+            addClass("format-" + session.format).
+            appendTo(ul)
+        li = $("<li>").
+            text(formatSpeakerSummary(session.speakers)).
+            appendTo(ul)
         sessionDetails.find(".session-details-level").text(session.level.displayName)
-        sessionDetails.find(".session-details-timeslot").text(session.start.hour + ":" + session.start.minute + " - " + session.end.hour + ":" + session.end.minute) // TODO: Formatting
         sessionDetails.find(".session-details-body").html(session.bodyHtml)
 
-        var templateSpeaker = $("#template-details-session-speaker")
-        var speakers = sessionDetails.find(".session-details-speakers")
+        var templateSpeaker = $(".template.speaker")
+        var speakerBioses = sessionDetails.find(".speaker-bioses")
         $.each(session.speakers, function(i, speaker) {
             console.log(speaker)
             var speakerDiv = templateSpeaker.clone()
-            if (speaker.imageUrl) {
-                speakerDiv.find(".session-details-speaker-image").
-                    attr({src: speaker.imageUrl, title: speaker.name, alt: speaker.name })
+            var speakerImage = speakerDiv.find(".speaker-image");
+            if (speaker.photoUrl) {
+                $("<img>").
+                    attr({src: speaker.photoUrl, title: speaker.name, alt: speaker.name }).
+                    appendTo(speakerImage)
             }
             else {
-                speakerDiv.find(".session-details-speaker-image").remove()
+                speakerImage.remove()
             }
-            speakerDiv.find(".session-details-speaker-name").text(speaker.name)
-            speakerDiv.find(".session-details-speaker-bio").html(speaker.bioHtml)
+            speakerDiv.find(".speaker-name").text(speaker.name)
+            speakerDiv.find(".speaker-bio").html(speaker.bioHtml)
             speakerDiv.
                 removeAttr("id").
                 removeClass("template").
-                appendTo(speakers)
+                appendTo(speakerBioses)
         })
 
         // Copy over the generated session
-        $("#session-overlay .overlay-content").empty()
         $("#session-overlay .overlay-content").append(sessionDetails)
         sessionDetails.show()
     })

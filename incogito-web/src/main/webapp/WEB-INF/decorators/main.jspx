@@ -101,6 +101,9 @@
     <a class="sessions-button" href="${selectedEvent.sessionHtmlUrl}">
       <img src="${incogito.baseurl}/images/sessions-button.png" alt="All Sessions"/>
     </a>
+    <a class="agenda-button" href="${selectedEvent.calendarHtmlUrl}">
+      <img src="${incogito.baseurl}/images/button-agenda.png" alt="Agenda Planner"/>
+    </a>
   </c:if>
 
   <!--

@@ -20,12 +20,6 @@
 </head>
 
 <body>
-<!--
-<ul>
-  <li><a href="${incogito.baseurl}/events">Back to event list</a></li>
-  <li><a href="${incogito.baseurl}/events/${eventName}">Back to ${eventName}</a></li>
-</ul>
--->
 <div id="main-content">
 <h2>${eventName} - ${session.title}</h2>
 
