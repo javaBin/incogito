@@ -16,18 +16,18 @@
     The schedule planner is an application for viewing the schedule and creating your own agenda. You can use it to get an overview over the complete agenda for each day, and get more in-depth details of each session.
   </p>
 
+  <!--
   <p>
     Interesting features:
   </p>
   <ul>
     <li>Create your own, personal agenda. All you have to do is to log in and click Click to mark attendance to mark your attendance</li>
-    <!--
     <li>Download as iCal — Get your personal agenda as an iCal feed</li>
     <li>Download as RSS — Download your personal agenda as an RSS feed to your favorite RSS reader og phone by clicking the RSS icon</li>
     <li>Phone — View your personal agenda on your mobile with the JME application Involito. Download the application from http://javazone.no/involito.jad</li>
     <li>View video — Open the presentation with video and slides in your browser</li>
-    -->
   </ul>
+    -->
 
   <h2>About Incogito</h2>
 
