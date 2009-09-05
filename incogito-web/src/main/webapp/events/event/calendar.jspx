@@ -50,9 +50,9 @@
           }
         }
       })
-      $(".add-remove-button").bind("click", toggleAttendance)
+//      $(".add-remove-button").bind("click", toggleAttendance)
       $(".presentation").bind("click", showSession)
-      $(".qt-title").bind("click", showSession)
+      $(".qt-presentation").bind("click", showSession)
 
       $("#results-below-tab").corner("round top")
       $(window).scroll(updateResultsBelowTab)
@@ -87,6 +87,7 @@
     // -----------------------------------------------------------------------
 
     /* TODO: Spinner */
+/*
     function toggleAttendance() {
       var sessionDiv = $(this).parent().parent();
       var sessionUrlDiv = sessionDiv.find(".session-url")
@@ -106,7 +107,9 @@
       updateInterest(eventName, sessionUrlDiv.text(), interestLevel, onAttendanceUpdated.curry(sessionDiv, interestLevel), showLogin)
       return false
     }
+*/
 
+/*
     function onAttendanceUpdated(sessionDiv, interestLevel) {
       sessionDiv.find(".session-interest-level").text(interestLevel)
       var icon = sessionDiv.find(".add-remove-button img")
@@ -126,6 +129,7 @@
         icon.attr("title", "Click to add to schedule as a session you're not attending")
       }
     }
+*/
     </script>
   <script type="text/javascript">
     <![CDATA[
@@ -287,7 +291,7 @@
     <c:set var="roomToPresentationsMap" value="${i:treeMapGet(calendar.dayToRoomToPresentationsMap, entry.key)}"/>
     <div class="day day${i.index}">
 
-    <div class="day${i.index}height" style="height: 115em; width:0.1em; float:left;"><!--space--></div>
+      <div class="day${i.index}height"><!--space--></div>
 
       <div class="rooms">
       <div class="times">
@@ -303,112 +307,111 @@
             <div class="timeslot-end">${endHour}:${endMinute}</div>
           </div>
         </c:forEach>
+      </div>
+      <c:forEach var="room" items="${entry.value}" varStatus="i">
+        <div class="room">
+          <h2>${room}</h2>
+          <c:forEach var="presentation" items="${i:castToSessionList(i:treeMapGet(roomToPresentationsMap, room))}" varStatus="i">
+          <c:set var="interestLevel" value="${i:mapGetDefault(calendar.attendanceMap, presentation.id, 'NO_INTEREST')}"/>
+            <fmt:formatNumber var="hour" value="${presentation.start.hour}" maxIntegerDigits="2" minIntegerDigits="2"/>
+            <fmt:formatNumber var="minute" value="${presentation.start.minute}" maxIntegerDigits="2" minIntegerDigits="2"/>
+            <div class="presentation start${hour}${minute} duration60">
+              <div class="session-url" style="display: none;">${presentation.selfUri}</div>
+              <div class="presentation-interest-level" style="display: none;">${interestLevel}</div>
+              <div class="presentation-header">
+                <div class="level">
+                  <c:choose>
+                    <c:when test="${not (presentation.level eq null)}">
+                      <img title="${presentation.level.displayName}" alt="${presentation.level.displayName}" src="${presentation.level.iconUrl}"/>
+                    </c:when>
+                    <c:otherwise>X</c:otherwise>
+                  </c:choose>
+                </div>
+                <div class="labels">
+                  <c:forEach var="label" items="${presentation.labels}">
+                    <img class="label" title="${label.displayName}" alt="${label.id}" src="${label.iconUrl}"/>
+                  </c:forEach>
+                </div>
+              </div>
+              <div class="presentation-body">
+                <div class="title">${presentation.title}</div>
+                <div class="add-remove-button">
+                  <img src="${incogito.baseurl}/images/icons/question.png" title="Click to get more info" alt="Click to get more info"/>
 <!--
-        <div class="timeslot start0900 duration60"><div class="timeslot-start">09:00</div><div class="timeslot-end">10:00</div></div>
-        <div class="timeslot start1015 duration60"><div class="timeslot-start">10:15</div><div class="timeslot-end">10:00</div></div>
-        <div class="timeslot start1145 duration60"><div class="timeslot-start">11:45</div><div class="timeslot-end">10:00</div></div>
-        <div class="timeslot start1300 duration60"><div class="timeslot-start">13:00</div><div class="timeslot-end">10:00</div></div>
-        <div class="timeslot start1415 duration60"><div class="timeslot-start">14:15</div><div class="timeslot-end">10:00</div></div>
-        <div class="timeslot start1530 duration60"><div class="timeslot-start">15:30</div><div class="timeslot-end">10:00</div></div>
-        <div class="timeslot start1645 duration60"><div class="timeslot-start">16:45</div><div class="timeslot-end">10:00</div></div>
-        <div class="timeslot start1800 duration60"><div class="timeslot-start">18:00</div><div class="timeslot-end">10:00</div></div>
-        <div class="timeslot start1915 duration60"><div class="timeslot-start">19:15</div><div class="timeslot-end">10:00</div></div>
+                  <c:choose>
+                    <c:when test="${interestLevel eq 'NO_INTEREST'}">
+                      <img src="${incogito.baseurl}/images/icons/question.png" title="Click to add to schedule as a candidate session" alt="Click to add to schedule as a candidate session"/>
+                    </c:when>
+                    <c:when test="${interestLevel eq 'INTEREST'}">
+                      <img src="${incogito.baseurl}/images/icons/plus.png" title="Click to add to schedule as a session you're attending" alt="Click to add to schedule as a session you're attending"/>
+                    </c:when>
+                    <c:otherwise>
+                      <img src="${incogito.baseurl}/images/icons/minus.png" title="Click to add to schedule as a session you're not attending" alt="Click to add to schedule as a session you're not attending"/>
+                    </c:otherwise>
+                  </c:choose>
 -->
-     </div>
-        <c:forEach var="room" items="${entry.value}" varStatus="i">
-          <div class="room">
-            <h2>${room}</h2>
-            <c:forEach var="presentation" items="${i:castToSessionList(i:treeMapGet(roomToPresentationsMap, room))}" varStatus="i">
-            <c:set var="interestLevel" value="${i:mapGetDefault(calendar.attendanceMap, presentation.id, 'NO_INTEREST')}"/>
-              <fmt:formatNumber var="hour" value="${presentation.start.hour}" maxIntegerDigits="2" minIntegerDigits="2"/>
-              <fmt:formatNumber var="minute" value="${presentation.start.minute}" maxIntegerDigits="2" minIntegerDigits="2"/>
-              <div class="presentation start${hour}${minute} duration60">
-                <div class="session-url" style="display: none;">${presentation.selfUri}</div>
-                <div class="presentation-interest-level" style="display: none;">${interestLevel}</div>
-                <div class="presentation-header">
-                  <div class="level">
+                </div>
+              </div>
+              <div class="presentation-footer">&amp;nbsp;</div>
+            </div>
+          </c:forEach>
+        </div>
+      </c:forEach>
+    </div>
+    <div class="cb"><!--space--></div>
+    <a name="quickies-day-${i.index+1}"><!-- space --></a>
+    <ul class="qts">
+      <c:set var="quickies" value="${i:treeMapGet(calendar.quickiesByDay, entry.key)}"/>
+      <c:forEach var="quickie" items="${i:castToSessionList(quickies)}" varStatus="i">
+        <fmt:formatNumber var="hour" value="${quickie.start.hour}" maxIntegerDigits="2" minIntegerDigits="2"/>
+        <fmt:formatNumber var="minute" value="${quickie.start.minute}" maxIntegerDigits="2" minIntegerDigits="2"/>
+        <li>
+          <div class="qt-presentation">
+            <div class="session-url" style="display: none;">${quickie.selfUri}</div>
+            <div class="qt-info">
+              <div class="qt-legend">
+                <div class="qt-level">
                     <c:choose>
-                      <c:when test="${not (presentation.level eq null)}">
-                        <img title="${presentation.level.displayName}" alt="${presentation.level.displayName}" src="${presentation.level.iconUrl}"/>
+                      <c:when test="${not (quickie.level eq null)}">
+                        <img title="${quickie.level.displayName}" alt="${quickie.level.displayName}" src="${quickie.level.iconUrl}"/>
                       </c:when>
                       <c:otherwise>X</c:otherwise>
                     </c:choose>
-                  </div>
-                  <div class="labels">
-                    <c:forEach var="label" items="${presentation.labels}">
-                      <img class="label" title="${label.displayName}" alt="${label.id}" src="${label.iconUrl}"/>
-                    </c:forEach>
-                  </div>
                 </div>
-                <div class="presentation-body">
-                  <div class="title">${presentation.title}</div>
-                  <div class="add-remove-button">
-                    <c:choose>
-                      <c:when test="${interestLevel eq 'NO_INTEREST'}">
-                        <img src="${incogito.baseurl}/images/icons/question.png" title="Click to add to schedule as a candidate session" alt="Click to add to schedule as a candidate session"/>
-                      </c:when>
-                      <c:when test="${interestLevel eq 'INTEREST'}">
-                        <img src="${incogito.baseurl}/images/icons/plus.png" title="Click to add to schedule as a session you're attending" alt="Click to add to schedule as a session you're attending"/>
-                      </c:when>
-                      <c:otherwise>
-                        <img src="${incogito.baseurl}/images/icons/minus.png" title="Click to add to schedule as a session you're not attending" alt="Click to add to schedule as a session you're not attending"/>
-                      </c:otherwise>
-                    </c:choose>
-                  </div>
+                <div class="qt-labels">
+                  <c:forEach var="label" items="${quickie.labels}">
+                    <img class="label" title="${label.displayName}" alt="${label.id}" src="${label.iconUrl}"/>
+                  </c:forEach>
                 </div>
-                <div class="presentation-footer">&amp;nbsp;</div>
-              </div>
-            </c:forEach>
-          </div>
-        </c:forEach>
-      </div>
-      <div class="cb"><!--space--></div>
-      <a name="quickies-day-${i.index+1}"><!-- space --></a>
-      <ul class="qts">
-        <c:set var="quickies" value="${i:treeMapGet(calendar.quickiesByDay, entry.key)}"/>
-        <c:forEach var="quickie" items="${i:castToSessionList(quickies)}" varStatus="i">
-          <fmt:formatNumber var="hour" value="${quickie.start.hour}" maxIntegerDigits="2" minIntegerDigits="2"/>
-          <fmt:formatNumber var="minute" value="${quickie.start.minute}" maxIntegerDigits="2" minIntegerDigits="2"/>
-          <li>
-            <div class="qt-presentation">
-              <div class="qt-info">
-                <div class="qt-legend">
-                  <div class="qt-level">
-                      <c:choose>
-                        <c:when test="${not (quickie.level eq null)}">
-                          <img title="${quickie.level.displayName}" alt="${quickie.level.displayName}" src="${quickie.level.iconUrl}"/>
-                        </c:when>
-                        <c:otherwise>X</c:otherwise>
-                      </c:choose>
-                  </div>
-                  <div class="qt-labels">
-                    <c:forEach var="label" items="${quickie.labels}">
-                      <img class="label" title="${label.displayName}" alt="${label.id}" src="${label.iconUrl}"/>
-                    </c:forEach>
-                  </div>
 <!--
-                  Norwegian
+                Norwegian
 -->
-                </div>
-                <div class="qt-time">${hour}:${minute}</div>
-                <div class="session-url" style="display: none;">${presentation.selfUri}</div>
               </div>
-              <div class="qt-title">
-<!--
-                <div class="qt-feedback">
-                  <div class="qt-rating">4/5</div>
-                  99 Comment(s)
-                </div>
--->
-                ${quickie.title} <span class="qt-speaker"> - Some Speaker</span>
-              </div>
+              <div class="qt-time">${hour}:${minute}</div>
+              <div class="session-url" style="display: none;">${presentation.selfUri}</div>
             </div>
-          </li>
-        </c:forEach>
-      </ul>
-    </div>
-      <div class="cb"><!--space--></div>
-  </c:forEach>
+            <div class="qt-title">
+<!--
+              <div class="qt-feedback">
+                <div class="qt-rating">4/5</div>
+                99 Comment(s)
+              </div>
+-->
+              ${quickie.title} &amp;mdash;
+              <span class="qt-speaker">
+                <c:forEach var="speaker" varStatus="i" items="${quickie.speakers}">
+                  <c:if test="${not i.last}">${speaker.name}, </c:if>
+                  <c:if test="${i.last}">${speaker.name}</c:if>
+                </c:forEach>
+              </span>
+            </div>
+          </div>
+        </li>
+      </c:forEach>
+    </ul>
+  </div>
+  <div class="cb"><!--space--></div>
+</c:forEach>
 </div>
 
 <tags:session-overlay/>

@@ -96,7 +96,7 @@ function showSession() {
             var speakerDiv = templateSpeaker.clone()
             var speakerImage = speakerDiv.find(".speaker-image");
             if (speaker.photoUrl) {
-                $("<img>").
+                speakerImage.find("img").
                     attr({src: speaker.photoUrl, title: speaker.name, alt: speaker.name }).
                     appendTo(speakerImage)
             }
