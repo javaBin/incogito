@@ -7,7 +7,7 @@
   </parent>
   <groupId>no.java.incogito</groupId>
   <artifactId>incogito</artifactId>
-  <version>2009.2</version>
+  <version>2009.3-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Incogito 2009</name>
   <dependencies>
