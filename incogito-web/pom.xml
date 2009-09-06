@@ -3,7 +3,7 @@
   <parent>
     <groupId>no.java.incogito</groupId>
     <artifactId>incogito</artifactId>
-    <version>2009.2-SNAPSHOT</version>
+    <version>2009.2</version>
   </parent>
   <artifactId>incogito-web</artifactId>
   <packaging>war</packaging>
