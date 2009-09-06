@@ -118,32 +118,32 @@ public class IncogitoApplicationIntegrationTest {
         incogito.reloadConfiguration();
     }
 
-    @Test
-    public void testBasic() {
-        final SessionId sessionA = new SessionId("session-a");
-        final SessionId sessionB = new SessionId("session-b");
-
-        final UserId userId = new UserId("trygvis");
-
-        OperationResult<User> userOperationResult = incogito.getUser(userId);
-
-        if (userOperationResult.isNotFound()) {
-            User user = createPristineUser(userId).
-                setInterestLevel(sessionA, ATTEND).
-                setInterestLevel(sessionB, INTEREST);
-            incogito.createUser(user);
-        }
-
-        User user = incogito.getUser(userId).value();
-
-        assertEquals(userId.value, user.id.value);
-        assertEquals(userId, user.id);
-        assertEquals(2, user.sessionAssociations.size());
-
-        OperationResult<Schedule> scheduleOperationResult =
-            incogito.getSchedule(dataSet.javaZone2008.getName(), userId.value);
-        assertEquals(OperationResult.Status.OK, scheduleOperationResult.status);
-    }
+//    @Test
+//    public void testBasic() {
+//        final SessionId sessionA = new SessionId("session-a");
+//        final SessionId sessionB = new SessionId("session-b");
+//
+//        final UserId userId = new UserId("trygvis");
+//
+//        OperationResult<User> userOperationResult = incogito.getUser(userId);
+//
+//        if (userOperationResult.isNotFound()) {
+//            User user = createPristineUser(userId).
+//                setInterestLevel(sessionA, ATTEND).
+//                setInterestLevel(sessionB, INTEREST);
+//            incogito.createUser(user);
+//        }
+//
+//        User user = incogito.getUser(userId).value();
+//
+//        assertEquals(userId.value, user.id.value);
+//        assertEquals(userId, user.id);
+//        assertEquals(2, user.sessionAssociations.size());
+//
+//        OperationResult<Schedule> scheduleOperationResult =
+//            incogito.getSchedule(dataSet.javaZone2008.getName(), userId.value);
+//        assertEquals(OperationResult.Status.OK, scheduleOperationResult.status);
+//    }
 
     @Test
     public void testFrontPageTexts() throws Exception {
