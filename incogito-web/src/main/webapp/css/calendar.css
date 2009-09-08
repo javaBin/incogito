@@ -118,7 +118,7 @@ div#calendar {
     width: 15.1%;
     border-left: 0.1em solid #787878;
     padding: 0 0.25em 0 0.25em;
-    float: left;
+    position: absolute;
 }
 
 .room h2 {
@@ -589,9 +589,51 @@ div.qt-feedback .qt-rating {
 
 .qt-presentation .qt-title {
 	background: #DDD;
+        min-width: 60em;
 	border: 0.065em solid #DDD;
 }
 
 .qt-speaker {
   font-style: italic;
+}
+
+.room0 {
+    left: 4em;
+}
+
+.room1 {
+    left: 14em;
+}
+
+.room2 {
+    left: 24em;
+}
+
+.room3 {
+    left: 34em;
+}
+
+.room4 {
+    left: 44em;
+}
+
+.room5 {
+    left: 54em;
+}
+
+#showhidemenu {
+    width: 5em;
+    float: right;
+}
+
+#showhidemenu a {
+    outline: none;
+}
+
+#legends.hideLegends {
+    display:none;
+}
+
+#calendar.hiddenLegends {
+    margin-top: 4em;
 }
