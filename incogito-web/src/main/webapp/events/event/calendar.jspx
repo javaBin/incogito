@@ -54,27 +54,54 @@
       $(".presentation").bind("click", showSession)
       $(".qt-presentation").bind("click", showSession)
 
+      $("#results-above-tab").corner("round bottom")
       $("#results-below-tab").corner("round top")
-      $(window).scroll(updateResultsBelowTab)
-      updateResultsBelowTab()
+      $(window).scroll(updateResultsAboveAndBelowTab)
+      updateResultsAboveAndBelowTab()
     })
 
-    function updateResultsBelowTab() {
-      var movementMS = 100
-      var len = $(".session").filter(function () {
+    function updateResultsAboveAndBelowTab() {
+      var aboveTab = $("#results-above-tab")
+      var belowTab = $("#results-below-tab")
+      function showAbove(len) {
+        if (len == 0) {
+          aboveTab.css("top", -aboveTab.height());
+        } else {
+          $("#results-above-tab-text").text("&#8679; " + len + " more results &#8679;")
+          aboveTab.css("top", $("#hd").height());
+        }
+      }
+      function showBelow(len) {
+        $("#results-below-tab-text").text("&#8681; " + len + " more results &#8681;")
+        if (len == 0) {
+          belowTab.css("bottom", -belowTab.height())
+        } else {
+          belowTab.css("bottom", 0)
+        }
+      }
+      if ($(".labels .active").length == 0) {
+        showAbove(0)
+        showBelow(0)
+        return;
+      }
+      var presentations = $(".presentation:visible");
+      var aboveLen = presentations.filter(function () {
+        return isAboveWindow(this)
+      }).length
+      showAbove(aboveLen)
+      var belowLen = presentations.filter(function () {
         return isBelowWindow(this)
       }).length
-      var tab = $("#results-below-tab")
-      $("#results-below-tab-text").text("&#8681; " + len + " more results &#8681;")
-      if (len == 0) {
-        tab.animate({ bottom: -tab.height() }, movementMS)
-      } else {
-        tab.animate({ bottom: 0 }, movementMS)
-      }
+      showBelow(belowLen)
+    }
+
+    function isAboveWindow(elem) {
+        var offsetTop = absoluteOffsetTop(elem);
+        return offsetTop &lt; window.pageYOffset &amp;&amp; offsetTop >= 0
     }
 
     function isBelowWindow(elem) {
-      return absoluteOffsetTop(elem) + $(elem).height() > window.innerHeight + window.pageYOffset
+      return absoluteOffsetTop(elem) > window.innerHeight + window.pageYOffset
     }
 
     function absoluteOffsetTop(elem) {
@@ -156,6 +183,8 @@
           $(this).toggleClass("inactive");
         });
 
+        updateResultsAboveAndBelowTab()
+
         //Prevent default behaviour for links
         $("#filtersReset").hide();
         e.preventDefault();
@@ -196,6 +225,8 @@
             checkSessions();
             $("#filtersReset").show();
           }
+
+          updateResultsAboveAndBelowTab()
 
           //Prevent default behaviour for links
           e.preventDefault();
@@ -436,6 +467,13 @@
   </div>
   <div class="cb"><!--space--></div>
 </c:forEach>
+</div>
+
+<div id="results-above-tab">
+  <div id="results-above-tab-text"><!-- --></div>
+</div>
+<div id="results-below-tab">
+  <div id="results-below-tab-text"><!-- --></div>
 </div>
 
 <tags:session-overlay/>
