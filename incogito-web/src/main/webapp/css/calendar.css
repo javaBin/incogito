@@ -114,16 +114,18 @@ div#calendar {
 
 .day {
     width:100%;
+    margin-bottom: 4em;
 }
 
 .day .room {
     width: 15.1%;
-    border-left: 0.1em solid #787878;
     padding: 0 0.25em 0 0.25em;
     float:left;
 }
 
 .room h2 {
+    text-align: center;
+    background-image: url("../images/day-bar-snippet.png");
     padding:0;
     margin:0;
 }
@@ -309,7 +311,7 @@ td#login-submit * {
     background-color: #787878;
     width: 300px;
     margin-left: -150px;
-    z-index: 5000;
+    z-index: 499;
     bottom: 0;
     left: 50%;
     position: fixed;
@@ -322,7 +324,7 @@ td#login-submit * {
     background-color: #787878;
     width: 300px;
     margin-left: -150px;
-    z-index: 5000;
+    z-index: 499;
     top: 0;
     left: 50%;
     position: fixed;
