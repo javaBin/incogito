@@ -189,6 +189,7 @@
             // Reset the presentations
             $(".room .presentation").each(function() {
               $(this).removeClass("hidden");
+              $("#filtersReset").attr("style","display:none");
             });
           } else {
             // Run an update on the sessions
@@ -234,6 +235,26 @@
     }
     ]]>
   </script>
+    <script type="text/javascript">
+    <![CDATA[
+    $(document).ready(function() {
+        $("#showhidemenu a").click(function(e){
+            $("#legends").toggleClass("hideLegends");
+            $("#calendar").toggleClass("hiddenLegends");
+
+            if($("#legends").hasClass("hideLegends")){
+                $("#showhidemenu a").html("show filters");
+            }else {
+                $("#showhidemenu a").html("hide filters");
+            }
+
+            e.preventDefault();
+            return false;
+        });
+    });
+
+    ]]>
+    </script>
 </head>
 
 <body>
@@ -275,12 +296,15 @@
       -->
     </ul>
     <div class="cb"><!--space--></div>
+
     <ul class="nav subnav">
       <c:forEach var="entry" items="${calendar.roomsByDate}" varStatus="i">
         <li class="subday">DAY ${i.index+1}:</li>
         <li><a href="#presentations-day-${i.index+1}">sessions</a></li>
         <li><a href="#quickies-day-${i.index+1}">lightning talks</a></li>
       </c:forEach>
+      
+    <li id="showhidemenu"><a href="#">hide filters</a></li>
     </ul>
   </div>
 </div> <!-- hd ends -->
@@ -295,7 +319,7 @@
 
       <div class="rooms">
       <div class="times">
-        <h2><!--space--></h2>
+        <h2 class="day${i.index}height"><!--space--></h2>
         <c:forEach var="timeslot" items="${i:castToIntervalList(i:mapGet(calendar.timeslotsByDate, entry.key))}">
           <fmt:formatNumber var="startHour" value="${timeslot.start.hourOfDay}" maxIntegerDigits="2" minIntegerDigits="2"/>
           <fmt:formatNumber var="startMinute" value="${timeslot.start.minuteOfHour}" maxIntegerDigits="2" minIntegerDigits="2"/>
@@ -309,7 +333,7 @@
         </c:forEach>
       </div>
       <c:forEach var="room" items="${entry.value}" varStatus="i">
-        <div class="room">
+        <div class="room room${i.index}">
           <h2>${room}</h2>
           <c:forEach var="presentation" items="${i:castToSessionList(i:treeMapGet(roomToPresentationsMap, room))}" varStatus="i">
           <c:set var="interestLevel" value="${i:mapGetDefault(calendar.attendanceMap, presentation.id, 'NO_INTEREST')}"/>
