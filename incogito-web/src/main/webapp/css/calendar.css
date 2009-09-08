@@ -222,7 +222,7 @@ div.overlay-bg {
     top: 0;
     left: 0;
     height: 100%;
-    opacity: 0.8;
+    opacity: 0.6;
     position: fixed;
     width: 100%;
     z-index: 4999;
@@ -244,13 +244,22 @@ div.overlay {
 }
 
 div.overlay-close {
+    z-index: 10100;
     position: absolute;
     top: 0.5em;
     left: 0.5em;
 }
 
+div.overlay-bar {
+    position: absolute;
+    top: 0em;
+    height: 2em;
+    width: 100%;
+    background-color: #333333;
+}
+
 div.overlay-content {
-    margin: 2em;
+    margin: 2em 0em 0em 2em;
 }
 
 div.overlay-content h2 {
@@ -297,7 +306,7 @@ td#login-submit * {
     font-size: 80%;
     color: white;
     text-align: center;
-    background-color: #5f5f5f;
+    background-color: #787878;
     width: 300px;
     margin-left: -150px;
     z-index: 5000;
@@ -310,7 +319,7 @@ td#login-submit * {
     font-size: 80%;
     color: white;
     text-align: center;
-    background-color: #5f5f5f;
+    background-color: #787878;
     width: 300px;
     margin-left: -150px;
     z-index: 5000;

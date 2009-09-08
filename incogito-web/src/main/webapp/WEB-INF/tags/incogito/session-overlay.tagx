@@ -9,6 +9,7 @@
     <div class="overlay-close">
       <img id="session-close-button" src="${incogito.baseurl}/images/icons/close.png" alt="Close"/>
     </div>
+    <div class="overlay-bar"><!-- space --></div>
     <div class="overlay-content">
       <div class="spinner">Loading</div>
     </div>
