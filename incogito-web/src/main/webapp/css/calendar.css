@@ -2,6 +2,7 @@ body {
     padding:0;
     margin:0;
     overflow: auto;
+    min-width: 1024px;
 }
 
 div#calendar {
@@ -95,6 +96,7 @@ div#calendar {
 
 .rooms {
     width:100%;
+    min-width: 1024px;
     position:absolute;
 }
 
@@ -118,7 +120,7 @@ div#calendar {
     width: 15.1%;
     border-left: 0.1em solid #787878;
     padding: 0 0.25em 0 0.25em;
-    position: absolute;
+    float:left;
 }
 
 .room h2 {
@@ -135,8 +137,8 @@ div.presentation-header div {
 }
 
 .room .presentation {
-    width: 8.5em;
-    min-width: 15%;
+    width: 15%;
+    min-width: 150px;
     position: absolute;
 }
 
@@ -622,7 +624,7 @@ div.qt-feedback .qt-rating {
 }
 
 #showhidemenu {
-    width: 5em;
+    width: 6em;
     float: right;
 }
 
