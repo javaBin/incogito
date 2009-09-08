@@ -360,9 +360,9 @@ td#login-submit * {
 #filtersReset {
     width:7em;
     font-size: 0.75em;
-    float:right;
-    padding-top:6.7em;
-    margin-right: 1em;
+    right:15%;
+    top: 7em;
+    position:absolute;
     text-align:center;
 }
 
