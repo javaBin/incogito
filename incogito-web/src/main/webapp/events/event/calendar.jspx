@@ -67,12 +67,12 @@
         if (len == 0) {
           aboveTab.css("top", -aboveTab.height());
         } else {
-          $("#results-above-tab-text").text("&#8679; " + len + " more results &#8679;")
+          $("#results-above-tab-text").text("&#8710; " + len + " more results &#8710;")
           aboveTab.css("top", $("#hd").height() + 2); // 2 magic border pixels
         }
       }
       function showBelow(len) {
-        $("#results-below-tab-text").text("&#8681; " + len + " more results &#8681;")
+        $("#results-below-tab-text").text("&#8711; " + len + " more results &#8711;")
         if (len == 0) {
           belowTab.css("bottom", -belowTab.height())
         } else {

@@ -300,7 +300,7 @@ td#login-submit * {
     background-color: #5f5f5f;
     width: 300px;
     margin-left: -150px;
-    z-index: 10000;
+    z-index: 5000;
     bottom: 0;
     left: 50%;
     position: fixed;
@@ -313,7 +313,7 @@ td#login-submit * {
     background-color: #5f5f5f;
     width: 300px;
     margin-left: -150px;
-    z-index: 10000;
+    z-index: 5000;
     top: 0;
     left: 50%;
     position: fixed;
