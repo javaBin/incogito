@@ -294,6 +294,7 @@ td#login-submit * {
 }
 
 #results-below-tab {
+    font-size: 80%;
     color: white;
     text-align: center;
     background-color: #5f5f5f;
@@ -306,6 +307,7 @@ td#login-submit * {
 }
 
 #results-above-tab {
+    font-size: 80%;
     color: white;
     text-align: center;
     background-color: #5f5f5f;
@@ -633,11 +635,6 @@ div.qt-feedback .qt-rating {
 
 .room5 {
     left: 54em;
-}
-
-#showhidemenu {
-    width: 6em;
-    float: right;
 }
 
 #showhidemenu a {

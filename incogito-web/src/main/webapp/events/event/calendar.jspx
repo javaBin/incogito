@@ -68,7 +68,7 @@
           aboveTab.css("top", -aboveTab.height());
         } else {
           $("#results-above-tab-text").text("&#8679; " + len + " more results &#8679;")
-          aboveTab.css("top", $("#hd").height());
+          aboveTab.css("top", $("#hd").height() + 2); // 2 magic border pixels
         }
       }
       function showBelow(len) {
@@ -275,10 +275,12 @@
 
             if($("#legends").hasClass("hideLegends")){
                 $("#showhidemenu a").html("show filters");
-            }else {
+            } else {
                 $("#showhidemenu a").html("hide filters");
             }
 
+            updateResultsAboveAndBelowTab()
+            
             e.preventDefault();
             return false;
         });
@@ -329,13 +331,12 @@
     <div class="cb"><!--space--></div>
 
     <ul class="nav subnav">
+      <li id="showhidemenu"><a href="#">hide filters</a></li>
       <c:forEach var="entry" items="${calendar.roomsByDate}" varStatus="i">
         <li class="subday">DAY ${i.index+1}:</li>
         <li><a href="#presentations-day-${i.index+1}">sessions</a></li>
         <li><a href="#quickies-day-${i.index+1}">lightning talks</a></li>
       </c:forEach>
-      
-    <li id="showhidemenu"><a href="#">hide filters</a></li>
     </ul>
   </div>
 </div> <!-- hd ends -->
