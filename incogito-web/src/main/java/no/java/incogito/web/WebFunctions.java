@@ -284,7 +284,7 @@ public class WebFunctions {
 
     public static final Ord<Session> sessionTimestampOrd = Ord.ord(curry(new F2<Session, Session, Ordering>() {
         public Ordering f(Session a, Session b) {
-            return Ord.longOrd.compare(a.timeslot.some().getStartMillis(), b.timeslot.some().getStartMillis());
+            return Ord.longOrd.compare(b.timeslot.some().getStartMillis(), a.timeslot.some().getStartMillis());
         }
     }));
 }
