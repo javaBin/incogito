@@ -46,9 +46,6 @@
       function onEventHeaderMouseOver() {
         var text = $(this).find(".text").text();
 
-        $(this).parent().children().removeClass("high-lighted")
-        $(this).addClass("high-lighted")
-
         if (text == "") {
           headBlurbDefault.show()
           headBlurbText.hide().text("")
@@ -60,7 +57,6 @@
       }
 
       function onEventHeaderMouseOut() {
-        $(this).parent().children().removeClass("high-lighted")
         headBlurbText.hide().text("")
       }
     });
@@ -79,6 +75,14 @@
     </div>
   -->
   <div class="event-names">
+    <c:set var="aboutCss">
+      <c:choose>
+        <c:when test="${fn:length(eventName) == 0}">high-lighted</c:when>
+      </c:choose>
+    </c:set>
+    <h1 class="event-title ${aboutCss}">
+        <a href="${incogito.baseurl}">About</a>
+    </h1>
     <c:forEach var="event" items="${events}" varStatus="index">
       <c:set var="extraCss">
         <c:choose>
