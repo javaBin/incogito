@@ -106,7 +106,7 @@ function updateInterest(eventName, sessionUrl, state, success, unauthorized) {
         complete: function(xhr) {
             switch (xhr.status) {
                 case 201:
-                    console.log("Updated interest level on " + sessionId + " for event " + eventName)
+                    console.log("Updated interest level on " + sessionUrl + " for event " + eventName)
                     if (typeof success == "function")
                         success()
                     break;

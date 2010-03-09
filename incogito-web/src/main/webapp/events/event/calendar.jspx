@@ -118,27 +118,32 @@
 
     function toggleAttendance() {
       var sessionDiv = $(this).parent().parent().parent();
-      var sessionUrlDiv = sessionDiv.find(".session-url")
-      var interestLevel = sessionDiv.find(".session-interest-level").text()
-      if (interestLevel == InterestLevel.NO_INTEREST) {
-        interestLevel = InterestLevel.INTEREST
+      var sessionUrl = sessionDiv.find(".session-url").text();
+      var interestLevelDiv = sessionDiv.find(".presentation-interest-level");
+      var oldInterestLevel = interestLevelDiv.text();
+	  var newInterestLevel = InterestLevel.INTEREST;
+      
+      if (oldInterestLevel == InterestLevel.NO_INTEREST) {
+    	  newInterestLevel = InterestLevel.INTEREST
       }
-      else if (interestLevel == InterestLevel.INTEREST) {
-        interestLevel = InterestLevel.ATTEND
+      else if (oldInterestLevel == InterestLevel.INTEREST) {
+    	  newInterestLevel = InterestLevel.ATTEND
       }
-      else if (interestLevel == InterestLevel.ATTEND) {
-        interestLevel = InterestLevel.NO_INTEREST
+      else if (oldInterestLevel == InterestLevel.ATTEND) {
+    	  newInterestLevel = InterestLevel.NO_INTEREST
       }
       else {
-        interestLevel = InterestLevel.INTEREST
+    	  newInterestLevel = InterestLevel.INTEREST
       }
-      updateInterest(eventName, sessionUrlDiv.text(), interestLevel, onAttendanceUpdated.curry(sessionDiv, interestLevel), showLogin)
+      
+      interestLevelDiv.text(newInterestLevel);
+      updateInterest(eventName, sessionUrl, newInterestLevel, onAttendanceUpdated.curry(sessionDiv, newInterestLevel), showLogin)
       return false
     }
 
 
     function onAttendanceUpdated(sessionDiv, interestLevel) {
-      sessionDiv.find(".session-interest-level").text(interestLevel)
+      sessionDiv.find(".presentation-interest-level").text(interestLevel)
       var icon = sessionDiv.find(".add-remove-button img")
 
       // no interest -> interest -> attend -> ..
