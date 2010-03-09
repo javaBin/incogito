@@ -53,7 +53,7 @@ function showSession() {
     sessionOverlay.show()
     sessionOverlayBg.show()
 
-    var sessionUrl = $(this).find(".session-url").text()
+    var sessionUrl = $(this).parent().find(".session-url").text()
     getSession(eventName, sessionUrl, function(session) {
         $("#session-overlay .overlay-content").empty()
         console.log("session:")

@@ -230,7 +230,7 @@ public class IncogitoResource {
         return toJsr311(incogito.getSpeakerPhotoForSession(sessionId, index), cacheForOneHourCacheControl);
     }
 
-    @Path("/events/{eventName}/{sessionId}/session-interest")
+    @Path("/events/{eventName}/sessions/{sessionId}/session-interest")
     @POST
     public Response setSessionInterest(@Context final SecurityContext securityContext,
                                        @PathParam("eventName") final String eventName,

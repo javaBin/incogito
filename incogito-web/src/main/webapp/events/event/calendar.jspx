@@ -50,8 +50,9 @@
           }
         }
       })
-//      $(".add-remove-button").bind("click", toggleAttendance)
-      $(".presentation").bind("click", showSession)
+      
+      $(".toggleAttendance").bind("click", toggleAttendance)
+      $(".presentation-body").bind("click", showSession)
       $(".qt-presentation").bind("click", showSession)
 
       $("#results-above-tab").corner("round bottom")
@@ -114,9 +115,9 @@
     // -----------------------------------------------------------------------
 
     /* TODO: Spinner */
-/*
+
     function toggleAttendance() {
-      var sessionDiv = $(this).parent().parent();
+      var sessionDiv = $(this).parent().parent().parent();
       var sessionUrlDiv = sessionDiv.find(".session-url")
       var interestLevel = sessionDiv.find(".session-interest-level").text()
       if (interestLevel == InterestLevel.NO_INTEREST) {
@@ -134,9 +135,8 @@
       updateInterest(eventName, sessionUrlDiv.text(), interestLevel, onAttendanceUpdated.curry(sessionDiv, interestLevel), showLogin)
       return false
     }
-*/
 
-/*
+
     function onAttendanceUpdated(sessionDiv, interestLevel) {
       sessionDiv.find(".session-interest-level").text(interestLevel)
       var icon = sessionDiv.find(".add-remove-button img")
@@ -156,7 +156,7 @@
         icon.attr("title", "Click to add to schedule as a session you're not attending")
       }
     }
-*/
+
     </script>
   <script type="text/javascript">
     <![CDATA[
@@ -393,20 +393,20 @@
               <div class="presentation-body">
                 <div class="title">${presentation.title}</div>
                 <div class="add-remove-button">
-                  <img src="${incogito.baseurl}/images/icons/question.png" title="Click to get more info" alt="Click to get more info"/>
-<!--
+                  <img class="showSessionInfo" src="${incogito.baseurl}/images/icons/question.png" title="Click to get more info" alt="Click to get more info"/>
+
                   <c:choose>
                     <c:when test="${interestLevel eq 'NO_INTEREST'}">
-                      <img src="${incogito.baseurl}/images/icons/question.png" title="Click to add to schedule as a candidate session" alt="Click to add to schedule as a candidate session"/>
+                      <img class="toggleAttendance" src="${incogito.baseurl}/images/icons/question.png" title="Click to add to schedule as a candidate session" alt="Click to add to schedule as a candidate session"/>
                     </c:when>
                     <c:when test="${interestLevel eq 'INTEREST'}">
-                      <img src="${incogito.baseurl}/images/icons/plus.png" title="Click to add to schedule as a session you're attending" alt="Click to add to schedule as a session you're attending"/>
+                      <img class="toggleAttendance" src="${incogito.baseurl}/images/icons/plus.png" title="Click to add to schedule as a session you're attending" alt="Click to add to schedule as a session you're attending"/>
                     </c:when>
                     <c:otherwise>
-                      <img src="${incogito.baseurl}/images/icons/minus.png" title="Click to add to schedule as a session you're not attending" alt="Click to add to schedule as a session you're not attending"/>
+                      <img class="toggleAttendance" src="${incogito.baseurl}/images/icons/minus.png" title="Click to add to schedule as a session you're not attending" alt="Click to add to schedule as a session you're not attending"/>
                     </c:otherwise>
                   </c:choose>
--->
+
                 </div>
               </div>
               <div class="presentation-footer">&amp;nbsp;</div>

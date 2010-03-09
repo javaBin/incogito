@@ -95,11 +95,11 @@ function getSchedule(eventName, userName, success) {
 }
 
 function updateInterest(eventName, sessionUrl, state, success, unauthorized) {
-    console.log("Setting interest level on " + sessionId + " for event " + eventName + " to " + state + "...")
+    console.log("Setting interest level on " + sessionUrl + " for event " + eventName + " to " + state + "...")
 
     $.ajax({
         dataType: "json",
-        url: sessionUrl,
+        url: sessionUrl+"/session-interest",
         type: "POST",
         contentType: "application/json",
         data: state,
