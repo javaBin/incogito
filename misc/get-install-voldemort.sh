@@ -19,7 +19,7 @@ fi
 
 gunzip -f voldemort-$v.tar.gz
 tar=tar
-if [ -x `which gtar` ]
+if [ -x "`which gtar`" ]
 then
   tar=`which gtar`
 fi

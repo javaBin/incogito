@@ -1,18 +1,42 @@
 For the full documentation on Incogito, please go here:
 
-  http://wiki.github.com/javaBin/incogito
+  http://wiki.java.no/display/smia/Incogito
 
+This is a short summary to get started with developing Incogito only. For the
+full guide see the above documentation.
 
-= EMS Server =
+To develop Incogito you need:
 
-== Using an EMS Backup ==
+ 1) A working EMS server with data.
 
-To use an existing EMS database (do this before starting incognito-ems-server):
+    First you have to unpack some data. Get a backup and unpack it like this:
 
-$ cd incogito-ems-server
-$ rm -rf target/ems-home
-$ tar zxvf ..
-$ cp -r database target/ems-home
+    $ cat ems-20090828-000000.tar.gz | (cd incogito-ems-server/target && tar zxfv - && mv database ems-home)
+
+    We have a special Maven module that embeds a complete EMS server which you
+    can run like this:
+
+    $ mvn -f incogito-ems-server/pom.xml install exec:java
+
+    You can skip the "install" part if you know what you're doing.
+
+ 2) Download and install Voldemort into your local Maven repository. As
+    Voldemort refuses to deploy their artifacts to a Maven repository you have
+    to jump a few more hoops to get started.
+
+    If you have a sane platform (which means Linux, Solaris or OS X) running
+    this *should* download and install Voldemort:
+
+    $ misc/get-install-voldemort.sh
+
+    If that doesn't do it for you, read the script and execute the similar
+    commands for your platform.
+
+  3) Start the Incogito web application:
+
+    $ mvn -f incogito-web/pom.xml jetty:run
+
+    The application will be available on http://localhost:8096/incogito
 
 == Connecting to an EMS Database ==
 
@@ -20,27 +44,3 @@ This assumes you already have unpacked a backup
 
 start ij
 > connect 'jdbc:derby:target/ems-home/database/ems';
-
-== To run the EMS server ==
-
-$ mvn -f incogito-ems-server/pom.xml exec:java
-
-= Web Application =
-
-To run the Incogito web application:
-
-$ mvn -f incogito-web/pom.xml jetty:run
-
-The application will be available on http://localhost:8096/incogito
-
-= How to run a Incogito cluster:
-
-node a$ MAVEN_OPTS="-Dcom.sun.management.jmxremote.port=1100 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false" mvn clean jetty:run -Dvoldemort.clusterId=b -Dvoldemort.nodeId=a -Djetty.port=8096
-node b$ MAVEN_OPTS="-Dcom.sun.management.jmxremote.port=1101 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false" mvn clean jetty:run -Dvoldemort.clusterId=b -Dvoldemort.nodeId=b -Djetty.port=8097
-node c$ MAVEN_OPTS="-Dcom.sun.management.jmxremote.port=1102 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false" mvn clean jetty:run -Dvoldemort.clusterId=b -Dvoldemort.nodeId=c -Djetty.port=8098
-
-Notes:
- * Make sure to start node a first as the other use it as the bootstrap server.
- * You might want to add this line to your /etc/hosts or equivalent:
-
-   127.0.0.1  node-a.incogito node-b.incogito node-c.incogito
