@@ -90,7 +90,8 @@ public class IncogitoResource {
 
     @GET
     public Response getIncogito(@Context SecurityContext securityContext) {
-        return Response.ok(new IncogitoXml(incogito.getConfiguration().baseurl, getUserName.f(securityContext))).build();
+        IncogitoUri incogitoUri = new IncogitoUri(incogito.getConfiguration().baseurl);
+        return Response.ok(new IncogitoXml(incogitoUri.events().toString(), getUserName.f(securityContext))).build();
     }
 
     @Path("/events")

@@ -1,9 +1,9 @@
 package no.java.incogito.ems.server;
 
-import no.java.ems.server.EmsServices;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import no.java.ems.dao.*;
+import org.springframework.context.support.*;
 
-import java.io.File;
+import java.io.*;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -21,10 +21,11 @@ public class DataLoader {
 
         context.start();
 
-        EmsServices emsServices = (EmsServices) context.getBean("emsServices");
+        EventDao eventDao = (EventDao) context.getBean("eventDao", EventDao.class);
+        SessionDao sessionDao = (SessionDao) context.getBean("sessionDao", SessionDao.class);
 
         System.out.println("Loading data");
-        new DataGenerator(emsServices).generate1();
+        new DataGenerator(eventDao, sessionDao).generate1();
         System.out.println("Data loaded");
 
         context.stop();

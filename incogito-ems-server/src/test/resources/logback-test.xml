@@ -6,6 +6,7 @@
   </appender>
 
   <logger name="org.springframework" level="WARN"/>
+  <logger name="org.mortbay" level="WARN"/>
 
   <root level="debug">
     <appender-ref ref="STDOUT"/>

@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.*;
 import java.util.concurrent.Callable;
 
 /**
@@ -35,6 +36,28 @@ public class IO {
         public static F<OutputStream, java.io.Writer> toWriter = new F<OutputStream, java.io.Writer>() {
             public java.io.Writer f(OutputStream outputStream) {
                 return new OutputStreamWriter(outputStream);
+            }
+        };
+    }
+    
+    public static class Urls {
+        public static F<String, Callable<URL>> fromString = new F<String, Callable<URL>>() {
+            public Callable<URL> f(final String s) {
+                return new Callable<URL>() {
+                    public URL call() throws Exception {
+                        return new URL(s);
+                    }
+                };
+            }
+        };
+
+        public static F<URL, Callable<InputStream>> openStream = new F<URL, Callable<InputStream>>() {
+            public Callable<InputStream> f(final URL url) {
+                return new Callable<InputStream>() {
+                    public InputStream call() throws Exception {
+                        return url.openStream();
+                    }
+                };
             }
         };
     }

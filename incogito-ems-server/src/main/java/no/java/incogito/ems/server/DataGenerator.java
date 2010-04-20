@@ -1,8 +1,7 @@
 package no.java.incogito.ems.server;
 
-import no.java.ems.server.EmsServices;
-import no.java.ems.domain.Event;
-import no.java.ems.domain.Session;
+import no.java.ems.server.domain.Event;
+import no.java.ems.server.domain.Session;
 import no.java.ems.dao.*;
 import fj.data.List;
 import fj.data.Stream;
@@ -15,9 +14,9 @@ public class DataGenerator {
     private final EventDao eventDao;
     private final SessionDao sessionDao;
 
-    public DataGenerator(EmsServices services) {
-        this.eventDao = services.getEventDao();
-        this.sessionDao = services.getSessionDao();
+    public DataGenerator(EventDao eventDao, SessionDao sessionDao) {
+        this.eventDao = eventDao;
+        this.sessionDao = sessionDao;
     }
 
     public DataSet1 generate1() {

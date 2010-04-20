@@ -1,22 +1,21 @@
 package no.java.incogito.application;
 
-import fj.P;
+import fj.*;
 import fj.data.List;
-import static fj.data.List.list;
+import static fj.data.List.*;
 import fj.data.TreeMap;
-import fj.pre.Ord;
-import junit.framework.TestCase;
-import no.java.ems.client.RestEmsService;
-import no.java.ems.domain.Event;
-import no.java.incogito.application.IncogitoConfiguration.EventConfiguration;
-import no.java.incogito.domain.Label;
-import no.java.incogito.domain.Room;
-import no.java.incogito.ems.client.EmsWrapper;
-import org.joda.time.LocalDate;
-import org.joda.time.Interval;
-import org.joda.time.DateTime;
+import fj.pre.*;
+import junit.framework.*;
+import no.java.ems.external.v2.*;
+import no.java.incogito.application.IncogitoConfiguration.*;
+import no.java.incogito.domain.*;
+import no.java.incogito.ems.client.*;
+import org.apache.commons.httpclient.*;
+import org.codehaus.httpcache4j.cache.*;
+import org.codehaus.httpcache4j.client.*;
+import org.joda.time.*;
 
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -29,12 +28,16 @@ public class ConfigurationLoaderServiceTest extends TestCase {
     private List<Room> roomsDay2 = list(new Room("Lab I"), new Room("Lab II"));
 
     public void testReconfigure() throws Exception {
-        EmsWrapper emsWrapper = new EmsWrapper(new RestEmsService(null));
-        Event event = new Event();
-        event.setId(UUID.randomUUID().toString());
+        HTTPCache cache = new HTTPCache(
+            new MemoryCacheStorage(),
+            new HTTPClientResponseResolver(new HttpClient(new MultiThreadedHttpConnectionManager())));
+
+        EmsWrapper emsWrapper = new EmsWrapper(new RESTfulEmsV2Client(cache));
+        EventV2 event = new EventV2();
+        event.setUuid(UUID.randomUUID().toString());
         event.setName("JavaZone 2009");
 
-        final TreeMap<String, Event> events = TreeMap.<String, Event>empty(Ord.stringOrd).set(event.getName(), event);
+        final TreeMap<String, EventV2> events = TreeMap.<String, EventV2>empty(Ord.stringOrd).set(event.getName(), event);
         emsWrapper.getEvents = P.p(events.values());
         emsWrapper.findEventByName = DefaultIncogitoApplicationTest.mockFindEventByName.f(events);
         DefaultIncogitoApplication application = new DefaultIncogitoApplication(DefaultIncogitoApplicationTest.getIncogitoHome(), null, emsWrapper);

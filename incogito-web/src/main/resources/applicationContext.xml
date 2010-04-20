@@ -45,9 +45,8 @@
 
   <!-- EMS -->
 
-  <bean id="emsService" class="no.java.incogito.ems.client.RestEmsServiceFactoryBean">
+  <bean id="emsService" class="no.java.incogito.ems.client.RESTfulEmsV2ClientFactoryBean">
     <property name="baseurl" value="${ems.url}"/>
-    <property name="cache" value="true"/>
   </bean>
 
   <!-- Performance -->

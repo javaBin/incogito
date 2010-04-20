@@ -15,7 +15,7 @@
     </dependency>
     <dependency>
       <groupId>no.java.ems</groupId>
-      <artifactId>ems-client</artifactId>
+      <artifactId>ems-external-domain-v2</artifactId>
       <version>${version.ems}</version>
     </dependency>
     <dependency>

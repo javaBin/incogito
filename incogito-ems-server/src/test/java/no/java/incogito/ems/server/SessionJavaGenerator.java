@@ -1,13 +1,12 @@
 package no.java.incogito.ems.server;
 
 import fj.F;
+import fj.data.*;
 import static fj.data.Option.fromNull;
 import static fj.data.List.nil;
-import no.java.ems.domain.Event;
-import no.java.ems.domain.Session;
-import no.java.ems.domain.Room;
-import no.java.ems.server.EmsServices;
-import org.joda.time.DateTime;
+import no.java.ems.dao.*;
+import no.java.ems.server.domain.*;
+import org.joda.time.*;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -37,10 +36,11 @@ public class SessionJavaGenerator {
 
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:incogito-ems-server-applicationContext-test.xml");
 
-        EmsServices emsServices = (EmsServices) context.getBean("emsServices");
+        EventDao eventDao = (EventDao) context.getBean("eventDao", EventDao.class);
+        SessionDao sessionDao = (SessionDao) context.getBean("sessionDao", SessionDao.class);
 
         try {
-            List<Event> list = emsServices.getEventDao().getEvents();
+            List<Event> list = eventDao.getEvents();
             System.out.println("Events: (" + list.size() + "):");
             Event event = null;
             for (Event e : list) {
@@ -55,7 +55,7 @@ public class SessionJavaGenerator {
                 return;
             }
 
-            List<Session> sessions = emsServices.getSessionDao().getSessions(event.getId());
+            List<Session> sessions = sessionDao.getSessions(event.getId());
 
             fj.data.List<String> ids = nil();
             for (int i = 0; i < sessions.size(); i++) {
@@ -89,13 +89,14 @@ public class SessionJavaGenerator {
                         return s.replace(' ', '_');
                     }
                 };
+                Interval timeslot = session.getTimeslot().some();
                 System.out.println("public static final Session session" + i + " = new Session(new SessionId(\"" + session.getId() + "\"), " +
                         "Format." + session.getFormat().name() + ", " +
                         "\"" + session.getTitle().replaceAll("\"", "\\\\\"").replaceAll("\n", "\\\\n") + "\", " +
                         toOption("WikiString", "new WikiString(\"", session.getLead(), "\")") + ", " +
                         toOption("WikiString", "new WikiString(\"", session.getBody(), "\")") + ", " +
                         "Option.some(" + session.getLevel().name() + "), " +
-                        "Option.some(new Interval(" + session.getTimeslot().getStartMillis() + "L, " + session.getTimeslot().getEndMillis() + "L))," +
+                        "Option.some(new Interval(" + timeslot.getStartMillis() + "L, " + timeslot.getEndMillis() + "L))," +
                         toOption("\"", fromNull(session.getRoom()).map(getName).orSome((String)null), "\"") + ", " +
                         "List.<Label>list(" + show(fj.data.List.iterableList(session.getKeywords()).map(addUnderscore)) + "), " +
                         "List.<Speaker>nil(), " +

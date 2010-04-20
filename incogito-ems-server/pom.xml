@@ -12,12 +12,14 @@
       <groupId>no.java.ems</groupId>
       <artifactId>ems-server</artifactId>
       <version>${version.ems}</version>
+      <type>war</type>
     </dependency>
     <dependency>
       <groupId>no.java.ems</groupId>
       <artifactId>ems-swing-client</artifactId>
       <version>${version.ems}</version>
     </dependency>
+    <!--
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
@@ -58,6 +60,7 @@
       <artifactId>freemarker</artifactId>
       <version>2.3.8</version>
     </dependency>
+    -->
   </dependencies>
   <build>
     <plugins>
@@ -69,19 +72,62 @@
           <mainClass>${mainClass}</mainClass>
           <commandlineArgs>${basedir}</commandlineArgs>
           <classpathScope>test</classpathScope>
+          <systemProperties>
+            <systemProperty>
+              <key>ems-host</key>
+              <value>http://localhost:3000/2</value>
+            </systemProperty>
+          </systemProperties>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>maven-jetty-plugin</artifactId>
+        <!--
+        <version>6.1.23</version>
+        -->
+        <version>${version.jetty}</version>
+        <configuration>
+          <webApp>${settings.localRepository}/no/java/ems/ems-server/${version.ems}/ems-server-${version.ems}.war</webApp>
+          <useTestClasspath>true</useTestClasspath>
+          <systemProperties>
+            <systemProperty>
+              <name>ems.home</name>
+              <value>${basedir}/target/ems-home</value>
+            </systemProperty>
+            <systemProperty>
+              <name>logback.configurationFile</name>
+              <value>${basedir}/../incogito-ems-server/src/test/resources/logback-test.xml</value>
+            </systemProperty>
+          </systemProperties>
+          <webAppConfig>
+            <contextPath>/ems</contextPath>
+            <serverClasses>
+              <!-- Copied from WebAppContext with SLF4J removed -->
+              <filter>-org.mortbay.jetty.plus.jaas.</filter>
+              <filter>org.mortbay.jetty.</filter>
+            </serverClasses>
+            <systemClasses>
+              <!-- Copied from WebAppContext with Commons Logging and Log4j removed -->
+              <filter>java.</filter>
+              <filter>javax.servlet.</filter>
+              <filter>javax.xml.</filter>
+              <filter>org.mortbay.</filter>
+              <filter>org.xml.</filter>
+              <filter>org.w3c.</filter>
+            </systemClasses>
+          </webAppConfig>
+          <connectors>
+            <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+              <port>3000</port>
+              <maxIdleTime>60000</maxIdleTime>
+            </connector>
+          </connectors>
         </configuration>
       </plugin>
     </plugins>
   </build>
-  <profiles>
-    <profile>
-      <id>client</id>
-      <properties>
-        <mainClass>no.java.incogito.ems.server.EmsTestClient</mainClass>
-      </properties>
-    </profile>
-  </profiles>
   <properties>
-    <mainClass>no.java.incogito.ems.server.EmsTestServer</mainClass>
+    <mainClass>no.java.incogito.ems.server.EmsTestClient</mainClass>
   </properties>
 </project>

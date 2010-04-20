@@ -13,14 +13,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "incogito")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class IncogitoXml {
-    public String baseurl;
+    public String eventsUrl;
     public String currentUser;
 
     public IncogitoXml() {
     }
 
-    public IncogitoXml(String baseurl, Option<String> currentUser) {
-        this.baseurl = baseurl;
+    public IncogitoXml(String eventsUrl, Option<String> currentUser) {
+        this.eventsUrl = eventsUrl;
         this.currentUser = currentUser.orSome((String) null);
     }
 }

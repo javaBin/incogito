@@ -1,50 +1,29 @@
 package no.java.incogito.application;
 
-import fj.F;
-import fj.F2;
+import fj.*;
 import static fj.Function.compose;
-import fj.P1;
-import fj.P2;
-import fj.P;
-import static fj.P.p;
-import fj.control.parallel.Callables;
-import fj.data.List;
-import static fj.data.List.list;
-import static fj.data.List.nil;
-import fj.data.Option;
-import static fj.data.Option.some;
-import static fj.data.Option.none;
-import static fj.data.Option.somes;
-import fj.data.TreeMap;
-import fj.data.Either;
-import fj.pre.Ord;
-import no.java.incogito.Functions;
-import no.java.incogito.IO;
-import static no.java.incogito.IO.Strings.streamToString;
-import no.java.incogito.PropertiesF;
-import static no.java.incogito.Functions.trim;
-import static no.java.incogito.Functions.split;
-import no.java.incogito.application.IncogitoConfiguration.EventConfiguration;
-import no.java.incogito.application.IncogitoConfiguration.DayConfiguration;
-import no.java.incogito.domain.CssConfiguration;
-import static no.java.incogito.domain.Event.emptyLevelIconMap;
-import no.java.incogito.domain.Label;
-import no.java.incogito.domain.Level;
-import no.java.incogito.domain.Room;
-import no.java.incogito.domain.Level.LevelId;
-import no.java.incogito.ems.client.EmsWrapper;
-import no.java.ems.domain.Event;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.joda.time.LocalDate;
-import org.joda.time.Interval;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.DateTimeFormatterBuilder;
+import static fj.P.*;
+import fj.control.parallel.*;
+import fj.data.*;
+import static fj.data.List.*;
+import static fj.data.Option.*;
+import fj.pre.*;
+import no.java.ems.external.v2.*;
+import no.java.incogito.*;
+import static no.java.incogito.Functions.*;
+import static no.java.incogito.IO.Strings.*;
+import no.java.incogito.application.IncogitoConfiguration.*;
+import no.java.incogito.domain.*;
+import static no.java.incogito.domain.Event.*;
+import no.java.incogito.domain.Level.*;
+import no.java.incogito.ems.client.*;
+import org.joda.time.*;
+import org.joda.time.format.*;
+import org.slf4j.*;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.stereotype.*;
 
-import java.io.File;
+import java.io.*;
 
 /**
  * TODO: This should take an existing configuration as an argument and use that if none of the
@@ -172,7 +151,7 @@ public class ConfigurationLoaderService {
                     }
                 }, emptyLevelIconMap);
 
-            Either<String, Event> eventEither = emsWrapper.findEventByName.f(eventName);
+            Either<String, EventV2> eventEither = emsWrapper.findEventByName.f(eventName);
 
             if (eventEither.isLeft()) {
                 logger.warn("Could not find event '{}' in EMS: ", eventName, eventEither.left().value());

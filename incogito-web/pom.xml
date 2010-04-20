@@ -195,7 +195,7 @@
   </build>
   <properties>
     <jetty.port>8096</jetty.port>
-    <ems.url>http://localhost:3000/ems</ems.url>
+    <ems.url>http://localhost:3000/2</ems.url>
     <voldemort.clusterId>a</voldemort.clusterId>
     <voldemort.nodeId>a</voldemort.nodeId>
   </properties>

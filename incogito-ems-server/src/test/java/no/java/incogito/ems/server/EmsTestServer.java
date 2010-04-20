@@ -1,17 +1,15 @@
 package no.java.incogito.ems.server;
 
-import no.java.ems.domain.Event;
-import no.java.ems.domain.Session;
-import no.java.ems.server.EmsServices;
-import org.codehaus.plexus.util.StringUtils;
-import org.slf4j.bridge.SLF4JBridgeHandler;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import no.java.ems.dao.*;
+import no.java.ems.server.*;
+import no.java.ems.server.domain.*;
+import org.slf4j.bridge.*;
+import org.springframework.context.support.*;
 
-import java.io.File;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Handler;
-import java.util.logging.LogManager;
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.atomic.*;
+import java.util.logging.*;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -28,7 +26,7 @@ public class EmsTestServer {
         }, "main");
         thread.setDaemon(false);
         thread.start();
-        thread.wait();
+        thread.join();
     }
 
     public static void runTestServer(String[] args) {
@@ -42,18 +40,21 @@ public class EmsTestServer {
         File basedir = getBasedir(args);
 
         File emsHome = new File(basedir, "target/ems-home");
+        emsHome.mkdirs();
 
         System.setProperty("java.security.auth.login.config", new File(basedir, "src/test/resources/login.conf").getAbsolutePath());
         System.setProperty("ems.home", emsHome.getAbsolutePath());
 
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:incogito-ems-server-applicationContext-test.xml");
 
-        EmsServices emsServices = (EmsServices) context.getBean("emsServices");
+        context.getBean("derbyService", DerbyService.class);
+        EventDao eventDao = (EventDao) context.getBean("jdbcTemplateEventDao", EventDao.class);
+        SessionDao sessionDao = (SessionDao) context.getBean("jdbcTemplateSessionDao", SessionDao.class);
 
-        List<Event> list = emsServices.getEventDao().getEvents();
+        List<Event> list = eventDao.getEvents();
         System.out.println("Events: (" + list.size() + "):");
         for (Event event : list) {
-            System.out.println(" * " + event.getName() + " has " + emsServices.getSessionDao().getSessionIdsByEventId(event.getId()).size() + " sessions");
+            System.out.println(" * " + event.getName() + " has " + sessionDao.getSessionIdsByEventId(event.getId()).size() + " sessions");
         }
 
         final AtomicBoolean shutdown = new AtomicBoolean();

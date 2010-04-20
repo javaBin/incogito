@@ -7,6 +7,9 @@
 
   <context:property-placeholder location="classpath*:fool.properties"/>
 
+  <import resource="classpath:applicationContext.xml"/>
+
+<!--
   <bean id="emsServices" class="no.java.incogito.ems.server.EmsServicesFactoryBean">
     <property name="derbyPort" value="3001"/>
     <property name="emsHome" value="${ems.home}"/>
@@ -14,4 +17,5 @@
     <property name="startDatabase" value="true"/>
     <property name="secure" value="true"/>
   </bean>
+-->
 </beans>

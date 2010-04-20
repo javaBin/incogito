@@ -16,8 +16,7 @@ import static fj.data.Either.rights;
 import fj.data.List;
 import fj.data.Option;
 import fj.data.TreeMap;
-import no.java.ems.domain.Binary;
-import no.java.ems.domain.Speaker;
+import no.java.ems.external.v2.*;
 import static no.java.incogito.Functions.compose;
 import static no.java.incogito.application.EmsFunctions.eventFromEms;
 import static no.java.incogito.application.EmsFunctions.sessionFromEms;
@@ -115,10 +114,10 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
     }
 
     public OperationResult<List<Event>> getEvents() {
-        List<Either<String, no.java.ems.domain.Event>> emsEvents = getConfiguration().eventConfigurations.
+        List<Either<String, EventV2>> emsEvents = getConfiguration().eventConfigurations.
             map(compose(emsWrapper.findEventByName, EventConfiguration.name_));
 
-        List<Either<String, Event>> events = Either.<String, no.java.ems.domain.Event>rights(emsEvents).
+        List<Either<String, Event>> events = Either.<String, EventV2>rights(emsEvents).
             map(eventFromEms.f(configuration));
 
         return ok(rights(events));
@@ -235,26 +234,26 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
     }
 
     public OperationResult<byte[]> getSpeakerPhotoForSession(String sessionId, int index) {
-        Either<String, no.java.ems.domain.Session> sessionOption = emsWrapper.getSessionById.f(sessionId);
+        Either<String, SessionV2> sessionOption = emsWrapper.getSessionById.f(sessionId);
 
         if(sessionOption.isLeft()) {
             return notFound(sessionOption.left().value());
         }
 
-        no.java.ems.domain.Session session = sessionOption.right().value();
+        SessionV2 session = sessionOption.right().value();
 
-        Either<String, Speaker> speakerEither = EmsWrapper.getSpeakerFromSession.f(index).f(session);
+        Either<String, SpeakerV2> speakerEither = EmsWrapper.getSpeakerFromSession.f(index).f(session);
 
         if(speakerEither.isLeft()) {
             return notFound(speakerEither.left().value());
         }
 
-        Speaker speaker = speakerEither.right().value();
+        SpeakerV2 speaker = speakerEither.right().value();
 
-        Either<String, Binary> binary = EmsWrapper.getPhotoFromSpeaker.f(speaker);
+        Either<String, URIBinaryV2> binary = EmsWrapper.getPhotoFromSpeaker.f(speaker);
 
         if (binary.isLeft()) {
-            binary = emsWrapper.getPersonPhoto.f(speaker.getPersonId());
+            binary = emsWrapper.getPersonPhoto.f(speaker.getPersonUuid());
         }
 
         F<Either<Exception, byte[]>, Either<String, byte[]>> toString = Either.<Exception, byte[], String>leftMap_().f(Bottom.<Exception>eMessage());

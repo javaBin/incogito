@@ -44,6 +44,7 @@
     <property name="path" value="target/ems-home"/>
   </bean>
 
+<!--
   <bean id="emsServices" class="no.java.incogito.ems.server.EmsServicesFactoryBean" depends-on="connectJulToSlf4j">
     <description>
       EMS Server
@@ -52,8 +53,9 @@
     <property name="httpPort" value="3300"/>
     <property name="startDatabase" value="true"/>
   </bean>
+-->
 
-  <bean id="emsService" class="no.java.incogito.ems.client.RestEmsServiceFactoryBean" depends-on="emsServices">
+  <bean id="emsService" class="no.java.incogito.ems.client.RESTfulEmsV2ClientFactoryBean" depends-on="jdbcTemplateEventDao">
     <description>
       EMS Client
     </description>

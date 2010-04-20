@@ -16,6 +16,7 @@ import static fj.data.Option.fromNull;
 import static fj.data.Option.fromString;
 import static fj.data.Option.somes;
 import fj.pre.Show;
+import no.java.ems.external.v2.*;
 import no.java.incogito.Enums;
 import no.java.incogito.Functions;
 import no.java.incogito.application.IncogitoConfiguration.DayConfiguration;
@@ -41,14 +42,14 @@ import org.joda.time.LocalDate;
  * @version $Id$
  */
 public class EmsFunctions {
-    public static F<no.java.ems.domain.Event, EventId> eventIdFromEms = new F<no.java.ems.domain.Event, EventId>() {
-        public EventId f(no.java.ems.domain.Event event) {
-            return EventId.eventId(event.getId());
+    public static F<EventV2, EventId> eventIdFromEms = new F<EventV2, EventId>() {
+        public EventId f(EventV2 event) {
+            return EventId.eventId(event.getUuid());
         }
     };
 
-    public static F<IncogitoConfiguration, F<no.java.ems.domain.Event, Either<String, Event>>> eventFromEms = curry(new F2<IncogitoConfiguration, no.java.ems.domain.Event, Either<String, Event>>() {
-        public Either<String, Event> f(IncogitoConfiguration configuration, final no.java.ems.domain.Event event) {
+    public static F<IncogitoConfiguration, F<EventV2, Either<String, Event>>> eventFromEms = curry(new F2<IncogitoConfiguration, EventV2, Either<String, Event>>() {
+        public Either<String, Event> f(IncogitoConfiguration configuration, final EventV2 event) {
             final EventId eventId = eventIdFromEms.f(event);
 
             return configuration.eventConfigurations.
@@ -84,14 +85,14 @@ public class EmsFunctions {
         }
     });
 
-    public static F<no.java.ems.domain.Speaker, Speaker> speakerFromEms = new F<no.java.ems.domain.Speaker, Speaker>() {
-        public Speaker f(no.java.ems.domain.Speaker speaker) {
-            return new Speaker(speaker.getName(), speaker.getPersonId(), fromString(speaker.getDescription()).map(WikiString.constructor));
+    public static F<SpeakerV2, Speaker> speakerFromEms = new F<SpeakerV2, Speaker>() {
+        public Speaker f(SpeakerV2 speaker) {
+            return new Speaker(speaker.getName(), speaker.getPersonUuid(), fromString(speaker.getDescription()).map(WikiString.constructor));
         }
     };
 
-    public static F<Event, F<no.java.ems.domain.Session, Either<String, Session>>> sessionFromEms = curry(new F2<Event, no.java.ems.domain.Session, Either<String, Session>>() {
-        public Either<String, Session> f(Event event, no.java.ems.domain.Session session) {
+    public static F<Event, F<SessionV2, Either<String, Session>>> sessionFromEms = curry(new F2<Event, SessionV2, Either<String, Session>>() {
+        public Either<String, Session> f(Event event, SessionV2 session) {
             if (session.getTitle() == null) {
                 return left("Not a valid session, title is missing.");
             }
@@ -102,20 +103,20 @@ public class EmsFunctions {
             }
 
             Option<LevelId> levelId = fromNull(session.getLevel()).
-                bind(Functions.compose(LevelId.valueOf, Enums.<no.java.ems.domain.Session.Level>name_()));
+                bind(Functions.compose(LevelId.valueOf, Enums.<SessionLevel>name_()));
 
             F<LevelId, Option<Level>> getLevel = flip(Functions.<LevelId, Level>TreeMap_get()).f(event.levels);
             F<String, Option<Label>> getLabel = flip(Functions.<String, Label>TreeMap_get()).f(event.emsIndexedLabels);
 
-            return right(new Session(new SessionId(session.getId()),
-                fromNull(session.getFormat()).bind(compose(Session.Format.valueOf_, Show.<no.java.ems.domain.Session.Format>anyShow().showS_())).orSome(Session.Format.Presentation),
+            return right(new Session(new SessionId(session.getUuid()),
+                fromNull(session.getFormat()).bind(compose(Session.Format.valueOf_, Show.<SessionFormat>anyShow().showS_())).orSome(Session.Format.Presentation),
                 session.getTitle(),
-                    fromString(session.getBody()).map(WikiString.constructor),
+                fromString(session.getBody()).map(WikiString.constructor),
                 levelId.bind(getLevel),
-                fromNull(session.getTimeslot()),
+                fromNull(session.getTimeslot()).map(EmsV2F.toInterval),
                 fromNull(session.getRoom()).map(no.java.incogito.ems.client.EmsFunctions.roomName),
-                somes(iterableList(session.getKeywords()).map(getLabel)),
-                iterableList(session.getSpeakers()).map(speakerFromEms),
+                somes(iterableList(session.getKeywords().getKeyword()).map(getLabel)),
+                iterableList(session.getSpeakers().getSpeaker()).map(speakerFromEms),
                 List.<Comment>nil()));
         }
     });

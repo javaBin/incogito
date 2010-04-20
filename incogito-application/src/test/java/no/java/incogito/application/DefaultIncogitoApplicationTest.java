@@ -9,10 +9,12 @@ import fj.data.List;
 import fj.data.TreeMap;
 import fj.pre.Ord;
 import junit.framework.TestCase;
-import no.java.ems.client.RestEmsService;
-import no.java.ems.domain.Event;
+import no.java.ems.external.v2.*;
 import no.java.incogito.ems.client.EmsWrapper;
 import no.java.incogito.util.TestPathFactoryBean;
+import org.apache.commons.httpclient.*;
+import org.codehaus.httpcache4j.cache.*;
+import org.codehaus.httpcache4j.client.*;
 
 import java.io.File;
 import java.util.UUID;
@@ -25,8 +27,8 @@ public class DefaultIncogitoApplicationTest extends TestCase {
 
     private File incogitoHome;
 
-    public final static F<TreeMap<String, Event>, F<String, Either<String, Event>>> mockFindEventByName = curry(new F2<TreeMap<String, Event>, String, Either<String, Event>>() {
-        public Either<String, Event> f(TreeMap<String, Event> events, String s) {
+    public final static F<TreeMap<String, EventV2>, F<String, Either<String, EventV2>>> mockFindEventByName = curry(new F2<TreeMap<String, EventV2>, String, Either<String, EventV2>>() {
+        public Either<String, EventV2> f(TreeMap<String, EventV2> events, String s) {
             return events.get(s).toEither("Could not find event '" + s + "'.");
         }
     });
@@ -43,16 +45,19 @@ public class DefaultIncogitoApplicationTest extends TestCase {
     }
 
     public void testFilteringOfEvents() throws Exception {
-        EmsWrapper emsWrapper = new EmsWrapper(new RestEmsService(null));
-        Event javaZone2008 = new Event();
-        javaZone2008.setId(UUID.randomUUID().toString());
+        HTTPCache cache = new HTTPCache(
+            new MemoryCacheStorage(),
+            new HTTPClientResponseResolver(new HttpClient(new MultiThreadedHttpConnectionManager())));
+        EmsWrapper emsWrapper = new EmsWrapper(new RESTfulEmsV2Client(cache));
+        EventV2 javaZone2008 = new EventV2();
+        javaZone2008.setUuid(UUID.randomUUID().toString());
         javaZone2008.setName("JavaZone 2008");
 
-        Event javaZone2009 = new Event();
-        javaZone2009.setId(UUID.randomUUID().toString());
+        EventV2 javaZone2009 = new EventV2();
+        javaZone2009.setUuid(UUID.randomUUID().toString());
         javaZone2009.setName("JavaZone 2009");
 
-        TreeMap<String, Event> emsEvents = TreeMap.<String, Event>empty(Ord.stringOrd).
+        TreeMap<String, EventV2> emsEvents = TreeMap.<String, EventV2>empty(Ord.stringOrd).
             set(javaZone2008.getName(), javaZone2008).
             set(javaZone2009.getName(), javaZone2009);
         emsWrapper.getEvents = P.p(emsEvents.values());
