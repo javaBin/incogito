@@ -9,14 +9,21 @@ To develop Incogito you need:
 
  1) A working EMS server with data.
 
+    These instructions assume you're using a EMS 1 backup!
+
     First you have to unpack some data. Get a backup and unpack it like this:
 
-    $ cat ems-20090828-000000.tar.gz | (cd incogito-ems-server/target && tar zxfv - && mv database ems-home)
+    $ cat ems-20090828-000000.tar.gz | (cd incogito-ems-server/target && tar zxf - && mv database ems-home && mv ems-home/database/ems ems-home/database/derby)
 
     We have a special Maven module that embeds a complete EMS server which you
     can run like this:
 
-    $ mvn -f incogito-ems-server/pom.xml install exec:java
+    $ mvn -f incogito-ems-server/pom.xml jetty:run-war
+
+    Start ij and run the DDL upgrade script:
+
+    $ ij -p ij.properties
+    ij> run '../ems/ems-server/src/main/resources/ddl/upgrade_1.1_to_2.0.ddl';
 
     You can skip the "install" part if you know what you're doing.
 
@@ -44,3 +51,5 @@ This assumes you already have unpacked a backup
 
 start ij
 > connect 'jdbc:derby:target/ems-home/database/ems';
+
+> connect 'jdbc:derby:incogito-ems-server/target/ems-home/database/derby';

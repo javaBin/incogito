@@ -56,9 +56,6 @@
       <plugin>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>maven-jetty-plugin</artifactId>
-        <!--
-        <version>6.1.23</version>
-        -->
         <version>${version.jetty}</version>
         <configuration>
           <webApp>${settings.localRepository}/no/java/ems/ems-server/${version.ems}/ems-server-${version.ems}.war</webApp>
