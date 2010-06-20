@@ -61,6 +61,11 @@
     <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
     <function-signature>no.java.incogito.web.servlet.WebCalendar getCalendar(no.java.incogito.application.IncogitoApplication,java.lang.String,java.lang.String)</function-signature>
   </function>
+  <function>
+    <name>getSessionList</name>
+    <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
+    <function-signature>no.java.incogito.web.servlet.WebSessionList getSessionList(no.java.incogito.application.IncogitoApplication,java.lang.String,java.lang.String)</function-signature>
+  </function>
 
   <function>
     <name>getEventByName</name>

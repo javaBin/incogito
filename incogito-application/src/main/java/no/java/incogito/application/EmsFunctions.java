@@ -106,13 +106,27 @@ public class EmsFunctions {
 
             F<LevelId, Option<Level>> getLevel = flip(Functions.<LevelId, Level>TreeMap_get()).f(event.levels);
             F<String, Option<Label>> getLabel = flip(Functions.<String, Label>TreeMap_get()).f(event.emsIndexedLabels);
+            
+            F<Interval, Interval> setEndTo60MinutesAfterStart = new F<Interval, Interval>() {
+            	public Interval f(Interval interval) {
+            		return interval.withEnd(interval.getStart().plusHours(1));
+            	}
+        	};
+            
+            F<Interval, Interval> setEndTo15MinutesAfterStart = new F<Interval, Interval>() {
+            	public Interval f(Interval interval) {
+            		return interval.withEnd(interval.getStart().plusMinutes(15));
+            	}
+        	};
 
-            return right(new Session(new SessionId(session.getId()),
-                fromNull(session.getFormat()).bind(compose(Session.Format.valueOf_, Show.<no.java.ems.domain.Session.Format>anyShow().showS_())).orSome(Session.Format.Presentation),
+        	Session.Format format = fromNull(session.getFormat()).bind(compose(Session.Format.valueOf_, Show.<no.java.ems.domain.Session.Format>anyShow().showS_())).orSome(Session.Format.Presentation);
+
+        	return right(new Session(new SessionId(session.getId()),
+                format,
                 session.getTitle(),
-                    fromString(session.getBody()).map(WikiString.constructor),
+                fromString(session.getBody()).map(WikiString.constructor),
                 levelId.bind(getLevel),
-                fromNull(session.getTimeslot()),
+                fromNull(session.getTimeslot()).map(format == Session.Format.Presentation ? setEndTo60MinutesAfterStart : setEndTo15MinutesAfterStart),
                 fromNull(session.getRoom()).map(no.java.incogito.ems.client.EmsFunctions.roomName),
                 somes(iterableList(session.getKeywords()).map(getLabel)),
                 iterableList(session.getSpeakers()).map(speakerFromEms),

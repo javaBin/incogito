@@ -25,6 +25,8 @@ import java.util.Collection;
 import org.joda.time.Interval;
 
 /**
+ * Taglib functions.
+ * 
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
@@ -96,6 +98,18 @@ public class IncogitoFunctions {
                 map(WebFunctions.webCalendar.f(restEventUri).f(eventUri)).value();
     }
 
+    public static WebSessionList getSessionList(IncogitoApplication app, String eventName, String userName) {
+        IncogitoUri uri = new IncogitoUri(app.getConfiguration().baseurl);
+        IncogitoRestEventUri restEventUri = uri.restEvents().eventUri(eventName);
+        IncogitoEventUri eventUri = uri.events().eventUri(eventName);
+        return app.getSchedule(
+        		urlDecode(eventName), 
+        		fromNull(userName)
+        		)
+        		.ok().
+                map(WebFunctions.webSessionList.f(restEventUri).f(eventUri)).value();
+    }
+    
     public static EventXml[] getEvents(IncogitoApplication app) {
         IncogitoUri uri = new IncogitoUri(app.getConfiguration().baseurl);
         return app.getEvents().value().

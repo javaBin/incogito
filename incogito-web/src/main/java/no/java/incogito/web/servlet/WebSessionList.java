@@ -1,46 +1,47 @@
 package no.java.incogito.web.servlet;
 
-import fj.data.List;
-import fj.data.TreeMap;
-import no.java.incogito.dto.SessionXml;
-import org.joda.time.LocalDate;
-import org.joda.time.Interval;
-
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.Map;
+
+import no.java.incogito.dto.SessionXml;
+
+import org.joda.time.Interval;
+import org.joda.time.LocalDate;
+
+import fj.data.List;
+import fj.data.TreeMap;
 
 /**
- * A wrapper around a schedule with utilities for calendar.jspx.
+ * A wrapper around a schedule with utilities for sessions.jspx.
  *
- * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:janniche@gmail.com">Janniche Haugen</a>
  * @version $Id$
  */
-public class WebCalendar {
-    private final Map<String, String> attendanceMap;
+public class WebSessionList {
+	private final LinkedHashMap<LocalDate, Collection<Interval>> timeslotsByDate;
 
+	
     private final LinkedHashMap<LocalDate, Collection<String>> roomsByDate;
 
-    private final LinkedHashMap<LocalDate, Collection<Interval>> timeslotsByDate;
 
+	private final LinkedHashMap<LocalDate, LinkedHashMap <Interval, List<SessionXml>>> sessionsByTimeslotByDate;
+    
+	
     private final TreeMap<LocalDate, TreeMap<String, List<SessionXml>>> dayToRoomToPresentationsMap;
 
     private final TreeMap<LocalDate, List<SessionXml>> quickiesByDay;
+    
 
-    public WebCalendar(Map<String, String> attendanceMap,
-                       LinkedHashMap<LocalDate, Collection<String>> roomsByDate,
+    public WebSessionList(LinkedHashMap<LocalDate, Collection<String>> roomsByDate,
                        LinkedHashMap<LocalDate, Collection<Interval>> timeslotsByDate,
                        TreeMap<LocalDate, TreeMap<String, List<SessionXml>>> dayToRoomToPresentationsMap,
-                       TreeMap<LocalDate, List<SessionXml>> quickiesByDay) {
-        this.attendanceMap = attendanceMap;
+                       TreeMap<LocalDate, List<SessionXml>> quickiesByDay, 
+                        LinkedHashMap<LocalDate, LinkedHashMap <Interval, List<SessionXml>>> sessionsByTimeslotByDate) {
         this.roomsByDate = roomsByDate;
         this.timeslotsByDate = timeslotsByDate;
         this.dayToRoomToPresentationsMap = dayToRoomToPresentationsMap;
         this.quickiesByDay = quickiesByDay;
-    }
-
-    public Map<String, String> getAttendanceMap() {
-        return attendanceMap;
+        this.sessionsByTimeslotByDate = sessionsByTimeslotByDate;
     }
 
     public LinkedHashMap<LocalDate, Collection<String>> getRoomsByDate() {
@@ -49,6 +50,10 @@ public class WebCalendar {
 
     public LinkedHashMap<LocalDate, Collection<Interval>> getTimeslotsByDate() {
         return timeslotsByDate;
+    }
+
+    public LinkedHashMap<LocalDate, LinkedHashMap <Interval, List<SessionXml>>> getSessionsByTimeslotByDate() {
+    	return sessionsByTimeslotByDate;
     }
 
     public TreeMap<LocalDate, TreeMap<String, List<SessionXml>>> getDayToRoomToPresentationsMap() {
