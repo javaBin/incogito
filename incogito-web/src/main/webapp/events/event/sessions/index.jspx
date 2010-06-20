@@ -66,9 +66,21 @@
     .legends span {
       font-weight: bold;
     }
+
+    #filtersContainer {
+      position: absolute;
+      left: 0;
+      width: 200px;
+    }
+
+    #filtersContainer.fixed {
+      top:0;
+      position:fixed;
+     }
   </style>
      <script src="${incogito.baseurl}/js/jquery-1.3.2.js" type="text/javascript"><!-- space --></script>
-    <script type="text/javascript">
+     <script type="text/javascript">
+     <![CDATA[
         $(document).ready(function(){
             /**
             * toggle show/hide time slot content
@@ -80,11 +92,197 @@
                 });
                 e.preventDefault();
             });
+
+            /**
+            * Filter menu always in view
+            */
+
+            $("#header").bind('inview', function(event,inview){
+                if(inview){
+                    if($("#filtersContainer").hasClass("fixed")){
+                        $("#filtersContainer").removeClass("fixed");
+                    }
+                }else {
+                    $("#filtersContainer").addClass("fixed");
+                }
+            });
+
+            jB.filter.levelListener();
         });
+
+            /**
+            * Filter - Level
+            */
+            jB = {};
+
+            jB.filter = {};
+
+            // requires structure "keyword on"
+            jB.filter.findEnabled = function(elm){
+              var labels = [];
+
+              // Find all active labels and add to the filter
+              $(".on", elm).each(function() {
+                var classes = $(this).attr("class");
+                labels.push(classes.split(" ")[0]);
+              });
+
+              return labels;
+            };
+
+            jB.filter.hideNotIn = function(labels,type){
+         
+              $(".session").each(function() {
+                // Get all labels for current session
+                var sessionClasses = $(".legends ."+type, this);
+
+                var hideSession = true;
+
+                // Loop thru all labels for the session
+                $(sessionClasses).each(function() {
+                  var labelsString = $(this).attr("class").toLowerCase();
+                  var sessionHas = labelsString.split(" ");
+                  $(sessionHas).each(function(){
+                      // If session has one of the labels
+                      if ($.inArray(this.toString(), labels) > -1) {
+                        hideSession = false;
+
+                        // Exit loop
+                        return false;
+                      }
+                  });
+                });
+
+                // If session matches no selected tags, hide it
+                if (hideSession) {
+                  $(this).addClass("hidden");
+                } else {
+                  $(this).removeClass("hidden");
+                }
+              });
+            };
+
+            jB.filter.levelListener = function(){
+              $(".filter.levels li").click(function(){
+                   $(this).toggleClass("on");
+                   var labels = jB.filter.findEnabled($(this).parent());
+                   jB.filter.hideNotIn(labels,"level");
+              });
+            };
+            
+
+/**
+ * author Remy Sharp
+ * url http://remysharp.com/2009/01/26/element-in-view-event-plugin/
+ */
+(function ($) {
+    function getViewportHeight() {
+        var height = window.innerHeight; // Safari, Opera
+        var mode = document.compatMode;
+
+        if ( (mode || !$.support.boxModel) ) { // IE, Gecko
+            height = (mode == 'CSS1Compat') ?
+            document.documentElement.clientHeight : // Standards
+            document.body.clientHeight; // Quirks
+        }
+
+        return height;
+    }
+
+    $(window).scroll(function () {
+        var vpH = getViewportHeight(),
+            scrolltop = (document.documentElement.scrollTop ?
+                document.documentElement.scrollTop :
+                document.body.scrollTop),
+            elems = [];
+
+        // naughty, but this is how it knows which elements to check for
+        $.each($.cache, function () {
+            if (this.events && this.events.inview) {
+                elems.push(this.handle.elem);
+            }
+        });
+
+        if (elems.length) {
+            $(elems).each(function () {
+                var $el = $(this),
+                    top = $el.offset().top,
+                    height = $el.height(),
+                    inview = $el.data('inview') || false;
+
+                if (scrolltop > (top + height) || scrolltop + vpH < top) {
+                    if (inview) {
+                        $el.data('inview', false);
+                        $el.trigger('inview', [ false ]);
+                    }
+                } else if (scrolltop < (top + height)) {
+                    if (!inview) {
+                        $el.data('inview', true);
+                        $el.trigger('inview', [ true ]);
+                    }
+                }
+            });
+        }
+    });
+
+    // kick the event to pick up any elements already in view.
+    // note however, this only works if the plugin is included after the elements are bound to 'inview'
+    $(function () {
+        $(window).scroll();
+    });
+})(jQuery);
+]]>
     </script>
+
+<style type="text/css">
+    #filtersContainer ul {
+        list-style-type:none;
+        margin:0 0 0 1em;
+        padding:0;
+    }
+
+    #filtersContainer ul li{
+        margin:0;
+        padding:0;
+    }
+
+    #filtersContainer .levels li {
+        list-style-type: circle;
+        cursor: pointer;
+        cursor: hand;
+    }
+
+    #filtersContainer .levels li:hover {
+        text-decoration: underline;
+
+    }
+
+    #filtersContainer .levels li.on {
+        list-style-type: disc;
+    }
+
+    h3 {
+        margin:0.5em;
+        padding:0;
+        font-weight: bold;
+    }
+</style>
 </head>
 
 <body>
+<div id="filtersContainer">
+    <h3>Filters</h3>
+    <ul>
+        <li>
+            <div>Levels</div>
+            <ul class="filter levels">
+                <li class="introductory on">Introductory</li>
+                <li class="intermediate on">Intermediate</li>
+                <li class="advanced on">Advanced</li>
+            </ul>
+        </li>
+    </ul>
+</div>
 <div id="main-content">
 <c:forEach var="day" items="${sessionListNy.sessionsByTimeslotByDate}">
 
@@ -129,7 +327,7 @@
           <div class="legends">
                 <span>${session.room}</span>,
                 <span>Language:</span> zxy,
-                <span>Level:</span> ${session.level.displayName},
+                <span class="level ${session.level.displayName}">Level:</span> ${session.level.displayName},
                 <span>Labels:</span>
                 <c:forEach var="label" items="${session.labels}">
                     <img class="label" title="${label.displayName}" alt="${label.id}" src="${label.iconUrl}"/>
