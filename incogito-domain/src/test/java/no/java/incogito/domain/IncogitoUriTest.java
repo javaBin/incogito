@@ -2,7 +2,6 @@ package no.java.incogito.domain;
 
 import junit.framework.TestCase;
 import no.java.incogito.domain.IncogitoUri.IncogitoRestEventsUri.IncogitoRestEventUri.IncogitoRestSessionUri;
-import no.java.incogito.domain.Session.Format;
 import static no.java.incogito.domain.IncogitoTestData.session46;
 
 import java.util.LinkedList;

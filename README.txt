@@ -13,7 +13,7 @@ To develop Incogito you need:
 
     First you have to unpack some data. Get a backup and unpack it like this:
 
-    $ cat ems-20090828-000000.tar.gz | (cd incogito-ems-server/target && tar zxf - && mv database ems-home && mv ems-home/database/ems ems-home/database/derby)
+    $ cat ems-20090828-000000.tar.gz | (cd incogito-ems-server/target && tar zxf - && mv database ems-home && mv ems-home/database/ems ems-home/database/derby && mv ems-home/binaries ems-home/database/binaries)
 
     We have a special Maven module that embeds a complete EMS server which you
     can run like this:
