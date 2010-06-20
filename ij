@@ -1,0 +1,10 @@
+#!/bin/bash
+
+VERSION=10.4.1.3
+
+CLASSPATH=
+CLASSPATH=$CLASSPATH:$HOME/.m2/repository/org/apache/derby/derby/$VERSION/derby-$VERSION.jar
+CLASSPATH=$CLASSPATH:$HOME/.m2/repository/org/apache/derby/derbytools/$VERSION/derbytools-$VERSION.jar
+CLASSPATH=$CLASSPATH:$HOME/.m2/repository/org/apache/derby/derbyclient/$VERSION/derbyclient-$VERSION.jar
+
+exec java -Dij.user=sa -classpath $CLASSPATH org.apache.derby.tools.ij "$@"

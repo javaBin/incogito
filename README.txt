@@ -22,7 +22,7 @@ To develop Incogito you need:
 
     Start ij and run the DDL upgrade script:
 
-    $ ij -p ij.properties
+    $ ./ij -p ij.properties
     ij> run '../ems/ems-server/src/main/resources/ddl/upgrade_1.1_to_2.0.ddl';
 
     You can skip the "install" part if you know what you're doing.
