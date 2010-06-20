@@ -15,35 +15,78 @@
 <head>
   <title>Sessions for ${eventName} - </title>
   <style type="text/css">
-    ul.session-list li {
+    h1 {
+      margin: 1em;
+      }
+    h2 {
+      margin:0;
+      padding: 0;
+      border-bottom: 1px solid #000;
+      }
+
+
+    h2:hover {
+      background: #303030;
+      color: #FFF;
+      }
+
+    ul.sessions {
+      list-style-type: none;
+      margin: 0.5em;
+      padding: 0;
+      display:none;
+      }
+
+    ul.sessions.open {
+      display: list-item;
+      }
+
+    ul.sessions li.session {
       margin-left: 0;
-      margin-bottom: 7px;
-      list-style-image: url("../../images/yellow-bullet.png");
+      padding: 0.25em 0.5em 0.35em 0.5em;
+      border-bottom: 1px solid #000000;
     }
 
-    ul.session-list li.format-Quickie {
-      list-style-image: url("../../images/yellow-lightning-bullet.png");
+    ul.sessions li div a {
+      font-weight: bold;
     }
 
-    ul.session-list li a {
-      font-weight: normal;
+    li.session.dark {
+        background: #EBFFFF;  
     }
 
-    ul.session-list .speaker-list {
+    .session .speakers {
       font-style: italic;
     }
 
-    .session-list .speaker-list {
-      font-style: italic;
+    .legends {
+      font-size: 0.80em;
+    }
+
+    .legends span {
+      font-weight: bold;
     }
   </style>
+     <script src="${incogito.baseurl}/js/jquery-1.3.2.js" type="text/javascript"><!-- space --></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            /**
+            * toggle show/hide time slot content
+            */
+            $("h2").click(function(e){
+                $(this).toggleClass("open");
+                $(this).parent().find(".sessions").each(function(){
+                    $(this).toggleClass("open");
+                });
+                e.preventDefault();
+            });
+        });
+    </script>
 </head>
 
 <body>
 <div id="main-content">
-
-	
-	<c:forEach var="day" items="${sessionListNy.sessionsByTimeslotByDate}">
+<c:forEach var="day" items="${sessionListNy.sessionsByTimeslotByDate}">
 
 	<h1> ${day.key}</h1>
 	
@@ -55,60 +98,60 @@
           <fmt:formatNumber var="startMinute" value="${timeslot.start.minuteOfHour}" maxIntegerDigits="2" minIntegerDigits="2"/>
           <fmt:formatNumber var="endHour" value="${timeslot.end.hourOfDay}" maxIntegerDigits="2" minIntegerDigits="2"/>
           <fmt:formatNumber var="endMinute" value="${timeslot.end.minuteOfHour}" maxIntegerDigits="2" minIntegerDigits="2"/>
-			<h2>${startHour}:${startMinute} - ${endHour}:${endMinute}</h2>
-			
+<div>
+  <h2>${startHour}:${startMinute} - ${endHour}:${endMinute}</h2>
 
-  <ul class="session-list">
+  <ul class="sessions">
+  <c:set var="rowCount" value="0"/>
 	<c:forEach var="session" items="${i:castToSessionList(sessionsByTimeslot.value)}">
-      <li class="format-${session.format}">
-        ${session.room} <a href="${session.sessionHtmlUrl}">${session.title}</a>
-        &amp;mdash;
-        <span class="speaker-list">
-          <c:forEach var="speaker" varStatus="i" items="${session.speakers}">
-            <c:choose>
-              <c:when test="${not i.last}">${speaker.name}, </c:when>
-              <c:otherwise>${speaker.name}</c:otherwise>
-            </c:choose>
-          </c:forEach>
-        </span>
-        <c:forEach var="label" items="${session.labels}">
-        	<img class="label" title="${label.displayName}" alt="${label.id}" src="${label.iconUrl}"/>
-        </c:forEach>
-        
-        <c:choose>
-          <c:when test="${not (session.level eq null)}">
-          	${session.level.displayName}
-            <img title="${session.level.displayName}" alt="${session.level.displayName}" src="${session.level.iconUrl}"/>
+      <c:choose>
+          <c:when test="${rowCount mod 2 eq 0}">
+                  <c:set var="darkLight" value="dark"/>
           </c:when>
-          <c:otherwise>X</c:otherwise>
-        </c:choose>
+          <c:otherwise>
+                  <c:set var="darkLight" value="light"/>
+          </c:otherwise>
+      </c:choose>
+      <c:set var="rowCount" value="${rowCount+1}"/>
+           <li class="session ${darkLight}">
+          <div class="info">
+             <a href="${session.sessionHtmlUrl}">${session.title}</a>
+            &amp;mdash;
+            <span class="speakers">
+              <c:forEach var="speaker" varStatus="i" items="${session.speakers}">
+                <c:choose>
+                  <c:when test="${not i.last}">${speaker.name}, </c:when>
+                  <c:otherwise>${speaker.name}</c:otherwise>
+                </c:choose>
+              </c:forEach>
+            </span>
+          </div>
+          <div class="legends">
+                <span>${session.room}</span>,
+                <span>Language:</span> zxy,
+                <span>Level:</span> ${session.level.displayName},
+                <span>Labels:</span>
+                <c:forEach var="label" items="${session.labels}">
+                    <img class="label" title="${label.displayName}" alt="${label.id}" src="${label.iconUrl}"/>
+                </c:forEach>
+              
+                <!--
+                <c:choose>
+                  <c:when test="${not (session.level eq null)}">
+                    <img title="${session.level.displayName}" alt="${session.level.displayName}" src="${session.level.iconUrl}"/>
+                  </c:when>
+                  <c:otherwise>X</c:otherwise>
+                </c:choose>
+                -->
+          </div>
       </li>
     </c:forEach>
   </ul>
+ </div>
 
 
-
-		</c:forEach>
-		</c:forEach>
-
-  <h1>All Sessions</h1>
-
-  <!-- ul class="session-list">
-    <c:forEach var="session" items="${i:getSessions(app, eventName)}">
-      <li class="format-${session.format}">
-        ${session.room} <a href="${session.sessionHtmlUrl}">${session.title}</a>
-        &amp;mdash;
-        <span class="speaker-list">
-          <c:forEach var="speaker" varStatus="i" items="${session.speakers}">
-            <c:choose>
-              <c:when test="${not i.last}">${speaker.name}, </c:when>
-              <c:otherwise>${speaker.name}</c:otherwise>
-            </c:choose>
-          </c:forEach>
-        </span>
-      </li>
     </c:forEach>
-  </ul-->
+</c:forEach>
 </div>
 
 </body>
