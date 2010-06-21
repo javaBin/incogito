@@ -1,0 +1,106 @@
+@timeslot_bg_color: #303030;
+@white: #FFF;
+@black: #000;
+@session_dark: #EBFFFF;
+
+h1 {
+  margin: 1em;
+}
+
+h2 {
+  margin:0;
+  padding: 0;
+  border-bottom: 1px solid #000;
+}
+
+h2:hover {
+  background: @timeslot_bg_color;
+  color: @white;
+}
+
+h3 {
+    margin:0.5em;
+    padding:0;
+    font-weight: bold;
+}
+
+ul.sessions {
+  list-style-type: none;
+  margin: 0.5em;
+  padding: 0;
+  display:none;
+
+  .session {
+    margin-left: 0;
+    padding: 0.25em 0.5em 0.35em 0.5em;
+    border-bottom: 1px solid @black;
+
+    .info {
+      a {
+        font-weight: bold;
+      }
+    }
+
+    .speakers {
+      font-style: italic;
+    }
+
+    .legends {
+      font-size: 0.80em;
+
+      span {
+        font-weight: bold;
+      }
+    }
+  }
+
+  .session.dark {
+    background: @session_dark;
+  }
+
+   .session.hide {
+    opacity: 0.3;
+  }
+}
+
+ul.sessions.open {
+ display: list-item;
+}
+
+#filtersContainer {
+  position: absolute;
+  left: 0;
+  width: 200px;
+
+    ul {
+        list-style-type:none;
+        margin:0 0 0 1em;
+        padding:0;
+
+      li{
+        margin:0;
+        padding:0;
+
+        .levels {
+            li {
+              list-style-type: circle;
+              cursor: pointer;
+              cursor: hand;
+
+              :hover {
+                 text-decoration: underline;
+              }
+            }
+
+            li.on {
+                list-style-type: disc;
+            }
+        }
+      } 
+    }
+}
+
+#filtersContainer.fixed {
+  top:0;
+  position:fixed;
+}

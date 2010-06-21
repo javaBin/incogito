@@ -1,0 +1,58 @@
+  h1 { margin: 1em; }
+  h2 {
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid #000000;
+  }
+  h2:hover {
+    background: #303030;
+    color: #ffffff;
+  }
+  h3 {
+    margin: 0.5em;
+    padding: 0;
+    font-weight: bold;
+  }
+  ul.sessions {
+    list-style-type: none;
+    margin: 0.5em;
+    padding: 0;
+    display: none;
+  }
+  ul.sessions .session {
+    margin-left: 0;
+    padding: 0.25em 0.5em 0.35em 0.5em;
+    border-bottom: 1px solid #000000;
+  }
+  ul.sessions .session .info a { font-weight: bold; }
+  ul.sessions .session .speakers { font-style: italic; }
+  ul.sessions .session .legends { font-size: 0.8em; }
+  ul.sessions .session .legends span { font-weight: bold; }
+  ul.sessions .session.dark { background: #ebffff; }
+  ul.sessions .session.hide { opacity: 0.3; }
+  ul.sessions.open { display: list-item; }
+  #filtersContainer {
+    position: absolute;
+    left: 0;
+    width: 200px;
+  }
+  #filtersContainer ul {
+    list-style-type: none;
+    margin: 0 0 0 1em;
+    padding: 0;
+  }
+  #filtersContainer ul li {
+    margin: 0;
+    padding: 0;
+  }
+  #filtersContainer ul li .levels li {
+    list-style-type: circle;
+    cursor: pointer;
+    cursor: hand;
+  }
+  #filtersContainer ul li .levels li:hover { text-decoration: underline; }
+  #filtersContainer ul li .levels li.on { list-style-type: disc; }
+  #filtersContainer.fixed {
+    top: 0;
+    position: fixed;
+  }
