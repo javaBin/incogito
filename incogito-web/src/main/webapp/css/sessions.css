@@ -21,6 +21,15 @@ h3 {
   padding: 0;
   font-weight: bold;
 }
+#expandAll {
+  width: auto;
+  float: right;
+}
+#expandAll a { outline: none; }
+#expandAll a .minimize { display: none; }
+#expandAll a img { padding: 0.35em 0.25em 0 0; }
+#expandAll a.open .expand { display: none; }
+#expandAll a.open .minimize { display: inline; }
 ul.sessions {
   list-style-type: none;
   margin: 0.5em;
@@ -53,6 +62,13 @@ ul.sessions.open { display: list-item; }
 #filtersContainer ul li {
   margin: 0;
   padding: 0;
+}
+#filtersContainer ul li div {
+  color: #ffffff;
+  background: #303030;
+  font-weight: bold;
+  padding: 0.35em;
+  margin: 0.25em 0 0.25em 0;
 }
 #filtersContainer ul li .levels li {
   list-style-type: circle;

@@ -61,6 +61,7 @@
             
         </div>
         <div id="main-content">
+            <div id="expandAll"><a href="#"><img src="${incogito.baseurl}/images/icons/plus.png" class="expand" alt="expand"/> <img src="${incogito.baseurl}/images/icons/minus.png" class="minimize" alt="minimize"/> <span class="expand">Expand</span><span class="minimize">Close</span> all sessions</a></div>
             <c:forEach var="day" items="${sessionListNy.sessionsByTimeslotByDate}">
 
                 <h1>${day.key}</h1>
