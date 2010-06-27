@@ -13,6 +13,10 @@ To develop Incogito you need:
 
     $ cat ems-20090828-000000.tar.gz | (cd incogito-ems-server/target && tar zxfv - && mv database ems-home)
 
+    or this if you're using a later backup:
+
+    $ cat ems-20100627-000000-stripped.tar.gz | (cd incogito-ems-server/target/ems-home && tar zxfv -)
+
     We have a special Maven module that embeds a complete EMS server which you
     can run like this:
 
