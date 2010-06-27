@@ -108,25 +108,24 @@
                                     </div>
                                     <div class="legends">
                                         <span>${session.room}</span>,
-                                        <span>Language:</span>
-                                        zxy,
-                                        <span class="level level-${session.level.displayName}">Level:</span>
-                                        ${session.level.displayName},
-                                        <span>Labels:</span>
-                                        <c:forEach var="label" items="${session.labels}">
-                                            <img class="label label-${label.id}" title="${label.displayName}" alt="${label.id}"
-                                                 src="${label.iconUrl}"/>
-                                        </c:forEach>
-
-
-                                        <!--<c:choose>
+                                        
+                                        <span class="level level-${session.level.displayName}">Level: </span>
+                                        <c:choose>
                                             <c:when test="${not (session.level eq null)}">
                                                 <img title="${session.level.displayName}"
                                                      alt="${session.level.displayName}" src="${session.level.iconUrl}"/>
                                             </c:when>
-                                            <c:otherwise>X</c:otherwise>
-                                        </c:choose>-->
-
+                                        </c:choose>
+                                        
+                                        <c:choose>
+          									<c:when test="${fn:length(session.labels) gt 0}">
+		                                        <span>  Labels:</span>
+		                                        <c:forEach var="label" items="${session.labels}">
+		                                            <img class="label label-${label.id}" title="${label.displayName}" alt="${label.id}"
+		                                                 src="${label.iconUrl}"/>
+		                                        </c:forEach>
+                                        	</c:when>
+                                        </c:choose>
                                     </div>
                                 </li>
                             </c:forEach>
