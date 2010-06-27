@@ -1,4 +1,3 @@
 # CSS files created with LESS ( http://lesscss.org/ )
-
-# LESS requires Ruby, to install:
-sudo gem install less
+# Requires: Less, Rake
+# Build all less-files with Rake

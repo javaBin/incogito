@@ -25,6 +25,7 @@ $(document).ready(function(){
     });
 
     jB.filter.levelListener();
+    jB.filter.labelListener();
 });
 
 /**
@@ -57,10 +58,11 @@ jB.filter.hideNotIn = function(labels,type){
 
     // Loop thru all labels for the session
     $(sessionClasses).each(function() {
-      var labelsString = $(this).attr("class").toLowerCase();
+      var labelsString = $(this).attr("class");
       var sessionHas = labelsString.split(" ");
       $(sessionHas).each(function(){
-          // If session has one of the labels
+          // If session has at least one of the labels
+
           if ($.inArray(this.toString(), labels) > -1) {
             hideSession = false;
 
@@ -72,17 +74,58 @@ jB.filter.hideNotIn = function(labels,type){
 
     // If session matches no selected tags, hide it
     if (hideSession) {
-      $(this).addClass("hide");
+      $(this).addClass(type+"-hide");
     } else {
-      $(this).removeClass("hide");
+      $(this).removeClass(type+"-hide");
     }
   });
 };
 
 jB.filter.levelListener = function(){
   $(".filter.levels li").click(function(){
+       if($(".filter.levels li.off").length == 0){
+          $(".filter.levels li").each(function(){
+            $(this).toggleClass("on");
+            $(this).toggleClass("off");
+          });
+       }
+
        $(this).toggleClass("on");
+       $(this).toggleClass("off"); 
+
+       if($(".filter.levels li.on").length == 0){
+          $(".filter.levels li").each(function(){
+            $(this).toggleClass("on");
+            $(this).toggleClass("off");
+          });
+       }
+       
        var labels = jB.filter.findEnabled($(this).parent());
        jB.filter.hideNotIn(labels,"level");
-  });
+    });
+};
+
+jB.filter.labelListener = function(){
+  $(".filter.labels li a").click(function(e){
+       if($(".filter.labels li.off").length == 0){
+          $(".filter.labels li").each(function(){
+            $(this).toggleClass("on");
+            $(this).toggleClass("off");
+          });
+       }
+
+       $(this).parent().toggleClass("on");
+       $(this).parent().toggleClass("off"); 
+
+       if($(".filter.labels li.on").length == 0){
+          $(".filter.labels li").each(function(){
+            $(this).toggleClass("on");
+            $(this).toggleClass("off");
+          });
+       }
+
+       var labels = jB.filter.findEnabled($(this).parent().parent());
+       jB.filter.hideNotIn(labels,"label");
+       e.preventDefault();
+    });
 };
