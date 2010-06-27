@@ -63,7 +63,7 @@
         <div id="main-content">
             <c:forEach var="day" items="${sessionListNy.sessionsByTimeslotByDate}">
 
-                <h1>${day.key}</h1>
+                <h1>${i:formatDate(day.key)}</h1>
 
                 <c:forEach var="sessionsByTimeslot"
                            items="${i:mapGet(sessionListNy.sessionsByTimeslotByDate, day.key)}">

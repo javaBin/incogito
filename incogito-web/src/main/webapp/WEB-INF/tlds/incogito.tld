@@ -92,4 +92,9 @@
     <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
     <function-signature>no.java.incogito.dto.ScheduleXml getSchedule(no.java.incogito.application.IncogitoApplication,java.lang.String,java.lang.String)</function-signature>
   </function>
+  <function>
+    <name>formatDate</name>
+    <function-class>no.java.incogito.web.servlet.IncogitoFunctions</function-class>
+    <function-signature>java.lang.String formatDate(org.joda.time.LocalDate)</function-signature>
+  </function>
 </taglib>

@@ -1,28 +1,31 @@
 package no.java.incogito.web.servlet;
 
-import fj.F;
-import fj.data.List;
 import static fj.data.Option.fromNull;
-import fj.data.TreeMap;
+import static no.java.incogito.web.resources.XmlFunctions.sessionToXml;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
+
 import no.java.incogito.application.IncogitoApplication;
 import no.java.incogito.domain.IncogitoUri;
-import no.java.incogito.domain.IncogitoUri.IncogitoRestEventsUri.IncogitoRestEventUri;
-import no.java.incogito.domain.IncogitoUri.IncogitoEventsUri.IncogitoEventUri;
 import no.java.incogito.domain.Schedule;
+import no.java.incogito.domain.IncogitoUri.IncogitoEventsUri.IncogitoEventUri;
+import no.java.incogito.domain.IncogitoUri.IncogitoRestEventsUri.IncogitoRestEventUri;
 import no.java.incogito.dto.EventXml;
 import no.java.incogito.dto.ScheduleXml;
 import no.java.incogito.dto.SessionXml;
 import no.java.incogito.web.WebFunctions;
 import no.java.incogito.web.resources.XmlFunctions;
-import static no.java.incogito.web.resources.XmlFunctions.sessionToXml;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.Collection;
 
 import org.joda.time.Interval;
+import org.joda.time.LocalDate;
+
+import fj.F;
+import fj.data.List;
+import fj.data.TreeMap;
 
 /**
  * Taglib functions.
@@ -142,5 +145,10 @@ public class IncogitoFunctions {
         IncogitoEventUri eventUri = uri.events().eventUri(eventName);
         F<Schedule, ScheduleXml> scheduleToXml = XmlFunctions.scheduleToXml.f(restEventUri).f(eventUri);
         return app.getSchedule(urlDecode(eventName), fromNull(userName)).ok().map(scheduleToXml).value();
+    }
+    
+    public static String formatDate(LocalDate date) {
+    	return date.toString("EEE d MMMM");
+    	
     }
 }
