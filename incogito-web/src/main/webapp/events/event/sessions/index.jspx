@@ -3,354 +3,123 @@
       xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:c="http://java.sun.com/jsp/jstl/core"
       xmlns:i="http://taglib.java.no/incogito"
-      xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"      
-      xmlns:security="http://www.springframework.org/security/tags">
-<jsp:directive.page pageEncoding="utf-8" contentType="text/html;charset=utf-8"/>
-<jsp:useBean id="incogito" type="no.java.incogito.application.IncogitoConfiguration" scope="request"/>
-<jsp:useBean id="app" type="no.java.incogito.application.IncogitoApplication" scope="application"/>
-<jsp:useBean id="eventName" type="java.lang.String" scope="request"/>
-<c:set var="eventName" value="${i:urlDecode(eventName)}"/>
-<c:set var="sessionListNy" value="${i:getSessionList(app, eventName, pageContext.request.remoteUser)}"/>
+      xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+      xmlns:security="http://www.springframework.org/security/tags"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://taglib.java.no/incogito ">
+    <jsp:directive.page pageEncoding="utf-8" contentType="text/html;charset=utf-8"/>
+    <jsp:useBean id="incogito" type="no.java.incogito.application.IncogitoConfiguration" scope="request"/>
+    <jsp:useBean id="app" type="no.java.incogito.application.IncogitoApplication" scope="application"/>
+    <jsp:useBean id="eventName" type="java.lang.String" scope="request"/>
+    <c:set var="eventName" value="${i:urlDecode(eventName)}"/>
+    <c:set var="sessionListNy" value="${i:getSessionList(app, eventName, pageContext.request.remoteUser)}"/>
+    <c:set var="event" value="${i:getEventByName(app, eventName)}"/>
 
-<head>
-  <title>Sessions for ${eventName} - </title>
-  <style type="text/css">
-    h1 {
-      margin: 1em;
-      }
-    h2 {
-      margin:0;
-      padding: 0;
-      border-bottom: 1px solid #000;
-      }
+    <head>
+        <title>Sessions for ${eventName} -</title>
+        <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/rest/events/${eventName}/session.css"/>
+        <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/sessions.css"/>
+        <script src="${incogito.baseurl}/js/jquery-1.3.2.js" type="text/javascript"><!-- space --></script>
+        <script src="${incogito.baseurl}/js/jquery.inview.js" type="text/javascript"><!-- space --></script>
+        <script src="${incogito.baseurl}/js/incogito-sessions.js" type="text/javascript"><!-- space --></script>
+    </head>
 
-
-    h2:hover {
-      background: #303030;
-      color: #FFF;
-      }
-
-    ul.sessions {
-      list-style-type: none;
-      margin: 0.5em;
-      padding: 0;
-      display:none;
-      }
-
-    ul.sessions.open {
-      display: list-item;
-      }
-
-    ul.sessions li.session {
-      margin-left: 0;
-      padding: 0.25em 0.5em 0.35em 0.5em;
-      border-bottom: 1px solid #000000;
-    }
-
-    ul.sessions li div a {
-      font-weight: bold;
-    }
-
-    li.session.dark {
-        background: #EBFFFF;  
-    }
-
-    .session .speakers {
-      font-style: italic;
-    }
-
-    .legends {
-      font-size: 0.80em;
-    }
-
-    .legends span {
-      font-weight: bold;
-    }
-
-    #filtersContainer {
-      position: absolute;
-      left: 0;
-      width: 200px;
-    }
-
-    #filtersContainer.fixed {
-      top:0;
-      position:fixed;
-     }
-  </style>
-     <script src="${incogito.baseurl}/js/jquery-1.3.2.js" type="text/javascript"><!-- space --></script>
-     <script type="text/javascript">
-     <![CDATA[
-        $(document).ready(function(){
-            /**
-            * toggle show/hide time slot content
-            */
-            $("h2").click(function(e){
-                $(this).toggleClass("open");
-                $(this).parent().find(".sessions").each(function(){
-                    $(this).toggleClass("open");
-                });
-                e.preventDefault();
-            });
-
-            /**
-            * Filter menu always in view
-            */
-
-            $("#header").bind('inview', function(event,inview){
-                if(inview){
-                    if($("#filtersContainer").hasClass("fixed")){
-                        $("#filtersContainer").removeClass("fixed");
-                    }
-                }else {
-                    $("#filtersContainer").addClass("fixed");
-                }
-            });
-
-            jB.filter.levelListener();
-        });
-
-            /**
-            * Filter - Level
-            */
-            jB = {};
-
-            jB.filter = {};
-
-            // requires structure "keyword on"
-            jB.filter.findEnabled = function(elm){
-              var labels = [];
-
-              // Find all active labels and add to the filter
-              $(".on", elm).each(function() {
-                var classes = $(this).attr("class");
-                labels.push(classes.split(" ")[0]);
-              });
-
-              return labels;
-            };
-
-            jB.filter.hideNotIn = function(labels,type){
-         
-              $(".session").each(function() {
-                // Get all labels for current session
-                var sessionClasses = $(".legends ."+type, this);
-
-                var hideSession = true;
-
-                // Loop thru all labels for the session
-                $(sessionClasses).each(function() {
-                  var labelsString = $(this).attr("class").toLowerCase();
-                  var sessionHas = labelsString.split(" ");
-                  $(sessionHas).each(function(){
-                      // If session has one of the labels
-                      if ($.inArray(this.toString(), labels) > -1) {
-                        hideSession = false;
-
-                        // Exit loop
-                        return false;
-                      }
-                  });
-                });
-
-                // If session matches no selected tags, hide it
-                if (hideSession) {
-                  $(this).addClass("hidden");
-                } else {
-                  $(this).removeClass("hidden");
-                }
-              });
-            };
-
-            jB.filter.levelListener = function(){
-              $(".filter.levels li").click(function(){
-                   $(this).toggleClass("on");
-                   var labels = jB.filter.findEnabled($(this).parent());
-                   jB.filter.hideNotIn(labels,"level");
-              });
-            };
-            
-
-/**
- * author Remy Sharp
- * url http://remysharp.com/2009/01/26/element-in-view-event-plugin/
- */
-(function ($) {
-    function getViewportHeight() {
-        var height = window.innerHeight; // Safari, Opera
-        var mode = document.compatMode;
-
-        if ( (mode || !$.support.boxModel) ) { // IE, Gecko
-            height = (mode == 'CSS1Compat') ?
-            document.documentElement.clientHeight : // Standards
-            document.body.clientHeight; // Quirks
-        }
-
-        return height;
-    }
-
-    $(window).scroll(function () {
-        var vpH = getViewportHeight(),
-            scrolltop = (document.documentElement.scrollTop ?
-                document.documentElement.scrollTop :
-                document.body.scrollTop),
-            elems = [];
-
-        // naughty, but this is how it knows which elements to check for
-        $.each($.cache, function () {
-            if (this.events && this.events.inview) {
-                elems.push(this.handle.elem);
-            }
-        });
-
-        if (elems.length) {
-            $(elems).each(function () {
-                var $el = $(this),
-                    top = $el.offset().top,
-                    height = $el.height(),
-                    inview = $el.data('inview') || false;
-
-                if (scrolltop > (top + height) || scrolltop + vpH < top) {
-                    if (inview) {
-                        $el.data('inview', false);
-                        $el.trigger('inview', [ false ]);
-                    }
-                } else if (scrolltop < (top + height)) {
-                    if (!inview) {
-                        $el.data('inview', true);
-                        $el.trigger('inview', [ true ]);
-                    }
-                }
-            });
-        }
-    });
-
-    // kick the event to pick up any elements already in view.
-    // note however, this only works if the plugin is included after the elements are bound to 'inview'
-    $(function () {
-        $(window).scroll();
-    });
-})(jQuery);
-]]>
-    </script>
-
-<style type="text/css">
-    #filtersContainer ul {
-        list-style-type:none;
-        margin:0 0 0 1em;
-        padding:0;
-    }
-
-    #filtersContainer ul li{
-        margin:0;
-        padding:0;
-    }
-
-    #filtersContainer .levels li {
-        list-style-type: circle;
-        cursor: pointer;
-        cursor: hand;
-    }
-
-    #filtersContainer .levels li:hover {
-        text-decoration: underline;
-
-    }
-
-    #filtersContainer .levels li.on {
-        list-style-type: disc;
-    }
-
-    h3 {
-        margin:0.5em;
-        padding:0;
-        font-weight: bold;
-    }
-</style>
-</head>
-
-<body>
-<div id="filtersContainer">
-    <h3>Filters</h3>
-    <ul>
-        <li>
-            <div>Levels</div>
-            <ul class="filter levels">
-                <li class="introductory on">Introductory</li>
-                <li class="intermediate on">Intermediate</li>
-                <li class="advanced on">Advanced</li>
+    <body>
+        <div id="filtersContainer">
+            <h3>Filters</h3>
+            <ul>
+                <li>
+                    <div>Levels</div>
+                    <ul class="filter levels">
+                        <li class="level-Introductory on">Introductory</li>
+                        <li class="level-Intermediate on">Intermediate</li>
+                        <li class="level-Advanced on">Advanced</li>
+                    </ul>
+                    <div>Labels</div>
+                    <ul class="filter labels">
+          <c:forEach var="label" items="${event.labels}">
+            <li class="label-${label.id} on"><a href="#">${label.displayName}</a></li>
+          </c:forEach>
+                    </ul>
+                </li>
             </ul>
-        </li>
-    </ul>
-</div>
-<div id="main-content">
-<c:forEach var="day" items="${sessionListNy.sessionsByTimeslotByDate}">
+        </div>
+        <div id="main-content">
+            <c:forEach var="day" items="${sessionListNy.sessionsByTimeslotByDate}">
 
-	<h1> ${day.key}</h1>
-	
-	<c:forEach var="sessionsByTimeslot" items="${i:mapGet(sessionListNy.sessionsByTimeslotByDate, day.key)}">
-	
-			<c:set var="timeslot"  value="${sessionsByTimeslot.key}"/>
-	
-          <fmt:formatNumber var="startHour" value="${timeslot.start.hourOfDay}" maxIntegerDigits="2" minIntegerDigits="2"/>
-          <fmt:formatNumber var="startMinute" value="${timeslot.start.minuteOfHour}" maxIntegerDigits="2" minIntegerDigits="2"/>
-          <fmt:formatNumber var="endHour" value="${timeslot.end.hourOfDay}" maxIntegerDigits="2" minIntegerDigits="2"/>
-          <fmt:formatNumber var="endMinute" value="${timeslot.end.minuteOfHour}" maxIntegerDigits="2" minIntegerDigits="2"/>
-<div>
-  <h2>${startHour}:${startMinute} - ${endHour}:${endMinute}</h2>
+                <h1>${day.key}</h1>
 
-  <ul class="sessions">
-  <c:set var="rowCount" value="0"/>
-	<c:forEach var="session" items="${i:castToSessionList(sessionsByTimeslot.value)}">
-      <c:choose>
-          <c:when test="${rowCount mod 2 eq 0}">
-                  <c:set var="darkLight" value="dark"/>
-          </c:when>
-          <c:otherwise>
-                  <c:set var="darkLight" value="light"/>
-          </c:otherwise>
-      </c:choose>
-      <c:set var="rowCount" value="${rowCount+1}"/>
-           <li class="session ${darkLight}">
-          <div class="info">
-             <a href="${session.sessionHtmlUrl}">${session.title}</a>
-            &amp;mdash;
-            <span class="speakers">
-              <c:forEach var="speaker" varStatus="i" items="${session.speakers}">
-                <c:choose>
-                  <c:when test="${not i.last}">${speaker.name}, </c:when>
-                  <c:otherwise>${speaker.name}</c:otherwise>
-                </c:choose>
-              </c:forEach>
-            </span>
-          </div>
-          <div class="legends">
-                <span>${session.room}</span>,
-                <span>Language:</span> zxy,
-                <span class="level ${session.level.displayName}">Level:</span> ${session.level.displayName},
-                <span>Labels:</span>
-                <c:forEach var="label" items="${session.labels}">
-                    <img class="label" title="${label.displayName}" alt="${label.id}" src="${label.iconUrl}"/>
+                <c:forEach var="sessionsByTimeslot"
+                           items="${i:mapGet(sessionListNy.sessionsByTimeslotByDate, day.key)}">
+
+                    <c:set var="timeslot" value="${sessionsByTimeslot.key}"/>
+
+                    <fmt:formatNumber var="startHour" value="${timeslot.start.hourOfDay}" maxIntegerDigits="2"
+                                      minIntegerDigits="2"/>
+                    <fmt:formatNumber var="startMinute" value="${timeslot.start.minuteOfHour}" maxIntegerDigits="2"
+                                      minIntegerDigits="2"/>
+                    <fmt:formatNumber var="endHour" value="${timeslot.end.hourOfDay}" maxIntegerDigits="2"
+                                      minIntegerDigits="2"/>
+                    <fmt:formatNumber var="endMinute" value="${timeslot.end.minuteOfHour}" maxIntegerDigits="2"
+                                      minIntegerDigits="2"/>
+                    <div>
+                        <h2><img src="${incogito.baseurl}/images/icons/plus.png" class="expand" alt="expand"/> <img src="${incogito.baseurl}/images/icons/minus.png" class="minimize" alt="minimize"/> ${startHour}:${startMinute} - ${endHour}:${endMinute}</h2>
+
+                        <ul class="sessions">
+                            <c:set var="rowCount" value="0"/>
+                            <c:forEach var="session" items="${i:castToSessionList(sessionsByTimeslot.value)}">
+                                <c:choose>
+                                    <c:when test="${rowCount mod 2 eq 0}">
+                                        <c:set var="darkLight" value="dark"/>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:set var="darkLight" value="light"/>
+                                    </c:otherwise>
+                                </c:choose>
+                                <c:set var="rowCount" value="${rowCount+1}"/>
+                                <li class="session ${darkLight}">
+                                    <div class="info">
+                                        <a href="${session.sessionHtmlUrl}">${session.title}</a>
+                                        &amp;mdash;
+                                        <span class="speakers">
+                                            <c:forEach var="speaker" varStatus="i" items="${session.speakers}">
+                                                <c:choose>
+                                                    <c:when test="${not i.last}">${speaker.name},</c:when>
+                                                    <c:otherwise>${speaker.name}</c:otherwise>
+                                                </c:choose>
+                                            </c:forEach>
+                                        </span>
+                                    </div>
+                                    <div class="legends">
+                                        <span>${session.room}</span>,
+                                        <span>Language:</span>
+                                        zxy,
+                                        <span class="level level-${session.level.displayName}">Level:</span>
+                                        ${session.level.displayName},
+                                        <span>Labels:</span>
+                                        <c:forEach var="label" items="${session.labels}">
+                                            <img class="label label-${label.id}" title="${label.displayName}" alt="${label.id}"
+                                                 src="${label.iconUrl}"/>
+                                        </c:forEach>
+
+
+                                        <!--<c:choose>
+                                            <c:when test="${not (session.level eq null)}">
+                                                <img title="${session.level.displayName}"
+                                                     alt="${session.level.displayName}" src="${session.level.iconUrl}"/>
+                                            </c:when>
+                                            <c:otherwise>X</c:otherwise>
+                                        </c:choose>-->
+
+                                    </div>
+                                </li>
+                            </c:forEach>
+                        </ul>
+                    </div>
+
+
                 </c:forEach>
-              
-                <!--
-                <c:choose>
-                  <c:when test="${not (session.level eq null)}">
-                    <img title="${session.level.displayName}" alt="${session.level.displayName}" src="${session.level.iconUrl}"/>
-                  </c:when>
-                  <c:otherwise>X</c:otherwise>
-                </c:choose>
-                -->
-          </div>
-      </li>
-    </c:forEach>
-  </ul>
- </div>
+            </c:forEach>
+        </div>
 
-
-    </c:forEach>
-</c:forEach>
-</div>
-
-</body>
+    </body>
 </html>

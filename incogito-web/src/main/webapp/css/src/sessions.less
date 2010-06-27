@@ -9,13 +9,34 @@ h1 {
 
 h2 {
   margin:0;
-  padding: 0;
+  padding:0 0 0 0.25em;
   border-bottom: 1px solid #000;
+
+  img {
+    padding: 0.25em 0 0 0;
+  }
+
+  img.minimize {
+    display: none;
+  }
+}
+
+h2.open {
+    color: @white;
+    background-color: @timeslot_bg_color;
+
+    img.expand {
+        display:none;
+    }
+
+    img.minimize {
+        display: inline;
+    }
 }
 
 h2:hover {
-  background: @timeslot_bg_color;
   color: @white;
+  background-color: @timeslot_bg_color;
 }
 
 h3 {
@@ -58,7 +79,10 @@ ul.sessions {
     background: @session_dark;
   }
 
-   .session.hide {
+   .session.level-hide {
+    opacity: 0.3;
+  }
+ .session.label-hide {
     opacity: 0.3;
   }
 }
@@ -92,8 +116,36 @@ ul.sessions.open {
               }
             }
 
-            li.on {
+            .on {
                 list-style-type: disc;
+            }
+
+            .off {
+                list-style-image: none;
+            }
+        }
+        .labels {
+            li {
+              list-style-type: circle;
+              cursor: pointer;
+              cursor: hand;
+
+              :hover {
+                 text-decoration: underline;
+              }
+
+              a {
+                display: block;
+                outline: none;
+              }
+            }
+
+            .on {
+                list-style-type: disc;
+            }
+
+            .off {
+                list-style-image: none;
             }
         }
       } 
