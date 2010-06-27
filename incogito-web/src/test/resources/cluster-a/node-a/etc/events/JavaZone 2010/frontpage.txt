@@ -1,0 +1,8 @@
+<h1>JavaZone 2010</h1>
+<p>
+Welcome to the JavaZone 2010 agenda application Incogito. 
+</p>
+
+<p>
+Hva ønsker vi egentlig at det skal stå her??
+</p>
