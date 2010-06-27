@@ -27,19 +27,22 @@ public class IncogitoConfiguration {
     public static final List<EventConfiguration> emptyEventConfigurations = nil();
     public final String baseurl;
     public final CssConfiguration cssConfiguration;
+    public final Option<String> frontPageText;
+    public final Option<String> aboutText;
     public final List<EventConfiguration> eventConfigurations;
 
-    public IncogitoConfiguration(String baseurl, CssConfiguration cssConfiguration,
+    public IncogitoConfiguration(String baseurl, CssConfiguration cssConfiguration, Option<String> frontPageText, Option<String> aboutText,
                                  List<EventConfiguration> eventConfigurations) {
         this.baseurl = baseurl;
         this.cssConfiguration = cssConfiguration;
+        this.frontPageText = frontPageText;
+        this.aboutText = aboutText;
         this.eventConfigurations = eventConfigurations;
     }
 
     public static class EventConfiguration {
         public final String name;
         public final Option<String> blurb;
-        public final Option<String> frontPageText;
         public final List<P2<LocalDate, DayConfiguration>> dayConfigurations;
         public List<Room> presentationRooms;
         public final List<Label> labels;
@@ -47,12 +50,11 @@ public class IncogitoConfiguration {
         public final TreeMap<LevelId, Level> levels;
         private final long timestamp;
 
-        public EventConfiguration(String name, Option<String> blurb, Option<String> frontPageText,
+        public EventConfiguration(String name, Option<String> blurb,
                                   List<P2<LocalDate, DayConfiguration>> dayConfigurations, List<Room> presentationRooms,
                                   List<Label> labels, TreeMap<LevelId, Level> levels, long timestamp) {
             this.name = name;
             this.blurb = blurb;
-            this.frontPageText = frontPageText;
             this.dayConfigurations = dayConfigurations;
             this.presentationRooms = presentationRooms;
             this.labels = labels;
@@ -86,11 +88,19 @@ public class IncogitoConfiguration {
     public String getBaseurl() {
         return baseurl;
     }
+    
+    public String getFrontPageText() {
+        return frontPageText.orSome((String) null);
+    }
+    
+    public String getAboutText() {
+    	return aboutText.orSome((String) null);
+    }
 
     public Option<EventConfiguration> findEventConfigurationByName(String name) {
         return eventConfigurations.find(compose(Functions.equals.f(name), EventConfiguration.name_));
     }
 
     public static final IncogitoConfiguration unconfigured = new IncogitoConfiguration("http://unconfigured",
-        defaultCssConfiguration, emptyEventConfigurations);
+        defaultCssConfiguration,Option.<String>none(), Option.<String>none(), emptyEventConfigurations);
 }

@@ -140,7 +140,6 @@ public class XmlFunctions {
                     event.id.toString(),
                     event.name,
                     event.blurb,
-                    event.frontpageContent,
                     eventUri.toString(),
                     eventUri.sessionListHtml(),
                     eventUri.calendarHtml(),

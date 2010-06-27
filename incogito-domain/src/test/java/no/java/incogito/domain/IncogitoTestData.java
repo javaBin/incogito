@@ -62,7 +62,6 @@ public class IncogitoTestData {
     public static final Event javaZone2008 = new Event(EventId.eventId(UUID.randomUUID().toString()),
             "JavaZone 2008",
             Option.<String>none(),
-            Option.<String>none(),
             List.<Room>nil(),
             jz08Dates,
             jz08RoomsByDate,

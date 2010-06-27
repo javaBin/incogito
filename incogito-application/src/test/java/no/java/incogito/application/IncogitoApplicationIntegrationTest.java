@@ -70,6 +70,9 @@ public class IncogitoApplicationIntegrationTest {
     @Autowired
     @Qualifier("incogitoHome")
     File incogitoHome;
+    
+    @Autowired
+    ConfigurationLoaderService configurationLoaderService;
 
     DataGenerator.DataSet1 dataSet;
 
@@ -146,45 +149,29 @@ public class IncogitoApplicationIntegrationTest {
 //    }
 
     @Test
-    public void testFrontPageTexts() throws Exception {
-        // Gah .. since the events are generated dynamically, we have to create a properties file for the app to load
+    public void testFrontPageTextAndAboutText() throws Exception {
 
-        String text = "Welcome to JavaZone 2008!";
-
+        String ftext = "Some text content for front page!";
+        String atext = "Some text content for about page!";
+        
         assertNotNull(incogitoHome);
         assertTrue(incogitoHome.isDirectory());
 
         File etc = new File(incogitoHome, "etc");
-        File incogitoPropertiesFile = new File(etc, "incogito.properties");
-        File jz08Directory = new File(etc, "events/" + dataSet.javaZone2008.getName());
-        FileUtils.deleteDirectory(jz08Directory);
-        assertTrue(jz08Directory.mkdirs());
-        //noinspection ResultOfMethodCallIgnored
-        jz08Directory.mkdirs();
-        File jz08Welcome = new File(jz08Directory, "frontpage.txt");
-        File jz08PropertiesFile = new File(jz08Directory, "event.properties");
+        File frontPageText = new File(etc, "frontpage.txt");
+        File aboutText = new File(etc, "about.txt");
+        
+        IO.runFileOutputStream(stringToStream.f(ftext), frontPageText).call();
+        IO.runFileOutputStream(stringToStream.f(atext), aboutText).call();
+        
+        IncogitoConfiguration config = configurationLoaderService.loadConfiguration(incogitoHome, IncogitoConfiguration.unconfigured);
+        
+        assertTrue(config.getFrontPageText() != null);
+        assertEquals(ftext, config.getFrontPageText());
 
-        TreeMap<String, String> incogitoProperties = TreeMap.<String, String>empty(Ord.stringOrd).
-            set("baseurl", "http://poop").
-            set("events", dataSet.javaZone2008.getName() + ",");
-        IO.runFileOutputStream(storePropertiesMap.f(incogitoProperties), incogitoPropertiesFile).call();
+        assertTrue(config.getAboutText() != null);
+        assertEquals(atext, config.getAboutText());
 
-        TreeMap<String, String> jz08Properties = TreeMap.<String, String>empty(Ord.stringOrd).
-            set("dates", "2008-09-17, 2008-09-18").
-            set("rooms.2008-09-17", "Lab I, Lab II").
-            set("rooms.2008-09-18", "Lab I, Lab II, BoF");
-        IO.runFileOutputStream(storePropertiesMap.f(jz08Properties), jz08PropertiesFile).call();
-
-        IO.runFileOutputStream(stringToStream.f(text), jz08Welcome).call();
-
-        incogito.reloadConfiguration();
-
-        OperationResult<Event> operationResult = incogito.getEventByName(dataSet.javaZone2008.getName());
-        assertTrue(operationResult.isOk());
-        Event jz08 = operationResult.value();
-
-        assertTrue(jz08.frontpageContent.isSome());
-        assertEquals(text, jz08.frontpageContent.some());
     }
 
     @Test
@@ -214,8 +201,8 @@ public class IncogitoApplicationIntegrationTest {
         for (UserId userId : Stream.range(0, nUsers).map(Show.intShow.showS_()).map(UserId.userId)) {
 
             // Select an event
+        	
             Event event = events.index(numbers.head() % eventCount);
-
             List<Session> sessions = sessionMap.get(event.id).some();
 
             int nSessions = sessions.length();
@@ -258,5 +245,5 @@ public class IncogitoApplicationIntegrationTest {
         sessionShow.println(sessions);
 
         // TODO: Add asserts for change of attendance and removal
-    }
+    }    
 }

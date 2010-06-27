@@ -1,0 +1,11 @@
+  <h1>Welcome!</h1>
+
+  <p>
+    Hi and welcome to the JavaZone schedule application!
+    
+    
+    
+    JAAAA! Her er frontsideteksten!
+    
+    Denne kan formuleres litt nyhetslignende :)
+  </p>

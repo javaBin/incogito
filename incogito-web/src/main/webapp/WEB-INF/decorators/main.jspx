@@ -94,7 +94,7 @@
       </h1>
     </c:forEach>
     <h1 class="event-title ${aboutCss}">
-        <a href="${incogito.baseurl}">About</a>
+        <a href="${incogito.baseurl}/about">About</a>
     </h1>
   </div>
   <div class="head-blurb">
