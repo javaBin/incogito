@@ -6,7 +6,7 @@
     <version>2010.1-SNAPSHOT</version>
   </parent>
   <artifactId>incogito-voldemort</artifactId>
-  <name>Incogito 2009 :: Voldemort</name>
+  <name>Incogito 2010 :: Voldemort</name>
   <dependencies>
     <dependency>
       <groupId>org.slf4j</groupId>

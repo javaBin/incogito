@@ -6,7 +6,7 @@
     <version>2010.1-SNAPSHOT</version>
   </parent>
   <artifactId>incogito-domain</artifactId>
-  <name>Incogito 2009 :: Domain</name>
+  <name>Incogito 2010 :: Domain</name>
   <dependencies>
     <dependency>
       <groupId>javax.ws.rs</groupId>

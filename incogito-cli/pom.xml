@@ -6,7 +6,7 @@
     <version>2010.1-SNAPSHOT</version>
   </parent>
   <artifactId>incogito-cli</artifactId>
-  <name>Incogito 2009 :: Command Line Interface</name>
+  <name>Incogito 2010 :: Command Line Interface</name>
   <dependencies>
     <dependency>
       <groupId>no.java.incogito</groupId>

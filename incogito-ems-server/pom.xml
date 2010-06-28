@@ -6,7 +6,7 @@
     <version>2010.1-SNAPSHOT</version>
   </parent>
   <artifactId>incogito-ems-server</artifactId>
-  <name>Incogito 2009 :: EMS Server</name>
+  <name>Incogito 2010 :: EMS Server</name>
   <dependencies>
     <dependency>
       <groupId>no.java.ems</groupId>

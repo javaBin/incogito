@@ -6,7 +6,7 @@
     <version>2010.1-SNAPSHOT</version>
   </parent>
   <artifactId>incogito-dto</artifactId>
-  <name>Incogito 2009 :: DTO</name>
+  <name>Incogito 2010 :: DTO</name>
   <dependencies>
     <dependency>
       <groupId>javax.xml.bind</groupId>

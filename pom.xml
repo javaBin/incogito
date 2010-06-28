@@ -9,7 +9,7 @@
   <artifactId>incogito</artifactId>
   <version>2010.1-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>Incogito 2009</name>
+  <name>Incogito 2010</name>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -238,7 +238,7 @@
     <module>incogito-ems-client</module>
     <module>incogito-ems-server</module>
     <module>incogito-pkg-munin</module>
-    <module>incogito-pkg-web09</module>
+    <module>incogito-pkg-web10</module>
     <module>incogito-util</module>
     <module>incogito-voldemort</module>
     <module>incogito-web</module>

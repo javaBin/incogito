@@ -6,7 +6,7 @@
     <version>2010.1-SNAPSHOT</version>
   </parent>
   <artifactId>incogito-ems-client</artifactId>
-  <name>Incogito 2009 :: EMS Client</name>
+  <name>Incogito 2010 :: EMS Client</name>
   <dependencies>
     <dependency>
       <groupId>org.slf4j</groupId>

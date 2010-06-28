@@ -6,7 +6,7 @@
     <version>2010.1-SNAPSHOT</version>
   </parent>
   <artifactId>incogito-pkg-munin</artifactId>
-  <name>Incogito 2009 :: Native Package :: Munin</name>
+  <name>Incogito 2010 :: Native Package :: Munin</name>
   <packaging>unix-zip</packaging>
   <dependencies>
     <dependency>

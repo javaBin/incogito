@@ -6,7 +6,7 @@
     <version>2010.1-SNAPSHOT</version>
   </parent>
   <artifactId>incogito-util</artifactId>
-  <name>Incogito 2009 :: Utilities</name>
+  <name>Incogito 2010 :: Utilities</name>
   <dependencies>
     <dependency>
       <groupId>org.slf4j</groupId>
