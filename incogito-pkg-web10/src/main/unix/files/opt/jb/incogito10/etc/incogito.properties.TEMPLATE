@@ -1,6 +1,6 @@
 ems.url=http://localhost:3000/ems
-incogito.home=/opt/jb/incogito09
-voldemort.home=/opt/jb/incogito09/voldemort
+incogito.home=/opt/jb/incogito10
+voldemort.home=/opt/jb/incogito10/voldemort
 
 baseurl=http://localhost:8096/incogito10
 

@@ -2,7 +2,7 @@
 
 set -e
 
-find /opt/jb/incogito09 -name \*.TEMPLATE | while read t
+find /opt/jb/incogito10 -name \*.TEMPLATE | while read t
 do
   f=`echo $t | sed 's,\(.*\).TEMPLATE,\1,'`
 
