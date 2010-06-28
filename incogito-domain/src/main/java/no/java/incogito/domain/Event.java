@@ -23,7 +23,6 @@ public class Event {
     public final EventId id;
     public final String name;
     public final Option<String> blurb;
-    public final Option<String> frontpageContent;
     public final List<Room> presentationRooms;
     public final List<LocalDate> dates;
     public final List<List<Room>> roomsByDate;
@@ -33,14 +32,13 @@ public class Event {
     public final TreeMap<String, Label> labelMap;
     public final TreeMap<String, Label> emsIndexedLabels;
 
-    public Event(EventId id, String name, Option<String> blurb, Option<String> frontpageContent,
+    public Event(EventId id, String name, Option<String> blurb,
                  List<Room> presentationRooms, List<LocalDate> dates, List<List<Room>> roomsByDate,
                  List<List<Interval>> timeslotsByDate, TreeMap<LevelId, Level> levels,
                  List<Label> labels, TreeMap<String, Label> labelMap) {
         this.id = id;
         this.name = name;
         this.blurb = blurb;
-        this.frontpageContent = frontpageContent;
         this.presentationRooms = presentationRooms;
         this.dates = dates;
         this.roomsByDate = roomsByDate;

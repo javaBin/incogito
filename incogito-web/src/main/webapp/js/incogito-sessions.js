@@ -11,6 +11,23 @@ $(document).ready(function(){
     });
 
     /**
+    * Expand/Minimize all sessions
+    */
+
+    $("#expandAll a").click(function(e){
+
+        $(this).toggleClass("open");
+
+        $('#main-content div').each(function(){
+           $("h2", this).toggleClass("open");
+           $(".sessions", this).toggleClass("open");
+        });
+
+        e.preventDefault();
+    
+    });
+
+    /**
     * Filter menu always in view
     */
 
@@ -82,7 +99,7 @@ jB.filter.hideNotIn = function(labels,type){
 };
 
 jB.filter.levelListener = function(){
-  $(".filter.levels li").click(function(){
+  $(".filter.levels li").click(function(e){
        if($(".filter.levels li.off").length == 0){
           $(".filter.levels li").each(function(){
             $(this).toggleClass("on");
@@ -102,6 +119,7 @@ jB.filter.levelListener = function(){
        
        var labels = jB.filter.findEnabled($(this).parent());
        jB.filter.hideNotIn(labels,"level");
+       e.preventDefault();
     });
 };
 

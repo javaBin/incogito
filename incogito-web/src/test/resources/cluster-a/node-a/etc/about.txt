@@ -1,0 +1,38 @@
+ <h2>About Incogito</h2>
+
+  <p>
+    Incogito is the application behind the schedule planner. The application is written by volunteers from javaBin
+    (the user group behind JavaZone). Trygve Laugstøl is the current project lead.
+  </p>
+
+  <p>
+    Incogito 2009 is a re-write of last years proof-of-concept that went into production. It is implemented with plain
+    old JSP 2.0, JSR-311 and jQuery. It uses javaBins <a href="http://wiki.github.com/javaBin/ems">Event Management
+    Suite</a> server as a back-end for the event and session data, and <a href="http://project-voldemort.com">Project
+    Voldemort</a> as storage for user preferences.
+  </p>
+
+  <p>
+    Incogito and the rest of the tool chain is open source, most of it is hosted at github:
+  </p>
+  <ul>
+    <li><a href="http://wiki.github.com/javaBin/ems">EMS</a> - the back-end for JavaZone's sessions</li>
+    <li><a href="http://wiki.github.com/javaBin/incogito">Incogito</a> - the attendee front-end for building your own schedule</li>
+    <li><a href="http://wiki.github.com/javaBin/submitit">SubmitIt</a> - the presenters tool to submit presentations</li>
+  </ul>
+
+  <p>
+    A special thanks goes out to these people for their help with developing the application:
+  </p>
+  <ul>
+    <li>Ole-Alexander Moy for hours of jQuery hacking</li>
+    <li>Thor Åge Eldby for HTML and JavaScript help</li>
+    <li>The EMS group for their wonderful application</li>
+    <li>The portal group of javaBin for their feedback and support</li>
+    <li>All people who has provided feedback and/or created issues</li>
+  </ul>
+
+  <p>
+    The application is still quite new and there still might be some bugs left, so if you find a bug, please report
+    it to <a href="mailto:incogito@java.no">incogito@java.no</a>.
+  </p>

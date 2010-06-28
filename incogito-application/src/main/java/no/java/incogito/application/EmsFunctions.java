@@ -71,7 +71,6 @@ public class EmsFunctions {
                             return new Event(eventId,
                                     event.getName(),
                                     eventConfiguration.blurb,
-                                    eventConfiguration.frontPageText,
                                     eventConfiguration.presentationRooms,
                                     eventConfiguration.dayConfigurations.map(P2.<LocalDate, DayConfiguration>__1()),
                                     eventConfiguration.dayConfigurations.map(roomMap),

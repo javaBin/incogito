@@ -20,8 +20,6 @@ public class EventXml {
 
     public String blurb;
 
-    public String frontpageContent;
-
     public String htmlUrl;
 
     public String sessionHtmlUrl;
@@ -35,14 +33,13 @@ public class EventXml {
     public EventXml() {
     }
 
-    public EventXml(String selfUrl, String id, String name, Option<String> blurb, Option<String> frontpageContent,
+    public EventXml(String selfUrl, String id, String name, Option<String> blurb,
                     String htmlUrl, String sessionHtmlUrl, String calendarHtmlUrl,
                     Iterable<LabelXml> labels, Iterable<LevelXml> levels) {
         this.selfUrl = selfUrl;
         this.id = id;
         this.name = name;
         this.blurb = blurb.orSome((String) null);
-        this.frontpageContent = frontpageContent.orSome((String) null);
         this.htmlUrl = htmlUrl;
         this.sessionHtmlUrl = sessionHtmlUrl;
         this.calendarHtmlUrl = calendarHtmlUrl;
@@ -56,10 +53,6 @@ public class EventXml {
 
     public String getBlurb() {
         return blurb;
-    }
-
-    public String getFrontpageContent() {
-        return frontpageContent;
     }
 
     public String getHtmlUrl() {

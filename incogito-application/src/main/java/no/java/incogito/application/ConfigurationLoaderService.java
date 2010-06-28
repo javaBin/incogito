@@ -97,6 +97,16 @@ public class ConfigurationLoaderService {
         CssConfiguration cssConfiguration = new CssConfiguration(sessionEmStart, emPerMinute, emPerRoom);
 
         File eventsDirectory = new File(etc, "events");
+        
+        Option<String> frontPageContent = some(new File(etc, "frontpage.txt")).
+        filter(Functions.File_canRead).
+        map(IO.<String>runFileInputStream_().f(streamToString)).
+        bind(compose(P1.<Option<String>>__1(), Callables.<String>option()));
+        
+        Option<String> aboutContent = some(new File(etc, "about.txt")).
+        filter(Functions.File_canRead).
+        map(IO.<String>runFileInputStream_().f(streamToString)).
+        bind(compose(P1.<Option<String>>__1(), Callables.<String>option()));
 
         List<EventConfiguration> events = nil();
 
@@ -126,10 +136,7 @@ public class ConfigurationLoaderService {
                 f(PropertiesF.loadPropertiesAsMap).
                 f(eventPropertiesFile))._1().orSome(TreeMap.<String, String>empty(Ord.stringOrd));
 
-            Option<String> frontPageContent = some(new File(eventDirectory, "frontpage.txt")).
-                filter(Functions.File_canRead).
-                map(IO.<String>runFileInputStream_().f(streamToString)).
-                bind(compose(P1.<Option<String>>__1(), Callables.<String>option()));
+            
 
             Option<String> blurb = eventProperties.get("blurb");
 
@@ -242,10 +249,10 @@ public class ConfigurationLoaderService {
                 continue;
             }
 
-            events = events.cons(new EventConfiguration(eventName, blurb, frontPageContent, days,
+            events = events.cons(new EventConfiguration(eventName, blurb, days,
                     presentationRooms, labels, levelMap, eventPropertiesFile.lastModified()));
         }
 
-        return new IncogitoConfiguration(baseurl, cssConfiguration, events.reverse());
+        return new IncogitoConfiguration(baseurl, cssConfiguration, frontPageContent, aboutContent, events.reverse());
     }
 }

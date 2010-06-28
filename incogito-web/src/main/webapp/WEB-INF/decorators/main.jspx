@@ -80,9 +80,6 @@
         <c:when test="${fn:length(eventName) == 0}">high-lighted</c:when>
       </c:choose>
     </c:set>
-    <h1 class="event-title ${aboutCss}">
-        <a href="${incogito.baseurl}">About</a>
-    </h1>
     <c:forEach var="event" items="${events}" varStatus="index">
       <c:set var="extraCss">
         <c:choose>
@@ -93,33 +90,17 @@
       </c:set>
       <h1 class="event-title ${extraCss}">
         <span class="hidden text">${event.blurb}</span>
-        <a href="${event.htmlUrl}">${event.name}</a>
+        <a href="${event.sessionHtmlUrl}">${event.name}</a>
       </h1>
     </c:forEach>
+    <h1 class="event-title ${aboutCss}">
+        <a href="${incogito.baseurl}/about">About</a>
+    </h1>
   </div>
   <div class="head-blurb">
     <span class="text"><!-- space --></span>
   </div>
 
-  <c:if test="${fn:length(eventName) gt 0}">
-    <a class="sessions-button" href="${selectedEvent.sessionHtmlUrl}">
-      <img src="${incogito.baseurl}/images/sessions-button.png" alt="All Sessions"/>
-    </a>
-    <a class="agenda-button" href="${selectedEvent.calendarHtmlUrl}">
-      <img src="${incogito.baseurl}/images/button-agenda.png" alt="Agenda Planner"/>
-    </a>
-  </c:if>
-
-  <!--
-  <a class="calendar-button" href="${firstEvent.calendarUrlHtml}">
-    <img src="${incogito.baseurl}/images/calendar-button.png" alt="Calendar"/>
-  </a>
-  -->
-  <!-- Disable agenda planner for now - trygve
-  <a class="agenda-planner-link" href="${incogito.baseurl}/events/Javazone 2008/calendar">
-    <img src="${incogito.baseurl}/images/agenda-planner.png" alt="Agenda Planner"/>
-  </a>
-  -->
 </div>
 
 <!-- Disable login for now - trygve

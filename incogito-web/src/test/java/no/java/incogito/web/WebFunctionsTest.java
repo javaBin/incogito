@@ -55,7 +55,6 @@ public class WebFunctionsTest extends TestCase {
 
     EventConfiguration jz08Configuration = new EventConfiguration(javaZone2008.name,
             Option.<String>none(),
-            Option.<String>none(),
             list(p(sep17th, jz08Day1), p(sep18th, jz08Day2)),
             List.<Room>nil(),
             List.<Label>nil(),
@@ -81,7 +80,7 @@ public class WebFunctionsTest extends TestCase {
 
     CssConfiguration cssConfiguration = new CssConfiguration(2.5, 20.0 / 60.0, 11);
 
-    IncogitoConfiguration configuration = new IncogitoConfiguration(unconfigured.baseurl, cssConfiguration,
+    IncogitoConfiguration configuration = new IncogitoConfiguration(unconfigured.baseurl, cssConfiguration, Option.<String>none(), Option.<String>none(),
         single(jz08Configuration));
 
     public void testFunctions() {

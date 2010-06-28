@@ -6,7 +6,7 @@
 <jsp:useBean id="incogito" type="no.java.incogito.application.IncogitoConfiguration" scope="request"/>
 <body>
 <div id="main-content">
-  ${incogito.frontPageText}
+  ${incogito.aboutText}
 </div>
 </body>
 </html>

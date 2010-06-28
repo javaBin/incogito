@@ -70,6 +70,11 @@
   </rule>
 
   <rule>
+    <from>^/about$</from>
+    <to last="true">/about.jspx</to>
+  </rule>
+  
+  <rule>
     <from>^(/images/.*\.png)$</from>
     <to last="true">$1</to>
   </rule>
@@ -124,10 +129,10 @@
     <to last="true">/iframe/calendar.jspx</to>
   </rule>
 
-  <rule match-type="wildcard">
-    <from>/events/*</from>
+  <rule>
+    <from>^/events/([A-Za-z0-9% ]*)/?</from>
     <set name="eventName">$1</set>
-    <to last="true">/events/event/event.jspx</to>
+    <to type="redirect" last="true">%{context-path}/events/$1/sessions</to>
   </rule>
 
 </urlrewrite>
