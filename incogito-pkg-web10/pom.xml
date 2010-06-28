@@ -5,7 +5,7 @@
     <artifactId>incogito</artifactId>
     <version>2010.1-SNAPSHOT</version>
   </parent>
-  <artifactId>incogito-pkg-web09</artifactId>
+  <artifactId>incogito-pkg-web10</artifactId>
   <name>Incogito 2010 :: Native Package :: Web</name>
   <packaging>unix-zip</packaging>
   <dependencies>
@@ -31,8 +31,8 @@
               <from>src/main/unix/files</from>
             </copyDirectory>
             <copyDirectory>
-              <from>src/main/unix/files/opt/jb/incogito09/voldemort</from>
-              <to>/opt/jb/incogito09/voldemort</to>
+              <from>src/main/unix/files/opt/jb/incogito10/voldemort</from>
+              <to>/opt/jb/incogito10/voldemort</to>
 <!--
               <fileAttributes>
 		<tags>class:template</tags>
@@ -40,11 +40,11 @@
 -->
             </copyDirectory>
             <mkdirs>
-              <path>/opt/jb/incogito09/voldemort/data/bdb</path>
+              <path>/opt/jb/incogito10/voldemort/data/bdb</path>
             </mkdirs>
             <copyArtifact>
               <artifact>no.java.incogito:incogito-web:war</artifact>
-              <toFile>/opt/jb/incogito09/incogito.war</toFile>
+              <toFile>/opt/jb/incogito10/incogito.war</toFile>
             </copyArtifact>
             <setAttributes>
               <basedir>/opt/jb</basedir>
@@ -55,7 +55,7 @@
               </directoryAttributes>
             </setAttributes>
             <setAttributes>
-              <basedir>/opt/jb/incogito09</basedir>
+              <basedir>/opt/jb/incogito10</basedir>
               <fileAttributes>
                 <user>root</user>
                 <group>bin</group>
@@ -63,7 +63,7 @@
               </fileAttributes>
             </setAttributes>
             <setAttributes>
-              <basedir>/opt/jb/incogito09/voldemort/data/bdb</basedir>
+              <basedir>/opt/jb/incogito10/voldemort/data/bdb</basedir>
               <directoryAttributes>
                 <user>jetty</user>
                 <group>jetty</group>
