@@ -7,6 +7,9 @@
       xmlns:fn="http://java.sun.com/jsp/jstl/functions"
       xmlns:i="http://taglib.java.no/incogito"
       xmlns:security="http://www.springframework.org/security/tags">
+<jsp:output doctype-root-element="html"
+    doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN"
+    doctype-system="http://www.w3c.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"/>
 <jsp:directive.page pageEncoding="utf-8" contentType="text/html;charset=utf-8"/>
 <jsp:useBean id="incogito" type="no.java.incogito.application.IncogitoConfiguration" scope="request"/>
 <jsp:useBean id="app" type="no.java.incogito.application.IncogitoApplication" scope="application"/>

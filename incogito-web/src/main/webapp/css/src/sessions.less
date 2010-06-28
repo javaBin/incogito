@@ -36,6 +36,8 @@ h2.open {
 
 h2:hover {
   color: @white;
+  cursor: pointer;
+  cursor: hand;
   background-color: @timeslot_bg_color;
 }
 
@@ -86,6 +88,7 @@ ul.sessions {
     .info {
       a {
         font-weight: bold;
+        outline: none;
       }
     }
 
@@ -148,6 +151,11 @@ ul.sessions.open {
 
               :hover {
                  text-decoration: underline;
+              }
+
+              a {
+                display: block;
+                outline: none;
               }
             }
 

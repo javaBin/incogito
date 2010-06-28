@@ -14,6 +14,8 @@ h2.open img.expand { display: none; }
 h2.open img.minimize { display: inline; }
 h2:hover {
   color: #ffffff;
+  cursor: pointer;
+  cursor: hand;
   background-color: #303030;
 }
 h3 {
@@ -41,7 +43,10 @@ ul.sessions .session {
   padding: 0.25em 0.5em 0.35em 0.5em;
   border-bottom: 1px solid #000000;
 }
-ul.sessions .session .info a { font-weight: bold; }
+ul.sessions .session .info a {
+  font-weight: bold;
+  outline: none;
+}
 ul.sessions .session .speakers { font-style: italic; }
 ul.sessions .session .legends { font-size: 0.8em; }
 ul.sessions .session .legends span { font-weight: bold; }
@@ -76,6 +81,10 @@ ul.sessions.open { display: list-item; }
   cursor: hand;
 }
 #filtersContainer ul li .levels li:hover { text-decoration: underline; }
+#filtersContainer ul li .levels li a {
+  display: block;
+  outline: none;
+}
 #filtersContainer ul li .levels .on { list-style-type: disc; }
 #filtersContainer ul li .levels .off { list-style-image: none; }
 #filtersContainer ul li .labels li {

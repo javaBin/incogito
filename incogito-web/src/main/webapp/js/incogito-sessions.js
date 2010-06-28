@@ -17,10 +17,16 @@ $(document).ready(function(){
     $("#expandAll a").click(function(e){
 
         $(this).toggleClass("open");
+        var hasClassOpen = $(this).hasClass("open") ? true:false;
 
         $('#main-content div').each(function(){
-           $("h2", this).toggleClass("open");
-           $(".sessions", this).toggleClass("open");
+           if(hasClassOpen){
+             $("h2", this).addClass("open");
+             $(".sessions", this).addClass("open");
+           }else {
+             $("h2", this).removeClass("open");
+             $(".sessions", this).removeClass("open");
+           }
         });
 
         e.preventDefault();
@@ -33,9 +39,7 @@ $(document).ready(function(){
 
     $("#header").bind('inview', function(event,inview){
         if(inview){
-            if($("#filtersContainer").hasClass("fixed")){
-                $("#filtersContainer").removeClass("fixed");
-            }
+            $("#filtersContainer").removeClass("fixed");
         }else {
             $("#filtersContainer").addClass("fixed");
         }
