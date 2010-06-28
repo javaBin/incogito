@@ -45,6 +45,33 @@ h3 {
     font-weight: bold;
 }
 
+#expandAll {
+    width: auto;
+    float: right;
+
+    a {
+        outline: none;
+
+        .minimize {
+            display: none;
+        }
+
+        img {
+            padding: 0.35em 0.25em 0 0;
+        }
+    }
+
+    a.open {
+        .expand {
+            display:none;
+        }
+
+        .minimize {
+            display: inline;
+        }
+    }
+}
+
 ul.sessions {
   list-style-type: none;
   margin: 0.5em;
@@ -104,6 +131,14 @@ ul.sessions.open {
       li{
         margin:0;
         padding:0;
+
+        div {
+            color: @white;
+            background: @timeslot_bg_color;
+            font-weight: bold;
+            padding: 0.35em;
+            margin: 0.25em 0 0.25em 0;
+        }
 
         .levels {
             li {
