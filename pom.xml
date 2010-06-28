@@ -7,7 +7,7 @@
   </parent>
   <groupId>no.java.incogito</groupId>
   <artifactId>incogito</artifactId>
-  <version>2009.3-SNAPSHOT</version>
+  <version>2010.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Incogito 2009</name>
   <dependencies>
@@ -217,6 +217,11 @@
             <version>1.2</version>
           </dependency>
         </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>versions-maven-plugin</artifactId>
+        <version>1.2</version>
       </plugin>
     </plugins>
   </build>
