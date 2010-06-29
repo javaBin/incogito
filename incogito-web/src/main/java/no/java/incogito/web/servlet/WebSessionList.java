@@ -9,7 +9,6 @@ import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 
 import fj.data.List;
-import fj.data.TreeMap;
 
 /**
  * A wrapper around a schedule with utilities for sessions.jspx.
@@ -20,32 +19,12 @@ import fj.data.TreeMap;
 public class WebSessionList {
 	private final LinkedHashMap<LocalDate, Collection<Interval>> timeslotsByDate;
 
-	
-    private final LinkedHashMap<LocalDate, Collection<String>> roomsByDate;
-
-
 	private final LinkedHashMap<LocalDate, LinkedHashMap <Interval, List<SessionXml>>> sessionsByTimeslotByDate;
     
-	
-    private final TreeMap<LocalDate, TreeMap<String, List<SessionXml>>> dayToRoomToPresentationsMap;
-
-    private final TreeMap<LocalDate, List<SessionXml>> quickiesByDay;
-    
-
-    public WebSessionList(LinkedHashMap<LocalDate, Collection<String>> roomsByDate,
-                       LinkedHashMap<LocalDate, Collection<Interval>> timeslotsByDate,
-                       TreeMap<LocalDate, TreeMap<String, List<SessionXml>>> dayToRoomToPresentationsMap,
-                       TreeMap<LocalDate, List<SessionXml>> quickiesByDay, 
+    public WebSessionList(LinkedHashMap<LocalDate, Collection<Interval>> timeslotsByDate,
                         LinkedHashMap<LocalDate, LinkedHashMap <Interval, List<SessionXml>>> sessionsByTimeslotByDate) {
-        this.roomsByDate = roomsByDate;
         this.timeslotsByDate = timeslotsByDate;
-        this.dayToRoomToPresentationsMap = dayToRoomToPresentationsMap;
-        this.quickiesByDay = quickiesByDay;
         this.sessionsByTimeslotByDate = sessionsByTimeslotByDate;
-    }
-
-    public LinkedHashMap<LocalDate, Collection<String>> getRoomsByDate() {
-        return roomsByDate;
     }
 
     public LinkedHashMap<LocalDate, Collection<Interval>> getTimeslotsByDate() {
@@ -56,11 +35,4 @@ public class WebSessionList {
     	return sessionsByTimeslotByDate;
     }
 
-    public TreeMap<LocalDate, TreeMap<String, List<SessionXml>>> getDayToRoomToPresentationsMap() {
-        return dayToRoomToPresentationsMap;
-    }
-
-    public TreeMap<LocalDate, List<SessionXml>> getQuickiesByDay() {
-        return quickiesByDay;
-    }
 }
