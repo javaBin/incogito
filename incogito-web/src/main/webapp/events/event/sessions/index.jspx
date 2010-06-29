@@ -33,26 +33,25 @@
             <ul>
                 <li>
                 	<c:choose>
-          			<c:when test="${fn:length(event.levels) gt 0}">
-                    <div>Levels</div>
-                    <ul class="filter levels">
-	                    <c:forEach var="level" items="${event.levels}">
-				            <li class="level-${level.id} on"><a href="#">${level.displayName}</a></li>
-				        </c:forEach>
-
-                 	</ul>
-                 	</c:when>
+                        <c:when test="${fn:length(event.levels) gt 0}">
+                            <div>Levels</div>
+                            <ul class="filter levels">
+                                <c:forEach var="level" items="${event.levels}">
+                                    <li class="level-${level.id} on"><a href="#">${level.displayName}</a></li>
+                                </c:forEach>
+                            </ul>
+                        </c:when>
                  	</c:choose>
 
                     <c:choose>
-          			<c:when test="${fn:length(event.labels) gt 0}">
-                    <div>Labels</div>
-                    <ul class="filter labels">
-			          <c:forEach var="label" items="${event.labels}">
-			            <li class="label-${label.id} on"><a href="#">${label.displayName}</a></li>
-			          </c:forEach>
-                    </ul>
-                    </c:when>
+                        <c:when test="${fn:length(event.labels) gt 0}">
+                            <div>Labels</div>
+                            <ul class="filter labels">
+                              <c:forEach var="label" items="${event.labels}">
+                                <li class="label-${label.id} on"><a href="#">${label.displayName}</a></li>
+                              </c:forEach>
+                            </ul>
+                        </c:when>
                     </c:choose>
                 </li>
             </ul>
@@ -109,10 +108,10 @@
                                     </div>
                                     <div class="legends">
                                         <span>${session.room}</span>,
-                                        <span class="level level-${session.level.displayName}">Level:</span>
+                                        <span>Level:</span>
                                         <c:choose>
                                             <c:when test="${not (session.level eq null)}">
-                                                <img title="${session.level.displayName}"
+                                                <img  class="level level-${session.level.displayName}" title="${session.level.displayName}"
                                                      alt="${session.level.displayName}" src="${session.level.iconUrl}"/>
                                             </c:when>
                                             <c:otherwise>X</c:otherwise>
@@ -120,7 +119,7 @@
 
                                         <c:choose>
                                                <c:when test="${fn:length(session.labels) gt 0}">
-                                                 <span>, Labels:</span>
+                                                 <span>Labels:</span>
                                                  <c:forEach var="label" items="${session.labels}">
                                                      <img class="label label-${label.id}" title="${label.displayName}" alt="${label.id}"
                                                           src="${label.iconUrl}"/>
