@@ -50,9 +50,17 @@ ul.sessions .session .info a {
 ul.sessions .session .speakers { font-style: italic; }
 ul.sessions .session .legends { font-size: 0.8em; }
 ul.sessions .session .legends span { font-weight: bold; }
+ul.sessions .session .legends img { padding: 0.25em 0.25em 0 0.25em; }
+ul.sessions .session .legends img.level { padding-right: 1em; }
 ul.sessions .session.dark { background: #ebffff; }
-ul.sessions .session.level-hide { opacity: 0.3; }
-ul.sessions .session.label-hide { opacity: 0.3; }
+ul.sessions .session.level-hide {
+  opacity: 0.3;
+  filter: alpha(opacity=30);
+}
+ul.sessions .session.label-hide {
+  opacity: 0.3;
+  filter: alpha(opacity=30);
+}
 ul.sessions.open { display: list-item; }
 #filtersContainer {
   position: absolute;
