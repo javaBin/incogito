@@ -1,4 +1,4 @@
-h1 { margin: 1em; }
+#main-content h1 { margin: 1em; }
 h2 {
   margin: 0;
   padding: 0 0 0 0.25em;
@@ -83,6 +83,7 @@ ul.sessions.open { display: list-item; }
   padding: 0.35em;
   margin: 0.25em 0 0.25em 0;
 }
+#filtersContainer ul li .levels { padding-left: 5px; }
 #filtersContainer ul li .levels li {
   list-style-type: circle;
   cursor: pointer;
@@ -95,6 +96,7 @@ ul.sessions.open { display: list-item; }
 }
 #filtersContainer ul li .levels .on { list-style-type: disc; }
 #filtersContainer ul li .levels .off { list-style-image: none; }
+#filtersContainer ul li .labels { padding-left: 5px; }
 #filtersContainer ul li .labels li {
   list-style-type: circle;
   cursor: pointer;

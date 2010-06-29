@@ -96,14 +96,13 @@
         <a href="${event.sessionHtmlUrl}">${event.name}</a>
       </h1>
     </c:forEach>
-    <h1 class="event-title ${aboutCss}">
-        <a href="${incogito.baseurl}/about">About</a>
-    </h1>
   </div>
   <div class="head-blurb">
     <span class="text"><!-- space --></span>
   </div>
-
+  <h1 class="about-text">
+        <a href="${incogito.baseurl}/about">About</a>
+  </h1>
 </div>
 
 <!-- Disable login for now - trygve
