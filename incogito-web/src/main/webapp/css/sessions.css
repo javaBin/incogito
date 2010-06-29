@@ -38,6 +38,7 @@ ul.sessions {
   padding: 0;
   display: none;
 }
+ul.sessions .session.Quickie { border: none; }
 ul.sessions .session {
   margin-left: 0;
   padding: 0.25em 0.5em 0.35em 0.5em;
@@ -112,4 +113,30 @@ ul.sessions.open { display: list-item; }
 #filtersContainer.fixed {
   top: 0;
   position: fixed;
+}
+.apple_overlay {
+  display: none;
+  background-image: url(../img/overlay/white.png);
+  width: 640px;
+  overflow: hidden;
+  padding: 35px;
+  font-size: 11px;
+}
+.apple_overlay .close {
+  background-image: url(../images/icons/close_overlay.png);
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  cursor: pointer;
+  height: 35px;
+  width: 35px;
+}
+div.apple_overlay.black {
+  background-image: url(http://static.flowplayer.org/tools/img/overlay/transparent.png);
+  color: #ffffff;
+}
+#session-overlay-content {
+  width: 100%;
+  height: 480px;
+  overflow: auto;
 }
