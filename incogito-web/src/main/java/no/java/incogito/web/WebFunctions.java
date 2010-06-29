@@ -200,7 +200,7 @@ public class WebFunctions {
                     }
                 };
 
-                Set<Session> quickies = empty(sessionTimestampOrd);
+                Set<Session> quickies = empty(reverseSessionTimestampOrd);
 
                 for (Session session : schedule.sessions.filter(lightningTalkFilter)) {
                     quickies = quickies.insert(session);
@@ -221,23 +221,16 @@ public class WebFunctions {
             F<Session,SessionXml> sessionToXml = XmlFunctions.sessionToXml.f(restEventUri).f(eventUri);
 
 
-            LinkedHashMap<LocalDate, Collection<String>> roomsByDate = new LinkedHashMap<LocalDate, Collection<String>>();
             LinkedHashMap<LocalDate, Collection<Interval>> timeslotsByDate = new LinkedHashMap<LocalDate, Collection<Interval>>();
             LinkedHashMap<LocalDate, LinkedHashMap <Interval, List<SessionXml>>> sessionsByTimeSlotByDate = new LinkedHashMap<LocalDate, LinkedHashMap<Interval,List<SessionXml>>>();
-            TreeMap<LocalDate, TreeMap<String, List<SessionXml>>> dayToRoomToPresentationsMap = TreeMap.empty(Functions.LocalDate_ord);
-            TreeMap<LocalDate, List<SessionXml>> quickiesByDay = TreeMap.empty(Functions.LocalDate_ord);
 
             for (final P2<LocalDate, Integer> dayIndex : schedule.event.dates.zipIndex()) {
                 final LocalDate day = dayIndex._1();
                 final List<Room> rooms = schedule.event.roomsByDate.index(dayIndex._2());
                 final List<Interval> timeslots = schedule.event.timeslotsByDate.index(dayIndex._2());
 
-                roomsByDate.put(day, rooms.map(Room.name_).toCollection());
                 timeslotsByDate.put(day, timeslots.toCollection());
 
-                // -----------------------------------------------------------------------
-                // Presentations
-                // -----------------------------------------------------------------------
 
                 F<Session, Boolean> presentationFilter = new F<Session, Boolean>() {
                     public Boolean f(Session session) {
@@ -248,50 +241,63 @@ public class WebFunctions {
                                 (session.format.equals(Format.Presentation) || session.format.equals(Format.BoF));
                     }
                 };
-
-                TreeMap<String, List<SessionXml>> roomToSessionMap = TreeMap.empty(stringOrd);
-
-                // Create an empty list for each day, just to make sure that every day is covered. Other parts rely on this fact
-                List<SessionXml> emptyList = List.nil();
-                for (Room room : rooms) {
-                    roomToSessionMap = roomToSessionMap.set(room.name, emptyList);
-                }
-
-                // For each session, find the room's list and add the session to the list
-                for (SessionXml session : schedule.sessions.filter(presentationFilter).map(sessionToXml)) {
-                    roomToSessionMap = roomToSessionMap.set(session.room, roomToSessionMap.get(session.room).some().cons(session));
-                }
-
-                dayToRoomToPresentationsMap = dayToRoomToPresentationsMap.set(dayIndex._1(), roomToSessionMap);
-
                 
+                F<Session, Boolean> lightningTalkFilter = new F<Session, Boolean>() {
+                	public Boolean f(Session session) {
+                		return session.timeslot.isSome() &&
+                		session.timeslot.some().getStart().toLocalDate().equals(day) &&
+                		session.room.isSome() &&
+                		session.format.equals(Format.Quickie);
+                	}
+                };
+                
+                // Create an empty list for each day, just to make sure that every day is covered. Other parts rely on this fact
                 
                 LinkedHashMap<Interval, List<SessionXml>> sessionByTimeSlotsMap =
                 	new LinkedHashMap<Interval, List<SessionXml>>();
 
-                for(Interval timeslot:timeslots) {
-                	sessionByTimeSlotsMap.put(timeslot, emptyList);
+                List<Session> quickies = schedule.sessions.filter(lightningTalkFilter);
+                
+                
+                for(final Interval timeslot:timeslots) {                	
+                    F<Session, Boolean> quickieToTimeslotFilter = new F<Session, Boolean>() {
+                    	public Boolean f(Session session) {
+                    		return session.timeslot.some().overlaps(timeslot);
+                    	}
+                    };
+                	
+                	// putter lyntaler inn per sesjon
+                	sessionByTimeSlotsMap.put(timeslot, quickies.filter(quickieToTimeslotFilter).sort(sessionTimestampOrd).map(sessionToXml));
                 }
 
-                
-                for (Session session : schedule.sessions.filter(presentationFilter)) {
+                for (Session session : schedule.sessions.filter(presentationFilter).sort(sessionRoomOrd)) {
                 	List<SessionXml> list = sessionByTimeSlotsMap.get(session.timeslot.some());
                 	if (list != null){
                 		sessionByTimeSlotsMap.put(session.timeslot.some(), list.cons(sessionToXml.f(session)));
                 	}
                 }
-                
-                sessionsByTimeSlotByDate.put(day, sessionByTimeSlotsMap);
 
+                sessionsByTimeSlotByDate.put(day, sessionByTimeSlotsMap);
             }
-            return new WebSessionList(roomsByDate, timeslotsByDate,
-                    dayToRoomToPresentationsMap, quickiesByDay, sessionsByTimeSlotByDate);
+            return new WebSessionList(timeslotsByDate, sessionsByTimeSlotByDate);
         }
     });
 
-    public static final Ord<Session> sessionTimestampOrd = Ord.ord(curry(new F2<Session, Session, Ordering>() {
+    public static final Ord<Session> reverseSessionTimestampOrd = Ord.ord(curry(new F2<Session, Session, Ordering>() {
         public Ordering f(Session a, Session b) {
             return Ord.longOrd.compare(b.timeslot.some().getStartMillis(), a.timeslot.some().getStartMillis());
+        }
+    }));
+
+    public static final Ord<Session> sessionTimestampOrd = Ord.ord(curry(new F2<Session, Session, Ordering>() {
+        public Ordering f(Session a, Session b) {
+            return Ord.longOrd.compare(a.timeslot.some().getStartMillis(), b.timeslot.some().getStartMillis());
+        }
+    }));
+    
+    public static final Ord<Session> sessionRoomOrd = Ord.ord(curry(new F2<Session, Session, Ordering>() {
+        public Ordering f(Session a, Session b) {
+            return Ord.stringOrd.compare(b.room.some(), a.room.some());
         }
     }));
 }
