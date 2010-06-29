@@ -108,8 +108,12 @@ div.apple_overlay div.close {
                                         <c:set var="darkLight" value="light"/>
                                     </c:otherwise>
                                 </c:choose>
-                                <c:set var="rowCount" value="${rowCount+1}"/>
-                                <li class="session ${darkLight}">
+                                <c:choose>
+                                    <c:when test="${session.format eq 'Presentation'}">
+		                                <c:set var="rowCount" value="${rowCount+1}"/>
+                                    </c:when>
+                                </c:choose>
+                                <li class="session ${session.format} ${darkLight}">
                                     <div class="info">
                                         <a target="_blank" href="${session.sessionHtmlUrl}">${session.title}</a>
                                         <div class="session-rest-uri" style="display:none;">${session.selfUri}</div>
@@ -117,7 +121,7 @@ div.apple_overlay div.close {
                                         <span class="speakers">
                                             <c:forEach var="speaker" varStatus="i" items="${session.speakers}">
                                                 <c:choose>
-                                                    <c:when test="${not i.last}">${speaker.name},</c:when>
+                                                    <c:when test="${not i.last}">${speaker.name}, </c:when>
                                                     <c:otherwise>${speaker.name}</c:otherwise>
                                                 </c:choose>
                                             </c:forEach>
