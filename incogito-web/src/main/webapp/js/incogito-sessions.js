@@ -160,13 +160,18 @@ jB.filter.labelListener = function(){
     });
 };
 
-jB.overlay.getSession = function (sessionUrl, success) {
-    var s = success
+/**
+* Overlay with session-information
+*/
+
+jB.overlay.getSession = function (sessionUrl, onSuccess) {
+    $('#session-overlay-indicator').show();
+    $("#session-overlay-content").hide()
     $.ajax({
         dataType: "json",
         url: sessionUrl,
         success: function(data) {
-            s(data)
+            onSuccess(data)
         }
     })
 };
@@ -203,8 +208,6 @@ jB.overlay.formatSpeakerSummary = function (speakers) {
 
 jB.overlay.formater = function(session) {
     $("#session-overlay-content").empty()
-    console.log("session:")
-    console.log(session)
     var sessionDetails = $("#template-session-details").clone()
 
     sessionDetails.
@@ -213,10 +216,8 @@ jB.overlay.formater = function(session) {
 
     sessionDetails.find(".session-details-title").text(session.title)
     var ul = sessionDetails.find(".session-metadata");
-    console.log(ul)
     // <li class="session-detail-label label-${label.id}">${label.displayName}</li>
     $.each(session.labels, function(i, label) {
-        console.log("label: " + label.displayName)
         var li = $("<li>").
             addClass("session-detail-label").
             addClass("label-" + label.id).
@@ -239,7 +240,6 @@ jB.overlay.formater = function(session) {
     var templateSpeaker = $(".template.speaker")
     var speakerBioses = sessionDetails.find(".speaker-bioses")
     $.each(session.speakers, function(i, speaker) {
-        console.log(speaker)
         var speakerDiv = templateSpeaker.clone()
         var speakerImage = speakerDiv.find(".speaker-image");
         if (speaker.photoUrl) {
@@ -259,10 +259,21 @@ jB.overlay.formater = function(session) {
      });
      // Copy over the generated session
      $("#session-overlay-content").append(sessionDetails)
+     
+     $("#session-overlay-content").show()
+     $('#session-overlay-indicator').hide();
 };
 
 jB.overlay.sessionListener = function(){
-  $("#session-overlay").overlay({effect: 'apple', top:'5%'});
+  $("#session-overlay").overlay({
+     effect: 'apple',
+     top:'5%',
+     mask: {
+		color: '#FFF',
+		loadSpeed: 0,
+		opacity: 0.7
+	 }
+   });
   $(".session .info a").click(function(e){
      e.preventDefault();
      jB.overlay.getSession($(".session-rest-uri",$(this).parent()).text(), jB.overlay.formater);

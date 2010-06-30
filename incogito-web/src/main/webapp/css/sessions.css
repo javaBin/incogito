@@ -1,18 +1,18 @@
 #main-content h1 { margin: 1em; }
-h2 {
+#main-content h2 {
   margin: 0;
   padding: 0 0 0 0.25em;
   border-bottom: 1px solid #000000;
 }
-h2 img { padding: 0.25em 0 0 0; }
-h2 img.minimize { display: none; }
-h2.open {
+#main-content h2 img { padding: 0.25em 0 0 0; }
+#main-content h2 img.minimize { display: none; }
+#main-content h2.open {
   color: #ffffff;
   background-color: #303030;
 }
-h2.open img.expand { display: none; }
-h2.open img.minimize { display: inline; }
-h2:hover {
+#main-content h2.open img.expand { display: none; }
+#main-content h2.open img.minimize { display: inline; }
+#main-content h2:hover {
   color: #ffffff;
   cursor: pointer;
   cursor: hand;

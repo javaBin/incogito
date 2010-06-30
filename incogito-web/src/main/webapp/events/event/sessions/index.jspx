@@ -157,7 +157,8 @@ div.apple_overlay div.close {
         </div>
         <!-- overlayed element, which is styled with external stylesheet -->
         <div class="apple_overlay black" id="session-overlay">
-            <div id="session-overlay-content"></div>
+            <div id="session-overlay-indicator">Loading...</div>
+            <div id="session-overlay-content" style="display:none;"></div>
              <!-- space -->
         </div>
       <div id="template-session-details" class="template session-details">
