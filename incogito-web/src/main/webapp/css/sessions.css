@@ -140,3 +140,7 @@ div.apple_overlay.black {
   height: 480px;
   overflow: auto;
 }
+#session-overlay-content .session-url-reference input {
+  width: 95%;
+  float: right;
+}

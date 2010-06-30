@@ -113,7 +113,7 @@ div.apple_overlay div.close {
 		                                <c:set var="rowCount" value="${rowCount+1}"/>
                                     </c:when>
                                 </c:choose>
-                                <li class="session ${session.format} ${darkLight}">
+                                <li id="${session.id}" class="session ${session.format} ${darkLight}">
                                     <div class="info">
                                         <a target="_blank" href="${session.sessionHtmlUrl}">${session.title}</a>
                                         <div class="session-rest-uri" style="display:none;">${session.selfUri}</div>
@@ -163,6 +163,7 @@ div.apple_overlay div.close {
         </div>
       <div id="template-session-details" class="template session-details">
         <h2 class="session-details-title"><!-- space --></h2>
+        <div class="session-url-reference"><!-- space --></div>
         <ul class="outside session-metadata">
           <!-- space-->
         </ul>

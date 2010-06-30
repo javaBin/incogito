@@ -1,4 +1,15 @@
 $(document).ready(function(){
+
+    /**
+    * Initialize the overlay from jQuery Tools
+    */
+    jB.overlay.initialize();
+
+    /**
+    * Open overlay and display session info if defained
+    */
+    jB.overlay.showOnAccess();
+
     /**
     * toggle show/hide time slot content
     */
@@ -212,25 +223,32 @@ jB.overlay.formater = function(session) {
 
     sessionDetails.
         removeAttr("id").
-        removeClass("template")
+        removeClass("template");
 
     sessionDetails.find(".session-details-title").text(session.title)
+    sessionDetails.find(".session-url-reference").text("Link:")
+
+    var currentPage = $("h1.event-title.high-lighted a").attr("href");
+
+    var link = $('<input>').attr({type:'text',value:currentPage+"#"+session.id});
+    link.appendTo(sessionDetails.find(".session-url-reference"));
+
     var ul = sessionDetails.find(".session-metadata");
     // <li class="session-detail-label label-${label.id}">${label.displayName}</li>
     $.each(session.labels, function(i, label) {
         var li = $("<li>").
             addClass("session-detail-label").
             addClass("label-" + label.id).
-            appendTo(ul)
+            appendTo(ul);
         li.text(label.displayName)
     })
     var li = $("<li>").
         text("Room: " + session.room).
-        appendTo(ul)
+        appendTo(ul);
     li = $("<li>").
         text(jB.overlay.formatTime(session.start) + " - " + jB.overlay.formatTime(session.end)).
         addClass("format-" + session.format).
-        appendTo(ul)
+        appendTo(ul);
     li = $("<li>").
         text(jB.overlay.formatSpeakerSummary(session.speakers)).
         appendTo(ul)
@@ -264,8 +282,8 @@ jB.overlay.formater = function(session) {
      $('#session-overlay-indicator').hide();
 };
 
-jB.overlay.sessionListener = function(){
-  $("#session-overlay").overlay({
+jB.overlay.initialize = function(){
+   $("#session-overlay").overlay({
      effect: 'apple',
      top:'5%',
      mask: {
@@ -274,9 +292,20 @@ jB.overlay.sessionListener = function(){
 		opacity: 0.7
 	 }
    });
+};
+
+jB.overlay.sessionListener = function(){
   $(".session .info a").click(function(e){
      e.preventDefault();
      jB.overlay.getSession($(".session-rest-uri",$(this).parent()).text(), jB.overlay.formater);
      $("#session-overlay").overlay().load();
   });
 };
+
+jB.overlay.showOnAccess = function(){
+    var id = document.location.hash.substring(1);
+    if(id.length>0){
+      jB.overlay.getSession($(".session-rest-uri",$("#"+id)).text(), jB.overlay.formater);
+      $("#session-overlay").overlay().load();
+    }
+}
