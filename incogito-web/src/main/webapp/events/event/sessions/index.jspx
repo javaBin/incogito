@@ -24,7 +24,7 @@
         <script src="${incogito.baseurl}/js/jquery.inview.js" type="text/javascript"><!-- space --></script>
         <script src="${incogito.baseurl}/js/incogito-sessions.js" type="text/javascript"><!-- space --></script>
         <script src="${incogito.baseurl}/js/jquery.tools.min.js" type="text/javascript"><!-- space --></script>
-<!--[if IE]>
+&lt;!--[if IE]&gt;
 <style type="text/css">
 
 ul.sessions .session.label-hide, ul.sessions .session.level-hide, ul.sessions .session.label-hide .info a, ul.sessions .session.level-hide .info a {
@@ -43,7 +43,7 @@ div.apple_overlay div.close {
 
 }
 </style>
-<![endif]-->
+&lt;![endif]--&gt;
     </head>
 
     <body>
