@@ -7,7 +7,7 @@
   </parent>
   <groupId>no.java.incogito</groupId>
   <artifactId>incogito</artifactId>
-  <version>2010.1-SNAPSHOT</version>
+  <version>2010.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Incogito 2010</name>
   <dependencies>
@@ -209,12 +209,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
-        <version>2.0-beta-9</version>
+        <version>2.0</version>
         <dependencies>
           <dependency>
             <groupId>org.apache.maven.scm</groupId>
             <artifactId>maven-scm-provider-gitexe</artifactId>
-            <version>1.2</version>
+            <version>1.3</version>
           </dependency>
         </dependencies>
       </plugin>
