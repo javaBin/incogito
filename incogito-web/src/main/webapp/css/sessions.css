@@ -110,7 +110,7 @@ ul.sessions.open { display: list-item; }
 }
 .apple_overlay {
   display: none;
-  background-image: url(../img/overlay/white.png);
+  background-image: url(../images/white.png);
   width: 640px;
   overflow: hidden;
   padding: 35px;
@@ -126,7 +126,7 @@ ul.sessions.open { display: list-item; }
   width: 35px;
 }
 div.apple_overlay.black {
-  background-image: url(http://static.flowplayer.org/tools/img/overlay/transparent.png);
+  background-image: url(../images/transparent.png);
   color: #ffffff;
 }
 #session-overlay-content {

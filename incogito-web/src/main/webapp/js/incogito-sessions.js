@@ -1,4 +1,4 @@
-$(document).ready(function(){
+$(window).load(function(){
 
     /**
     * Initialize the overlay from jQuery Tools
