@@ -95,23 +95,26 @@ jB.filter.hideNotIn = function(labels,type){
     var sessionClasses = $(".legends ."+type, this);
 
     var hideSession = true;
+    if($(sessionClasses).length > 0){
+    //In the event a session has no label(s)
+        // Loop thru all labels for the session
+        $(sessionClasses).each(function() {
+          var labelsString = $(this).attr("class");
+          var sessionHas = labelsString.split(" ");
+          $(sessionHas).each(function(){
+              // If session has at least one of the labels
 
-    // Loop thru all labels for the session
-    $(sessionClasses).each(function() {
-      var labelsString = $(this).attr("class");
-      var sessionHas = labelsString.split(" ");
-      $(sessionHas).each(function(){
-          // If session has at least one of the labels
+              if ($.inArray(this.toString(), labels) > -1) {
+                hideSession = false;
 
-          if ($.inArray(this.toString(), labels) > -1) {
-            hideSession = false;
-
-            // Exit loop
-            return false;
-          }
-      });
-    });
-
+                // Exit loop
+                return false;
+              }
+          });
+        });
+    } else {
+        hideSession = false;
+    }
     // If session matches no selected tags, hide it
     if (hideSession) {
       $(this).addClass(type+"-hide");
