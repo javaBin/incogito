@@ -24,6 +24,46 @@
         <script src="${incogito.baseurl}/js/jquery.inview.js" type="text/javascript"><!-- space --></script>
         <script src="${incogito.baseurl}/js/incogito-sessions.js" type="text/javascript"><!-- space --></script>
         <script src="${incogito.baseurl}/js/jquery.tools.min.js" type="text/javascript"><!-- space --></script>
+
+<style type="text/css">
+/* the overlayed element */
+.apple_overlay {
+
+	/* initially overlay is hidden */
+	display:none;
+
+	/* growing background image */
+	background-image:url(${incogito.baseurl}/images/white.png);
+
+	/*
+		width after the growing animation finishes
+		height is automatically calculated
+	*/
+	width:640px;
+    overflow: hidden;
+
+	/* some padding to layout nested elements nicely  */
+	padding:35px;
+
+	/* a little styling */
+	font-size:11px;
+}
+
+/* default close button positioned on upper right corner */
+.apple_overlay .close {
+	background-image:url(${incogito.baseurl}/images/icons/close_overlay.png);
+	position:absolute; right:5px; top:5px;
+	cursor:pointer;
+	height:35px;
+	width:35px;
+}
+
+div.apple_overlay.black {
+    background-image:url(${incogito.baseurl}/images/transparent.png);
+    color:#fff;
+}
+</style>
+
 &lt;!--[if IE]&gt;
 <style type="text/css">
 

@@ -1,5 +1,5 @@
-$(window).load(function(){
-
+$(document).ready(function(){
+    $(window).bind("load", function(){
     /**
     * Initialize the overlay from jQuery Tools
     */
@@ -53,7 +53,6 @@ $(window).load(function(){
     /**
     * Filter menu always in view
     */
-
     $("#header").bind('inview', function(event,inview){
         if(inview){
             $("#filtersContainer").removeClass("fixed");
@@ -62,8 +61,14 @@ $(window).load(function(){
         }
     });
 
+    /* Trigger "inview" event on document.ready if window is scrolled more than 155px */
+    if($(window).scrollTop()>155){
+        $("#header").trigger("inview");
+    }
+
     jB.filter.levelListener();
     jB.filter.labelListener();
+    });
 });
 
 /**
