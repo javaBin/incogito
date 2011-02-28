@@ -8,6 +8,7 @@ import no.java.incogito.domain.Schedule;
 import no.java.incogito.domain.Session;
 import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.User;
+import no.java.incogito.domain.User.*;
 import no.java.incogito.domain.UserSessionAssociation.InterestLevel;
 
 /**
@@ -31,9 +32,9 @@ public interface IncogitoApplication {
 
     OperationResult<User> createUser(User user);
 
-    OperationResult<Unit> removeUser(no.java.incogito.domain.User.UserId userId);
+    OperationResult<Unit> removeUser(UserId userId);
 
-    OperationResult<User> getUser(no.java.incogito.domain.User.UserId userId);
+    OperationResult<User> getUser(UserId userId);
 
     OperationResult<Schedule> getSchedule(String eventName, String userId);
 

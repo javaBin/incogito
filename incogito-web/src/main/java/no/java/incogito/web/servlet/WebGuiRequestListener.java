@@ -1,15 +1,10 @@
 package no.java.incogito.web.servlet;
 
-import no.java.incogito.application.IncogitoApplication;
-import org.springframework.context.ApplicationContext;
-import static org.springframework.web.context.support.WebApplicationContextUtils.getRequiredWebApplicationContext;
+import no.java.incogito.application.*;
+import org.springframework.context.*;
+import static org.springframework.web.context.support.WebApplicationContextUtils.*;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.ServletRequestEvent;
-import javax.servlet.ServletRequestListener;
-import javax.servlet.ServletRequest;
+import javax.servlet.*;
 
 /**
  * @author <a href="mailto:trygvis@java.no">Trygve Laugst&oslash;l</a>
@@ -18,13 +13,9 @@ import javax.servlet.ServletRequest;
 public class WebGuiRequestListener implements ServletContextListener, ServletRequestListener {
     private IncogitoApplication app;
 
-    public void requestInitialized(ServletRequestEvent event) {
-        ServletRequest servletRequest = event.getServletRequest();
-        servletRequest.setAttribute("incogito", app.getConfiguration());
-    }
-
-    public void requestDestroyed(ServletRequestEvent event) {
-    }
+    // -----------------------------------------------------------------------
+    // Context
+    // -----------------------------------------------------------------------
 
     public void contextInitialized(ServletContextEvent event) {
         ServletContext servletContext = event.getServletContext();
@@ -34,5 +25,17 @@ public class WebGuiRequestListener implements ServletContextListener, ServletReq
     }
 
     public void contextDestroyed(ServletContextEvent event) {
+    }
+
+    // -----------------------------------------------------------------------
+    // Request
+    // -----------------------------------------------------------------------
+
+    public void requestInitialized(ServletRequestEvent event) {
+        ServletRequest servletRequest = event.getServletRequest();
+        servletRequest.setAttribute("incogito", app.getConfiguration());
+    }
+
+    public void requestDestroyed(ServletRequestEvent event) {
     }
 }

@@ -1,11 +1,9 @@
 package no.java.incogito.domain;
 
-import fj.F;
-import fj.F3;
-import static fj.Function.curry;
-import fj.data.Option;
-import fj.data.TreeMap;
-import no.java.incogito.domain.UserSessionAssociation.InterestLevel;
+import fj.*;
+import static fj.Function.*;
+import fj.data.*;
+import no.java.incogito.domain.UserSessionAssociation.*;
 
 /**
  * @author <a href="mailto:trygve.laugstol@arktekk.no">Trygve Laugst&oslash;l</a>
@@ -15,9 +13,11 @@ public class User {
     public static final TreeMap<SessionId, UserSessionAssociation> emptySessionAssociations = TreeMap.empty(SessionId.ord);
 
     public final UserId id;
+    public final Option<String> name;
     public final TreeMap<SessionId, UserSessionAssociation> sessionAssociations;
+
     /**
-     * If none, this is a new object.
+     * If none, this is a pristine object.
      */
     public final Option<User> original;
 
@@ -25,8 +25,9 @@ public class User {
     //
     // -----------------------------------------------------------------------
 
-    private User(UserId id, TreeMap<SessionId, UserSessionAssociation> sessionAssociations, Option<User> original) {
+    private User(UserId id, Option<String> name, TreeMap<SessionId, UserSessionAssociation> sessionAssociations, Option<User> original) {
         this.id = id;
+        this.name = name;
         this.sessionAssociations = sessionAssociations;
         this.original = original;
     }
@@ -36,11 +37,11 @@ public class User {
     // -----------------------------------------------------------------------
 
     public static User createPristineUser(UserId id) {
-        return new User(id, TreeMap.<SessionId, UserSessionAssociation>empty(SessionId.ord), Option.<User>none());
+        return new User(id, Option.<String>none(), TreeMap.<SessionId, UserSessionAssociation>empty(SessionId.ord), Option.<User>none());
     }
 
-    public static User createPersistentUser(UserId id, TreeMap<SessionId, UserSessionAssociation> sessionAssociations) {
-        return new User(id, sessionAssociations, Option.<User>none());
+    public static User createPersistentUser(UserId id, Option<String> name, TreeMap<SessionId, UserSessionAssociation> sessionAssociations) {
+        return new User(id, name, sessionAssociations, Option.<User>none());
     }
 
     // -----------------------------------------------------------------------
@@ -49,10 +50,10 @@ public class User {
 
     public User setInterestLevel(SessionId sessionId, InterestLevel interestLevel) {
         UserSessionAssociation userSessionAssociation = sessionAssociations.get(sessionId).
-                orSome(UserSessionAssociation.$constructor_().f(sessionId).f(interestLevel)).
-                interestLevel(interestLevel);
+            orSome(UserSessionAssociation.$constructor_().f(sessionId).f(interestLevel)).
+            interestLevel(interestLevel);
 
-        return new User(id, sessionAssociations.set(sessionId, userSessionAssociation), original);
+        return new User(id, name, sessionAssociations.set(sessionId, userSessionAssociation), original);
     }
 
     // -----------------------------------------------------------------------
@@ -65,7 +66,7 @@ public class User {
         }
     };
 
-    public static final F<SessionId, F<InterestLevel, F<User, User>>> setInterestLevel = curry( new F3<SessionId, InterestLevel, User, User>() {
+    public static final F<SessionId, F<InterestLevel, F<User, User>>> setInterestLevel = curry(new F3<SessionId, InterestLevel, User, User>() {
         public User f(SessionId sessionId, InterestLevel interestLevel, User user) {
             return user.setInterestLevel(sessionId, interestLevel);
         }
@@ -82,7 +83,7 @@ public class User {
             this.value = value;
         }
 
-        public static UserId fromString(String value) {
+        public static UserId userIdFromString(String value) {
             return new UserId(value);
         }
 
@@ -103,7 +104,7 @@ public class User {
 
         public static final F<String, UserId> userId = new F<String, UserId>() {
             public UserId f(String value) {
-                return fromString(value);
+                return userIdFromString(value);
             }
         };
     }

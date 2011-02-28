@@ -14,7 +14,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.4</version>
+      <version>4.8.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -139,10 +139,23 @@
           </exclusion>
         </exclusions>
       </dependency>
+      <!--
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-webmvc</artifactId>
         <version>${version.spring}</version>
+      </dependency>
+      -->
+      <dependency>
+        <groupId>org.openid4java</groupId>
+        <artifactId>openid4java-consumer</artifactId>
+        <version>${version.openid4java}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -247,8 +260,9 @@
     <version.ems>1.1.8</version.ems>
     <version.jersey>1.0.3</version.jersey>
     <version.jetty>6.1.14</version.jetty>
+    <version.openid4java>0.9.5</version.openid4java>
     <version.slf4j>1.5.8</version.slf4j>
-    <version.spring>2.5.6</version.spring>
-    <version.spring-security>2.0.4</version.spring-security>
+    <version.spring>3.0.5.RELEASE</version.spring>
+    <version.spring-security>3.0.5.RELEASE</version.spring-security>
   </properties>
 </project>

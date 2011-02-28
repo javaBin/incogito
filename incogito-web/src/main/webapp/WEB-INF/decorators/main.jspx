@@ -116,19 +116,16 @@
   </h1>
 </div>
 
-<!-- Disable login for now - trygve
 <div class="login-link">
   <security:authorize ifAllGranted="ROLE_USER">
-    Welcome <b><security:authentication property="principal.username"/></b>. <a href="${incogito.baseurl}/logout">Logout</a>.
+    Welcome <b></b>. <a href="${incogito.baseurl}/logout">Logout</a>.
   </security:authorize>
   <security:authorize ifNotGranted="ROLE_USER">
     <a href="${incogito.baseurl}/login">Login</a><br/>
   </security:authorize>
 </div>
--->
 
 <decorator:body/>
 
-<!-- Google Analytics -->
 </body>
 </html>

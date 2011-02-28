@@ -95,13 +95,28 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-core-tiger</artifactId>
+      <artifactId>spring-security-openid</artifactId>
+      <version>${version.spring-security}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.openid4java</groupId>
+          <artifactId>openid4java</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-config</artifactId>
       <version>${version.spring-security}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-taglibs</artifactId>
       <version>${version.spring-security}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openid4java</groupId>
+      <artifactId>openid4java-consumer</artifactId>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -195,7 +210,7 @@
   </build>
   <properties>
     <jetty.port>8096</jetty.port>
-    <ems.url>http://localhost:3000/ems</ems.url>
+    <ems.url>http://onp.java.no:3000/ems</ems.url>
     <voldemort.clusterId>a</voldemort.clusterId>
     <voldemort.nodeId>a</voldemort.nodeId>
   </properties>

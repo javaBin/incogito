@@ -18,17 +18,14 @@ import static no.java.incogito.PropertiesF.storePropertiesMap;
 import no.java.incogito.domain.Event;
 import no.java.incogito.domain.Schedule;
 import no.java.incogito.domain.Session;
-import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.User;
 import no.java.incogito.domain.User.UserId;
 import static no.java.incogito.domain.User.createPristineUser;
 import no.java.incogito.domain.UserSessionAssociation.InterestLevel;
 import static no.java.incogito.domain.UserSessionAssociation.InterestLevel.ATTEND;
-import static no.java.incogito.domain.UserSessionAssociation.InterestLevel.INTEREST;
 import no.java.incogito.ems.server.DataGenerator;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.codehaus.plexus.util.FileUtils;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -222,7 +219,7 @@ public class IncogitoApplicationIntegrationTest {
     }
 
     public void testAttendance() {
-        User user = createPristineUser(UserId.fromString("trygvis"));
+        User user = createPristineUser(UserId.userIdFromString("trygvis"));
         OperationResult<User> userOperationResult = incogito.createUser(user);
         assertTrue(userOperationResult.isOk());
         user = userOperationResult.value();

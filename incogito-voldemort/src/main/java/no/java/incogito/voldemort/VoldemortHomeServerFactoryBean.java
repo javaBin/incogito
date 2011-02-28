@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Required;
+import voldemort.*;
 import voldemort.server.VoldemortConfig;
 import voldemort.server.VoldemortServer;
 
@@ -50,7 +51,11 @@ public class VoldemortHomeServerFactoryBean implements FactoryBean, DisposableBe
 
     public void destroy() throws Exception {
         if (voldemortServer != null) {
-            voldemortServer.stop();
+            try {
+                voldemortServer.stop();
+            } catch (VoldemortException e) {
+                // ignore, voldemort always throws an exception
+            }
         }
     }
 }

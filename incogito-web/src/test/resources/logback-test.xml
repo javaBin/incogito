@@ -6,7 +6,7 @@
   </appender>
 
   <logger name="org.springframework" level="INFO"/>
-  <logger name="org.springframework.security" level="INFO"/>
+  <logger name="org.springframework.security" level="DEBUG"/>
   <logger name="org.springframework.scheduling" level="DEBUG"/>
   <logger name="org.tuckey" level="INFO"/>
 

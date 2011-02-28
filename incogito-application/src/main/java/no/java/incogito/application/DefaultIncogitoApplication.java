@@ -189,9 +189,17 @@ public class DefaultIncogitoApplication implements IncogitoApplication, Initiali
     }
 
     public OperationResult<User> getUser(UserId userId) {
-        return userClient.getUser(userId).
-            map(OperationResult.<User>ok_()).
-            orSome(OperationResult.<User>notFound("User with id '" + userId.value + "' does not exist."));
+        Option<User> user = userClient.getUser(userId);
+
+        if(user.isSome()) {
+            return ok(user.some());
+        }
+
+        // TODO: Fetch the user's profile from the central DB
+
+        User u = User.createPristineUser(userId);
+        userClient.setUser(u);
+        return ok(u);
     }
 
     public OperationResult<Schedule> getSchedule(String eventName, String userId) {

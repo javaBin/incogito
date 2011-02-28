@@ -15,7 +15,7 @@ public class AttendanceMarkerTest extends TestCase {
     SessionId sessionC = new SessionId("c");
     SessionId sessionD = new SessionId("d");
     SessionId sessionE = new SessionId("e");
-    User user = User.createPristineUser(UserId.fromString("trygvis"));
+    User user = User.createPristineUser(UserId.userIdFromString("trygvis"));
 
     public void testNewUserHasZeroAttendanceMarkers() {
         assertEquals(0, user.sessionAssociations.size());

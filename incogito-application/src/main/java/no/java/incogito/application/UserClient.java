@@ -13,8 +13,8 @@ import fj.pre.Ord;
 import no.java.incogito.domain.SessionId;
 import no.java.incogito.domain.SessionRating;
 import no.java.incogito.domain.User;
+import static no.java.incogito.domain.User.*;
 import no.java.incogito.domain.User.UserId;
-import static no.java.incogito.domain.User.createPersistentUser;
 import no.java.incogito.domain.UserSessionAssociation;
 import no.java.incogito.domain.UserSessionAssociation.InterestLevel;
 import no.java.incogito.voldemort.VoldemortF;
@@ -121,7 +121,7 @@ public class UserClient {
             TreeMap<SessionId, UserSessionAssociation> sessionAssociations = Option.somes(list.map(sessionAssociationFromMap)).
                     foldLeft(folder, User.emptySessionAssociations);
 
-            return createPersistentUser(UserId.userId.f(map.get(SCHEMA_ID).toString()), sessionAssociations);
+            return createPersistentUser(UserId.userId.f(map.get(SCHEMA_ID).toString()), Option.<String>none(), sessionAssociations);
         }
     };
 
