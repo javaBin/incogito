@@ -3,11 +3,11 @@
   <parent>
     <groupId>no.java.incogito</groupId>
     <artifactId>incogito</artifactId>
-    <version>2010.2-SNAPSHOT</version>
+    <version>2011.1-SNAPSHOT</version>
   </parent>
   <artifactId>incogito-web</artifactId>
   <packaging>war</packaging>
-  <name>Incogito 2010 :: Web</name>
+  <name>Incogito 2011 :: Web</name>
   <dependencies>
     <dependency>
       <groupId>no.java.incogito</groupId>

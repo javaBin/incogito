@@ -3,10 +3,10 @@
   <parent>
     <groupId>no.java.incogito</groupId>
     <artifactId>incogito</artifactId>
-    <version>2010.2-SNAPSHOT</version>
+    <version>2011.1-SNAPSHOT</version>
   </parent>
   <artifactId>incogito-cli</artifactId>
-  <name>Incogito 2010 :: Command Line Interface</name>
+  <name>Incogito 2011 :: Command Line Interface</name>
   <dependencies>
     <dependency>
       <groupId>no.java.incogito</groupId>
