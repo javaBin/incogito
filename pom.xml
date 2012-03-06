@@ -43,8 +43,8 @@
       </dependency>
       <dependency>
         <groupId>net.sf.ehcache</groupId>
-        <artifactId>ehcache</artifactId>
-        <version>1.5.0</version>
+        <artifactId>ehcache-core</artifactId>
+        <version>2.5.1</version>
         <exclusions>
           <exclusion>
             <groupId>commons-logging</groupId>
@@ -160,6 +160,16 @@
     </dependencies>
   </dependencyManagement>
   <repositories>
+    <repository>
+      <id>osssonatype</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
     <repository>
       <id>javabin-release</id>
       <url>http://smia.java.no/maven/repo/release</url>

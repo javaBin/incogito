@@ -61,5 +61,9 @@
       <id>google</id>
       <url>http://google-maven-repository.googlecode.com/svn/repository</url>
     </repository>
+    <repository>
+      <id>javaBin.thirdparty</id>
+      <url>http://smia.java.no/maven/repo/third-party</url>
+    </repository>
   </repositories>
 </project>
