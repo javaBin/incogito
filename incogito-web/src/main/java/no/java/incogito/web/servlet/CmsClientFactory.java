@@ -10,7 +10,6 @@ import org.apache.abdera.protocol.client.RequestOptions;
 import org.joda.time.Minutes;
 import scala.Function2;
 import scala.runtime.AbstractFunction2;
-import scala.None$;
 import scala.Option;
 import scala.Option$;
 import scala.Some;
@@ -18,7 +17,6 @@ import scala.runtime.BoxedUnit;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import static org.joda.time.Minutes.minutes;
@@ -28,13 +26,25 @@ import static org.joda.time.Minutes.minutes;
  */
 public class CmsClientFactory {
 
-    static private DefaultCmsClient createCmsClient() {
+    private URL pagesUrl;
+    private URL postsUrl;
+
+    public CmsClientFactory(URL postsUrl, URL pagesUrl) {
+        this.postsUrl = postsUrl;
+        this.pagesUrl = pagesUrl;
+    }
+
+    public CmsClient build() {
+        return createCmsClient();
+    }
+
+    private DefaultCmsClient createCmsClient() {
         Logger logger = ConsoleLogger$.MODULE$;
         Option<Minutes> minutesOption = some(minutes(10));
         Option<RequestOptions> requestOptions = some(CachingAbderaClient$.MODULE$.confluenceFriendlyRequestOptions());
         Option<ProxyConfiguration> proxyConfigurationOption = (Option<ProxyConfiguration>) Option$.MODULE$.<ProxyConfiguration>apply(null);
         AtomPubClientConfiguration atomPubClientConfiguration = new AtomPubClientConfiguration(logger, "CMS", createTempDirectory(), proxyConfigurationOption, minutesOption, requestOptions);
-        CmsClient.Configuration configuration = new CmsClient.ExplicitConfiguration(url("http://wiki.java.no/poop"), url("http://wiki.java.no/rest/atompub/latest/spaces/javazone2012/pages/12682119/children"));
+        CmsClient.Configuration configuration = new CmsClient.ExplicitConfiguration(postsUrl, pagesUrl);
         Function2<URL, URL, BoxedUnit> doNothingFunction = createDoNothingFunction2();
         return new DefaultCmsClient(logger, AtomPubClient$.MODULE$.apply(atomPubClientConfiguration), configuration, doNothingFunction);
     }
@@ -47,19 +57,11 @@ public class CmsClientFactory {
         };
     }
 
-    private static URL url(String s) {
-        try {
-            return new URL(s);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     private static <T> Some some(T t) {
         return new Some<T>(t);
     }
 
-    static private File createTempDirectory() {
+    private static File createTempDirectory() {
         File cmsCacheDir;
         try {
             cmsCacheDir = File.createTempFile("cms_cache", null);
@@ -69,10 +71,6 @@ public class CmsClientFactory {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public CmsClient build() {
-        return createCmsClient();
     }
 
 }

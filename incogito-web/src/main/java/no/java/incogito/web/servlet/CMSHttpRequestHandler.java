@@ -1,41 +1,29 @@
 package no.java.incogito.web.servlet;
 
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.config.CacheConfiguration;
-import net.sf.ehcache.config.Configuration;
-import net.sf.ehcache.config.DiskStoreConfiguration;
-import net.sf.ehcache.management.ManagementService;
-import no.arktekk.cms.*;
-import no.arktekk.cms.ConsoleLogger$;
-import no.arktekk.cms.atompub.AtomPubClient$;
-import no.arktekk.cms.atompub.CachingAbderaClient$;
+import no.arktekk.cms.CmsClient;
+import no.arktekk.cms.CmsEntry;
+import no.arktekk.cms.CmsSlug;
 import org.springframework.stereotype.Component;
 import org.springframework.web.HttpRequestHandler;
-import scala.None$;
 import scala.Option;
-import scala.Option$;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * @author Thor Åge Eldby (thoraageeldby@gmail.com)
  */
 @Component("cmsHttpRequestHandler")
-public class CMSHttpRequestHandler implements HttpRequestHandler {
+public class CmsHttpRequestHandler implements HttpRequestHandler {
 
-    private CacheManager cacheManager;
-    private ManagementService managementService;
     private CmsClient cmsClient;
 
-    public CMSHttpRequestHandler() {
-        //cacheManager = configureCache(createTempDirectory());
-        //managementService = createManagementService(cacheManager);
-        cmsClient = new CmsClientFactory().build();
+    public CmsHttpRequestHandler() {
+        cmsClient = new CmsClientFactory(url("http://wiki.java.no/poop"), url("http://wiki.java.no/rest/atompub/latest/spaces/javazone2012/pages/12682119/children")).build();
     }
 
     public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -45,28 +33,13 @@ public class CMSHttpRequestHandler implements HttpRequestHandler {
         Option<CmsEntry> cmsEntryOption = cmsClient.fetchPageBySlug(CmsSlug.fromString(pathInfo));
         System.out.println("Entry: " + cmsEntryOption);
     }
-/*
-    private ManagementService createManagementService(CacheManager cacheManager) {
-        return new ManagementService(
-                cacheManager,
-                ManagementFactory.getPlatformMBeanServer(),
-                true, true, true, true);
+
+    private static URL url(String s) {
+        try {
+            return new URL(s);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    static private CacheManager configureCache(File cmsCacheDir) {
-        CacheConfiguration atomCache = new CacheConfiguration().timeToLiveSeconds(10 * 60).
-                timeToIdleSeconds(10 * 60).
-                maxElementsInMemory(1000).
-                maxElementsOnDisk(1000).
-                //        diskPersistent(true).   The objects must be serializable first
-                        name("atom");
-
-        CacheManager cacheManager = CacheManager.create(new Configuration()
-                .diskStore(new DiskStoreConfiguration().path(cmsCacheDir.toString()))
-                .defaultCache(new CacheConfiguration())
-                .cache(atomCache));
-        cacheManager.setName("cms-client-cache");
-        return cacheManager;
-    }
-  */
 }
