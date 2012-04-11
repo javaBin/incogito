@@ -44,6 +44,25 @@
     <property name="name" value="user"/>
   </bean>
 
+  <!-- CMS Client -->
+
+  <bean id="cmsClientFilter" class="no.java.incogito.web.servlet.CmsClientFilter"/>
+
+  <bean id="cmsClient" factory-bean="cmsClientFactory" factory-method="createCmsClient"/>
+
+  <bean id="cmsClientFactory" class="no.java.incogito.web.servlet.CmsClientFactory">
+    <constructor-arg>
+      <bean class="java.net.URL">
+        <constructor-arg value="http://wiki.java.no/poop"/>
+      </bean>
+    </constructor-arg>
+    <constructor-arg>
+      <bean class="java.net.URL">
+        <constructor-arg value="http://wiki.java.no/rest/atompub/latest/spaces/javazone2012/pages/12682119/children"/>
+      </bean>
+    </constructor-arg>
+  </bean>
+
   <!-- EMS -->
 
   <bean id="emsService" class="no.java.incogito.ems.client.RestEmsServiceFactoryBean">

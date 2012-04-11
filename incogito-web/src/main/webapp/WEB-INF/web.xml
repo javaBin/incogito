@@ -5,6 +5,11 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
   <filter>
+    <filter-name>cmsClientFilter</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+  </filter>
+
+  <filter>
     <filter-name>url-rewrite</filter-name>
     <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
     <init-param>
@@ -41,6 +46,11 @@
   </filter>
 
   <filter-mapping>
+    <filter-name>cmsClientFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
     <filter-name>url-rewrite</filter-name>
     <url-pattern>/*</url-pattern>
     <dispatcher>REQUEST</dispatcher>
@@ -66,17 +76,7 @@
     <dispatcher>FORWARD</dispatcher>
     <dispatcher>INCLUDE</dispatcher>
   </filter-mapping>
-
-  <servlet>
-    <servlet-name>cmsHttpRequestHandler</servlet-name>
-    <servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
-  </servlet>
   
-  <servlet-mapping>
-    <servlet-name>cmsHttpRequestHandler</servlet-name>
-    <url-pattern>/*</url-pattern>
-  </servlet-mapping>
-
   <context-param>
     <param-name>log4jExposeWebAppRoot</param-name>
     <param-value>false</param-value>

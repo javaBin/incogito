@@ -8,6 +8,7 @@ import no.arktekk.cms.atompub.CachingAbderaClient$;
 import no.arktekk.cms.atompub.ProxyConfiguration;
 import org.apache.abdera.protocol.client.RequestOptions;
 import org.joda.time.Minutes;
+import org.springframework.stereotype.Component;
 import scala.Function2;
 import scala.runtime.AbstractFunction2;
 import scala.Option;
@@ -34,11 +35,7 @@ public class CmsClientFactory {
         this.pagesUrl = pagesUrl;
     }
 
-    public CmsClient build() {
-        return createCmsClient();
-    }
-
-    private DefaultCmsClient createCmsClient() {
+    public CmsClient createCmsClient() {
         Logger logger = ConsoleLogger$.MODULE$;
         Option<Minutes> minutesOption = some(minutes(10));
         Option<RequestOptions> requestOptions = some(CachingAbderaClient$.MODULE$.confluenceFriendlyRequestOptions());
