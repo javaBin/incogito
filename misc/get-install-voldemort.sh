@@ -14,7 +14,7 @@ cd target
 
 if [ ! -r voldemort-$v.tar.gz ]
 then
-  wget -O voldemort-$v.tar.gz http://cloud.github.com/downloads/voldemort/voldemort/voldemort-$v.tar.gz
+  wget -O voldemort-$v.tar.gz http://project-voldemort.googlecode.com/files/voldemort-$v.tar.gz
 fi
 
 gunzip -f voldemort-$v.tar.gz
