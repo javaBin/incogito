@@ -17,214 +17,124 @@
     <c:set var="event" value="${i:getEventByName(app, eventName)}"/>
     <head>
         <title>Sessions for ${eventName} -</title>
-        <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/rest/events/${eventName}/session.css"/>
-        <link rel="stylesheet" type="text/css" href="${incogito.baseurl}/css/session.css"/>
-        <link rel="stylesheet/less" href="${incogito.baseurl}/css/sessions.less" type="text/css" />
-        <script src="${incogito.baseurl}/js/less-1.0.21.min.js"><!-- space --></script>
-        <script src="${incogito.baseurl}/js/jquery.inview.js" type="text/javascript"><!-- space --></script>
-        <script src="${incogito.baseurl}/js/incogito-sessions.js" type="text/javascript"><!-- space --></script>
-        <script src="${incogito.baseurl}/js/jquery.tools.min.js" type="text/javascript"><!-- space --></script>
-
-<style type="text/css">
-/* the overlayed element */
-.apple_overlay {
-
-	/* initially overlay is hidden */
-	display:none;
-
-	/* growing background image */
-	background-image:url(${incogito.baseurl}/images/white.png);
-
-	/*
-		width after the growing animation finishes
-		height is automatically calculated
-	*/
-	width:640px;
-    overflow: hidden;
-
-	/* some padding to layout nested elements nicely  */
-	padding:35px;
-
-	/* a little styling */
-	font-size:11px;
-}
-
-/* default close button positioned on upper right corner */
-.apple_overlay .close {
-	background-image:url(${incogito.baseurl}/images/icons/close_overlay.png);
-	position:absolute; right:5px; top:5px;
-	cursor:pointer;
-	height:35px;
-	width:35px;
-}
-
-div.apple_overlay.black {
-    background-image:url(${incogito.baseurl}/images/transparent.png);
-    color:#fff;
-}
-</style>
-
-&lt;!--[if IE]&gt;
-<style type="text/css">
-
-ul.sessions .session.label-hide, ul.sessions .session.level-hide, ul.sessions .session.label-hide .info a, ul.sessions .session.level-hide .info a {
-    color: #C0C0C0;
-    filter: alpha(opacity=30);
-}
-
-div.apple_overlay {
-    background-image:url(http://static.flowplayer.org/tools/img/overlay/overlay_IE6.gif);
-    color:#fff;
-}
-
-/* default close button positioned on upper right corner */
-div.apple_overlay div.close {
-    background-image:url(http://static.flowplayer.org/tools/img/overlay/overlay_close_IE6.gif);
-
-}
-</style>
-&lt;![endif]--&gt;
     </head>
 
-    <body>
-        <div id="filtersContainer">
-          <c:choose>
-          	<c:when test="${fn:length(event.levels) gt 0 or fn:length(event.labels) gt 0}">
+<body>
+<div id="container">
 
-            <h3>Filters</h3>
-            <ul>
-                <li>
-                	<c:choose>
-                        <c:when test="${fn:length(event.levels) gt 0}">
-                            <div>Levels</div>
-                            <ul class="filter levels">
-                                <c:forEach var="level" items="${event.levels}">
-                                    <li class="level-${level.id} on"><a href="#">${level.displayName}</a></li>
-                                </c:forEach>
-                            </ul>
-                        </c:when>
-                 	</c:choose>
+<div id="tools">
+    <a class="all" href="#" data-toggle="all">All&#160;sessions</a>
+    <a class="more" href="#" data-toggle="difficulty">Difficulties</a>
+    <a class="more" href="#" data-toggle="place">Locations</a> 
+    <a class="more" href="#" data-toggle="category">Categories</a>
 
-                    <c:choose>
-                        <c:when test="${fn:length(event.labels) gt 0}">
-                            <div>Labels</div>
-                            <ul class="filter labels">
-                              <c:forEach var="label" items="${event.labels}">
-                                <li class="label-${label.id} on"><a href="#">${label.displayName}</a></li>
-                              </c:forEach>
-                            </ul>
-                        </c:when>
-                    </c:choose>
-                </li>
-            </ul>
-            </c:when>
-            </c:choose>
-
-        </div>
-        <div id="main-content">
-            <div id="expandAll"><a href="#" class="open"><img src="${incogito.baseurl}/images/icons/plus.png" class="expand" alt="expand"/> <img src="${incogito.baseurl}/images/icons/minus.png" class="minimize" alt="minimize"/> <span class="expand">Expand</span><span class="minimize">Close</span> all sessions</a></div>
-            <c:forEach var="day" items="${sessionListNy.sessionsByTimeslotByDate}">
-
-                <h1>${i:formatDate(day.key)}</h1>
-
-                <c:forEach var="sessionsByTimeslot"
-                           items="${i:mapGet(sessionListNy.sessionsByTimeslotByDate, day.key)}">
-
-                    <c:set var="timeslot" value="${sessionsByTimeslot.key}"/>
-
-                    <fmt:formatNumber var="startHour" value="${timeslot.start.hourOfDay}" maxIntegerDigits="2"
-                                      minIntegerDigits="2"/>
-                    <fmt:formatNumber var="startMinute" value="${timeslot.start.minuteOfHour}" maxIntegerDigits="2"
-                                      minIntegerDigits="2"/>
-                    <fmt:formatNumber var="endHour" value="${timeslot.end.hourOfDay}" maxIntegerDigits="2"
-                                      minIntegerDigits="2"/>
-                    <fmt:formatNumber var="endMinute" value="${timeslot.end.minuteOfHour}" maxIntegerDigits="2"
-                                      minIntegerDigits="2"/>
-                    <div>
-                        <h2 class="open"><img src="${incogito.baseurl}/images/icons/plus.png" class="expand" alt="expand"/> <img src="${incogito.baseurl}/images/icons/minus.png" class="minimize" alt="minimize"/> ${startHour}:${startMinute} - ${endHour}:${endMinute}</h2>
-
-                        <ul class="sessions open">
-                            <c:set var="rowCount" value="0"/>
-                            <c:forEach var="session" items="${i:castToSessionList(sessionsByTimeslot.value)}">
-                                <c:choose>
-                                    <c:when test="${rowCount mod 2 eq 0}">
-                                        <c:set var="darkLight" value="dark"/>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <c:set var="darkLight" value="light"/>
-                                    </c:otherwise>
-                                </c:choose>
-                                <c:choose>
-                                    <c:when test="${session.format eq 'Presentation'}">
-		                                <c:set var="rowCount" value="${rowCount+1}"/>
-                                    </c:when>
-                                </c:choose>
-                                <li id="${session.id}" class="session ${session.format} ${darkLight}">
-                                    <div class="info">
-                                        <a target="_blank" href="${session.sessionHtmlUrl}">${session.title}</a>
-                                        <div class="session-rest-uri" style="display:none;">${session.selfUri}</div>
-                                        &amp;mdash;
-                                        <span class="speakers">
-                                            <c:forEach var="speaker" varStatus="i" items="${session.speakers}">
-                                                <c:choose>
-                                                    <c:when test="${not i.last}">${speaker.name}, </c:when>
-                                                    <c:otherwise>${speaker.name}</c:otherwise>
-                                                </c:choose>
-                                            </c:forEach>
-                                        </span>
-                                    </div>
-                                    <div class="legends">
-                                        <span>${session.room}</span>,
-                                        <span>Level:</span>
-                                        <c:choose>
-                                            <c:when test="${not (session.level eq null)}">
-                                                <img  class="level level-${session.level.displayName}" title="${session.level.displayName}"
-                                                     alt="${session.level.displayName}" src="${session.level.iconUrl}"/>
-                                            </c:when>
-                                            <c:otherwise>X</c:otherwise>
-                                        </c:choose>
-
-                                        <c:choose>
-                                               <c:when test="${fn:length(session.labels) gt 0}">
-                                                 <span>Labels:</span>
-                                                 <c:forEach var="label" items="${session.labels}">
-                                                     <img class="label label-${label.id}" title="${label.displayName}" alt="${label.id}"
-                                                          src="${label.iconUrl}"/>
-                                                 </c:forEach>
-                                             </c:when>
-                                        </c:choose>
-                                    </div>
-                                </li>
-                            </c:forEach>
-                        </ul>
-                    </div>
+    <c:choose>
+        <c:when test="${fn:length(event.levels) gt 0}">
+            <div class="difficulty choice">
+                <c:forEach var="level" items="${event.levels}">
+                    <a class="level-${level.id}" data-toggle="level-${level.id}" href="#">${level.displayName}</a>
                 </c:forEach>
+            </div>
+        </c:when>
+    </c:choose>
+
+    <c:choose>    
+        <c:when test="${fn:length(event.labels) gt 0}">
+            <div class="category choice">
+              <c:forEach var="label" items="${event.labels}">
+                <a class="label-${label.id}" href="#">${label.displayName}</a>
+              </c:forEach>
+            </div>
+        </c:when>
+    </c:choose>
+
+    <div class="place choice">
+        <a class="sal1 sal" href="#" data-toggle="sal1">Sal&#160;1</a>
+        <a class="sal2 sal" href="#" data-toggle="sal2">Sal&#160;2</a>
+        <a class="sal3 sal" href="#" data-toggle="sal3">Sal&#160;3</a>
+        <a class="sal4 sal" href="#" data-toggle="sal4">Sal&#160;4</a>
+        <a class="sal5 sal" href="#" data-toggle="sal5">Sal&#160;5</a>
+        <a class="sal6 sal" href="#" data-toggle="sal6">Sal&#160;6</a>
+        <a class="sal7 sal" href="#" data-toggle="sal7">Sal&#160;7</a>
+    </div>
+
+</div>
+
+
+
+<c:forEach var="day" items="${sessionListNy.sessionsByTimeslotByDate}">
+<div class="day">
+
+<c:forEach var="sessionsByTimeslot" items="${i:mapGet(sessionListNy.sessionsByTimeslotByDate, day.key)}">
+
+    <c:set var="timeslot" value="${sessionsByTimeslot.key}"/>
+    <fmt:formatNumber var="startHour" value="${timeslot.start.hourOfDay}" maxIntegerDigits="2"
+                      minIntegerDigits="2"/>
+    <fmt:formatNumber var="startMinute" value="${timeslot.start.minuteOfHour}" maxIntegerDigits="2"
+                      minIntegerDigits="2"/>
+    <fmt:formatNumber var="endHour" value="${timeslot.end.hourOfDay}" maxIntegerDigits="2"
+                      minIntegerDigits="2"/>
+    <fmt:formatNumber var="endMinute" value="${timeslot.end.minuteOfHour}" maxIntegerDigits="2"
+                      minIntegerDigits="2"/>
+
+    <div class="hours">
+        ${startHour}:${startMinute} - ${endHour}:${endMinute}
+        <span>${i:formatDate(day.key)}</span>
+    </div>
+
+    <div class="agenda">
+        <c:forEach var="session" items="${i:castToSessionList(sessionsByTimeslot.value)}">
+
+    <a class="presentation level-${session.level.id} ${session.room} experience-report community research" href="#">
+
+      <span class="title">${session.title}</span>
+      <span class="people">— 
+        <c:forEach var="speaker" varStatus="i" items="${session.speakers}">
+            <c:choose>
+                <c:when test="${not i.last}">${speaker.name}, </c:when>
+                <c:otherwise>${speaker.name}</c:otherwise>
+            </c:choose>
+        </c:forEach>
+      </span>
+      <span class="where ${session.room}">${session.room}</span>
+      <div class="more">
+        <ul class="details">
+          <li class="first">Difficulty: <strong class="level-${session.level.id}">${session.level.displayName}</strong></li>
+          <li>Location: <strong class="sal1">${session.room}</strong></li>
+          <c:choose>
+               <c:when test="${fn:length(session.labels) gt 0}">
+                <li>Categories: 
+                     <c:forEach var="label" items="${session.labels}">
+                        <strong class="label-${label.id}">${label.displayName}</strong>
+                     </c:forEach>
+                </li>
+             </c:when>
+          </c:choose>
+        </ul>
+        ${session.bodyHtml}
+        <div class="author">
+            <c:forEach var="speaker" varStatus="i" items="${session.speakers}">
+                <h3>
+                <c:choose>
+                    <c:when test="${not i.last}">${speaker.name}, </c:when>
+                    <c:otherwise>${speaker.name}</c:otherwise>
+                </c:choose>
+                </h3>
+                ${speaker.bioHtml}
             </c:forEach>
         </div>
-        <!-- overlayed element, which is styled with external stylesheet -->
-        <div class="apple_overlay black" id="session-overlay">
-            <div id="session-overlay-indicator">Loading...</div>
-            <div id="session-overlay-content" style="display:none;"></div>
-             <!-- space -->
-        </div>
-      <div id="template-session-details" class="template session-details">
-        <h2 class="session-details-title"><!-- space --></h2>
-        <div class="session-url-reference"><!-- space --></div>
-        <ul class="outside session-metadata">
-          <!-- space-->
-        </ul>
-        <div class="session-details-labels">
-          <ul><!-- space --></ul>
-        </div>
-        <div class="session-details-body"><!-- space --></div>
-        <div class="speaker-bioses"><!-- space --></div>
       </div>
 
-      <div class="template speaker">
-        <div class="speaker-image"><img src="#" alt=""/></div>
-        <h2 class="speaker-name"><!-- space --></h2>
-        <div class="speaker-bio"><!-- space --></div>
-      </div>
+    </a>
 
-    </body>
+    </c:forEach>
+</div>  
+
+</c:forEach>
+
+</div>
+</c:forEach>
+
+</div>
+</body>
 </html>
