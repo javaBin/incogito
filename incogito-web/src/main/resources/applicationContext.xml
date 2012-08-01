@@ -35,7 +35,8 @@
     <constructor-arg value="${voldemort.home}"/>
   </bean>
 
-  <bean id="storeClientFactory" class="no.java.incogito.application.SocketStoreClientFactoryFactoryBean" depends-on="voldemortServer">
+  <bean id="storeClientFactory" class="no.java.incogito.application.SocketStoreClientFactoryFactoryBean"
+        depends-on="voldemortServer">
     <property name="url" value="tcp://localhost:6660"/>
   </bean>
 
@@ -46,21 +47,17 @@
 
   <!-- CMS Client -->
 
-  <bean id="cmsClientFilter" class="no.java.incogito.web.servlet.CmsClientFilter"/>
-
-  <bean id="cmsClient" factory-bean="cmsClientFactory" factory-method="createCmsClient"/>
-
-  <bean id="cmsClientFactory" class="no.java.incogito.web.servlet.CmsClientFactory">
-    <constructor-arg>
-      <bean class="java.net.URL">
-        <constructor-arg value="http://wiki.java.no/poop"/>
-      </bean>
-    </constructor-arg>
-    <constructor-arg>
+  <bean id="cmsClientFilter" class="no.javabin.atomclientservletfilter.AtomClientServletFilter">
+    <property name="pagesUrl">
       <bean class="java.net.URL">
         <constructor-arg value="http://wiki.java.no/rest/atompub/latest/spaces/javazone2012/pages/12682119/children"/>
       </bean>
-    </constructor-arg>
+    </property>
+    <property name="postsUrl">
+      <bean class="java.net.URL">
+        <constructor-arg value="http://wiki.java.no/rest/atompub/latest/spaces/javazone2012/news"/>
+      </bean>
+    </property>
   </bean>
 
   <!-- EMS -->
@@ -72,7 +69,8 @@
 
   <!-- Performance -->
 
-  <bean id="incogitoApplicationPerformanceRecorder" class="no.java.incogito.web.jmx.ApplicationPerformanceRecorderFactoryBean">
+  <bean id="incogitoApplicationPerformanceRecorder"
+        class="no.java.incogito.web.jmx.ApplicationPerformanceRecorderFactoryBean">
     <constructor-arg value="no.java.incogito.application.IncogitoApplication"/>
   </bean>
 
@@ -111,7 +109,8 @@
 
   <aop:config>
     <aop:aspect id="timingAspectInstance" ref="timingAspect">
-      <aop:pointcut id="incogitoApplicationPointcut" expression="execution(* no.java.incogito.application.IncogitoApplication.*(..))"/>
+      <aop:pointcut id="incogitoApplicationPointcut"
+                    expression="execution(* no.java.incogito.application.IncogitoApplication.*(..))"/>
 
       <aop:before pointcut-ref="incogitoApplicationPointcut" method="before"/>
       <aop:after-returning pointcut-ref="incogitoApplicationPointcut" method="afterReturning"/>
