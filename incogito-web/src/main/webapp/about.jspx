@@ -8,8 +8,17 @@
 <div id="main-content">
   ${incogito.aboutText}
 
-
-  HALLO ${cms.page.content}HALLO
+  <c:set var="pageNumber" value="${param.pageNumber}"/>
+  <c:if test="${pageNumber == null}">
+    <c:set var="pageNumber" value="${'0'}"/>
+  </c:if>
+  <c:forEach var="post" items="${cms.posts['3'][pageNumber]}">
+    ${post.title}<br/>
+  </c:forEach>
+  <c:if test="${pageNumber > 0}">
+    <a href="${requestURL}?pageNumber=${pageNumber - 1}">&lt; Forrige</a>
+  </c:if>
+  <a href="${requestURL}?pageNumber=${pageNumber + 1}">Neste &gt;</a>
 </div>
 </body>
 </html>
